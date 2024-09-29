@@ -1,0 +1,187 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage scripting.html
+    \page operations.html
+    \nextpage ifw-tools.html
+
+    \title Operations
+
+    The operations are prepared by component scripts and performed by the
+    installer.
+    \note Operations are performed threaded.
+
+    Internally, each operation has a \e DO step that contains instructions for
+    the installer and an \e UNDO step that contains instructions for the
+    uninstaller.
+
+    \section1 Summary of Operations
+
+    The following table summarizes the available operations and their syntax.
+
+    \table
+        \header
+            \o  Operation
+            \o  Syntax
+            \o  Use
+        \row
+            \o  Copy
+            \o  "Copy" \a source \a target
+            \o  Copies a file from \a source to \a target.
+        \row
+            \o  Move
+            \o  "Move" \a source \a target
+            \o  Moves a file from \a source to \a target.
+        \row
+            \o  Delete
+            \o  "Delete" \a filename
+            \o  Deletes the file specified by \a filename.
+        \row
+            \o  Mkdir
+            \o  "Mkdir" \a path
+            \o  Creates the directory path \a path.
+        \row
+            \o  Rmdir
+            \o  "Rmdir" \a path
+            \o  Removes the directory path \a path.
+        \row
+            \o  AppendFile
+            \o  "AppendFile" \a filename \a text
+            \o  Appends \a text to the file specified by \a filename. \a text is
+                treated as ASCII text.
+        \row
+            \o  PrependFile
+            \o  "PrependFile" \a filename \a text
+            \o  Prepends \a text to the file specified by \a filename. \a text
+                is treated as ASCII text.
+        \row
+            \o  Replace
+            \o  "Replace" \a file \a search \ replace
+            \o  Opens \a file to find \a search string and replaces that with the \a replace string.
+        \row
+            \o  LineReplace
+            \o  "LineReplace" \a file \a search \ replace
+            \o  Opens \a file to find lines that start with \a search string and
+                replaces that with the \a replace string.
+        \row
+            \o  Execute
+            \o  "Execute" [{\a exitcodes}] \a command [\a parameter1 [\a parameter... [\a parameter10]]]
+            \o  Executes the command specified by \a command. Up to 10
+                parameters can be passed. If that is not enough, you can use a JavaScript string array.
+
+                Optionally, you can pass a comma-separated list of exit codes
+                within curly brackets ({}) as the first argument to specify the
+                exit codes for successful execution. This defaults to "{0}".
+
+                Other optional named arguments are: "workingdirectory=<your_working_dir>";
+                "errormessage=<your_custom_errormessage>"
+
+                In addition, a special argument, UNDOEXECUTE, separates the DO step of the operation
+                from the UNDO step.
+
+                example:
+                \code
+                component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")
+                \endcode
+        \row
+            \o  CreateShortcut
+            \o  "CreateShortcut" \a filename \a linkname [\a arguments]
+            \o  Creates a shortcut from the file specified by \a filename to
+                \a linkname.
+                On Windows, this creates a .lnk file which can have
+                \a arguments. On Unix, this creates a symbolic link.
+        \row
+            \o  CreateDesktopEntry
+            \o  "CreateDesktopEntry" \a filename \a "key=value[\nkey2=value2[\nkey3=value3]]]"
+            \o  Creates a .desktop initialization file, as specified by
+                freedesktop.org.
+
+                If \a filename is absolute, the desktop entry is stored there.
+                Otherwise, it is stored in the location specified in
+                \c{$XDG_DATA_DIRS/applications} or
+                \c{$XDG_DATA_HOME/applications}, including the default paths for
+                both, as defined by freedesktop.org.
+
+                The key-value pairs are written to the file.
+
+                The file is set to use UTF-8 encoding.
+        \row
+            \o  InstallIcons
+            \o  "InstallIcons" \a directory \a [Vendorprefix]
+            \o  Installs the contents of \a directory into a location, as
+                specified by freedesktop.org. That is, into
+                \c {$XDG_DATA_DIRS/icons}, \c {/usr/share/icons}, or
+                \c {$HOME/.icons}. The files are removed from their initial
+                location. Make sure to add this operation after the operation
+                that extracts the files from the archive.
+                If you provide a \a Vendorprefix it replaces all characters up to the
+                first dash (-) in the filename of the icon with this prefix.
+        \row
+            \o  Extract
+            \o  "Extract" \a archive \a targetdirectory
+            \o  Extracts \a archive to \a targetdirectory.
+
+        \row
+            \o  GlobalConfig
+            \o  "GlobalConfig" \a company \a application \a key \a value
+
+                or
+
+                "GlobalConfig" \a filename \a key \a value
+            \o  Stores \a value for \a key in a configuration file. The
+                configuration file is specified either by \a filename
+                (using \a QSettings::NativeFormat, which might be the Windows
+                registry) or by \a application and \a company name.
+        \row
+            \o  EnvironmentVariable
+            \o  "EnvironmentVariable" \a key \a value [[\a persistent] \a system]
+            \o  Sets the environment variable \a key to \a value. If
+                \a persistent is set to \c true, the variable is set
+                persistently. This is currently only supported on Windows.
+                If \a system is set to \c true, the persistent variable is set
+                system-wide, not only for the current user.
+        \row
+            \o  RegisterFileType
+            \o  "RegisterFileType" \a extension \a command [\a description [\a contentType [\a icon]]].
+            \o  Registers the file type with \a extension to be opened via
+                \a command. Optionally, you can specify \a description,
+                \a contentType, and \a icon. This is currently only supported on
+                Windows.
+    \endtable
+
+    If errors occur, you can test operations manually on the uninstaller or
+    installer. However, variables are not resolved, so you need to use absolute
+    values.
+
+    For example, to test copying a file:
+    \code
+    Installer --runoperation "Copy" "<source>" "<target>"
+    \endcode
+
+*/

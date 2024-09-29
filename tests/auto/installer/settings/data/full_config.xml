@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+File should contain all elements we allow in a config.xml
+-->
+
+<Installer>
+    <Name>Your application</Name>
+    <Version>1.2.3</Version>
+    <Title>Your application Installer</Title>
+    <Publisher>Your vendor</Publisher>
+    <ProductUrl>Your vendor</ProductUrl>
+
+    <TargetDir>@homeDir@InstallationDirectory</TargetDir>
+    <AdminTargetDir>@rootDir@InstallationDirectory</AdminTargetDir>
+
+    <Icon>icon</Icon>
+    <InstallerApplicationIcon>icon</InstallerApplicationIcon>
+    <InstallerWindowIcon>icon</InstallerWindowIcon>
+    <Logo>logo</Logo>
+    <Watermark>watermark</Watermark>
+    <Banner>banner</Banner>
+    <Background>background</Background>
+    <WizardStyle>Modern</WizardStyle>
+
+    <StartMenuDir>Super App</StartMenuDir>
+
+    <UninstallerName>uninstaller</UninstallerName>
+    <UninstallerIniFile>uninstaller.ini</UninstallerIniFile>
+    <RemoveTargetDir>true</RemoveTargetDir>
+
+    <RunProgram>myapp</RunProgram>
+    <RunProgramArguments>foo bar</RunProgramArguments>
+    <RunProgramDescription>Launch MyApp</RunProgramDescription>
+
+    <DependsOnLocalInstallerBinary>true</DependsOnLocalInstallerBinary>
+    <AllowSpaceInPath>true</AllowSpaceInPath>
+    <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
+    <TargetConfigurationFile>components.xml</TargetConfigurationFile>
+
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://www.yourcompany.com/packages</Url>
+            <Enabled>1</Enabled>
+            <Username>user</Username>
+            <Password>password</Password>
+        </Repository>
+    </RemoteRepositories>
+
+    <Translations>
+        <Translation>de_de</Translation>
+        <Translation>qt_de</Translation>
+    </Translations>
+</Installer>

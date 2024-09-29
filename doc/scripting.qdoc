@@ -1,0 +1,272 @@
+/****************************************************************************
+**
+** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Digia.  For licensing terms and
+** conditions see http://qt.digia.com/licensing.  For further information
+** use the contact form at http://qt.digia.com/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \contentspage{index.html}{Qt Installer Framework}
+    \previouspage noninteractive.html
+    \page scripting.html
+    \nextpage operations.html
+
+    \title Component Scripting
+
+    For each component, you can specify one script that prepares the operations
+    to be performed by the installer. The script format has to be
+    compatible with QScriptEngine.
+
+    \section1 Construction
+
+    The script has to contain a \c Component object that the installer creates
+    when it loads the script. Therefore, the script must contain at
+    least the \a Component() function, which performs initialization, such as
+    putting pages in the correct places or connecting signals and slots.
+
+    The following code snippet places the \a ErrorPage (which is the class
+    name of the user interface file loaded from errorpage.ui) in front of the
+    ready for installation page and sets its completeness to \c false.
+
+    \code
+    function Component()
+    {
+        // Add a user interface file called ErrorPage, which should not be complete
+        installer.addWizardPage( component, "ErrorPage", QInstaller.ReadyForInstallation );
+        component.userInterface( "ErrorPage" ).complete = false;
+    }
+    \endcode
+
+    For more information, see the documentation for \l QInstaller::addWizardPage and
+    \l Component::userInterface.
+
+    \section1 Installer Hooks
+
+    You can add the following hook methods into your script:
+
+    \table
+        \header
+            \o  Method
+            \o  Description
+        \row
+            \o  \a{Component.prototype.retranslateUi}
+            \o  Called when the language of the installer changes.
+        \row
+            \o  \a{Component.prototype.createOperations}
+            \o  See \l Component::createOperations.
+        \row
+            \o  \a{Component.prototype.createOperationsForArchive}
+            \o  See \l Component::createOperationsForArchive.
+        \row
+            \o  \a{Component.prototype.createOperationsForPath}
+            \o  See \l Component::createOperationsForPath.
+    \endtable
+
+    \section1 Global Variables
+
+    The installer puts the following symbols into the script space:
+
+    \table
+        \header
+            \o  Symbol
+            \o  Description
+        \row
+            \o  installer
+            \o  Reference to the \l QInstaller of the component
+        \row
+            \o  component
+            \o  Reference to the \l Component of the component
+    \endtable
+
+    \section1 Message Boxes
+
+    You can show a \l QMessageBox from within the script by using:
+
+    \list
+    \li \l QMessageBox::critical
+    \li \l QMessageBox::information
+    \li \l QMessageBox::question
+    \li \l QMessageBox::warning
+    \endlist
+
+    For your convenience, the values for \a QMessageBox::StandardButton are made
+    available by using \a QMessageBox.Ok, \a QMessageBox.Open, and so on.
+
+    \section1 Adding Operations to Components
+
+    You might want to add custom operations after extracting the content, when
+    copying files or patching file content, for example. You can create and add
+    update operations to the installation from within
+    a script using \a QInstaller::Component::addOperation.
+    If you need to run an operation that requires administrative rights, use
+    \a QInstaller::Component::addElevatedOperation instead.
+
+    Each operation has a unique key used for identification and can take up to
+    five parameters. In the parameter values, you can use variables as set in
+    \a QInstaller::Installer::setValue. For more information, see
+    \l{Predefined Variables}.
+
+    For a summary of all available operations, see \l{Operations}.
+
+    \section1 Registering Custom Operations
+
+    You can register custom installation operations in the installer by deriving
+    \a KDUpdater::UpdateOperation. The following code displays the methods that
+    you must implement:
+
+  \code
+  #include <KDUpdater/UpdateOperation>
+
+  class CustomOperation : public KDUpdater::UpdateOperation
+  {
+  public:
+    CustomOperation()
+    {
+        setName( "CustomOperation" );
+    }
+
+    void backup()
+    {
+        // do whatever is needed to restore the state in undoOperation()
+    }
+
+    bool performOperation()
+    {
+        const QStringList args = arguments();
+        // do whatever is needed to do for the given arguments
+
+        bool success = ...;
+        return success;
+    }
+
+    void undoOperation()
+    {
+        // restore the previous state, as saved in backup()
+    }
+
+    bool testOperation()
+    {
+        // currently unused
+        return true;
+    }
+
+    CustomOperation* clone() const
+    {
+        return new CustomOperation;
+    }
+
+    QDomDocument toXml()
+    {
+        // automatically adds the operation's arguments and everything set via setValue
+        QDomDocument doc = KDUpdater::UpdateOperation::toXml();
+
+        // if you need any information to undo the operation you did,
+        // add them to the doc here
+
+        return doc;
+    }
+
+    bool fromXml( const QDomDocument& doc )
+    {
+        // automatically loads the operation's arguments and everything set via setValue
+        if( !KDUpdater::UpdateOperation::fromXml( doc ) )
+            return false;
+
+        // if you need any information to undo the operation you did,
+        // read them from the doc here
+
+        return true;
+    }
+  };
+  \endcode
+
+    Finally, you need to register your custom operation class, as follows:
+  \code
+  #include <KDupdater/UpdateOperationFactory>
+
+  KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< CustomOperation >( "CustomOperation" );
+  \endcode
+
+    Now you can use your operation in the installer in the same way as the
+    predefined operations.
+
+  \section1 Predefined Variables
+
+    You can use the following predefined variables in scripts to facilitate
+    directory access:
+
+    \table
+        \header
+            \o  Symbol
+            \o  Description
+        \row
+            \o  ProductName
+            \o  Name of the product to be installed, as defined in config.xml.
+        \row
+            \o  ProductVersion
+            \o  Version number of the product to be installed, as defined in
+                config.xml.
+        \row
+            \o  Title
+            \o  Title of the installation program, as defined in config.xml.
+        \row
+            \o  Publisher
+            \o  Publisher of the installation program, as defined in config.xml.
+        \row
+            \o  Url
+            \o  Product URL, as defined in config.xml.
+        \row
+            \o  StartMenuDir
+            \o  Start menu group, as defined in config.xml. Available on
+                Windows, only.
+        \row
+            \o  TargetDir
+            \o  Target directory for installation, as selected by the user.
+        \row
+            \o  DesktopDir
+            \o  Name of the directory that contains the user's desktop.
+        \row
+            \o  os
+            \o  Current platform: \c "x11", \c "win", or \c "mac".
+        \row
+            \o  RootDir
+            \o  Root directory of the filesystem.
+        \row
+            \o  HomeDir
+            \o  Home directory of the current user.
+        \row
+            \o  ApplicationsDir
+            \o  Applications directory. For example, \c {C:\Program Files} on Windows,
+            \c {/opt} on Linux and \c {/Applications} on Mac OS X.
+    \endtable
+
+    The variables can be resolved by calls to \c installer.value(). If embedded
+    in '@' they can also be part of strings passed as arguments to installation
+    operations:
+
+    \code
+    if (installer.value("os") === "win") {
+        component.addOperation("CreateShortcut", "@TargetDir@/MyApp.exe", "@StartMenuDir@/MyApp.lnk");
+    }
+    \endcode
+*/
