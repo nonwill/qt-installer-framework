@@ -1352,7 +1352,7 @@ void TargetDirectoryPage::setTargetDir(const QString &dirName)
     m_lineEdit->setText(dirName);
 }
 
-void TargetDirectoryPage::initializePage()
+void TargetDirectoryPage::setDefault()
 {
     QString targetDir = packageManagerCore()->value(scTargetDir);
     if (targetDir.isEmpty()) {
@@ -1375,6 +1375,12 @@ void TargetDirectoryPage::initializePage()
         }
     }
     m_lineEdit->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
+
+}
+
+void TargetDirectoryPage::initializePage()
+{
+    setDefault();
 
     PackageManagerPage::initializePage();
 }

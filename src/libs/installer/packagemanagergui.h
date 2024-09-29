@@ -297,6 +297,8 @@ public:
     void initializePage();
     bool validatePage();
 
+    Q_INVOKABLE void setDefault();
+
 protected:
     void entering();
     void leaving();
