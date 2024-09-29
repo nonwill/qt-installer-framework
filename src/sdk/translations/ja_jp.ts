@@ -32,6 +32,41 @@
     </message>
 </context>
 <context>
+    <name>IntroductionPageImpl</name>
+    <message>
+        <source>Package manager</source>
+        <translation>パッケージマネージャ</translation>
+    </message>
+    <message>
+        <source>Update components</source>
+        <translation>コンポーネントの更新</translation>
+    </message>
+    <message>
+        <source>Remove all components</source>
+        <translation>すべてのコンポーネントの削除</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>リモートのインストール元から情報を取得しています...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>このアクションの実行にはひとつ以上の有効なリポジトリが必要です。</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>新しい更新はありません。</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> ローカルのパッケージ管理のみ利用できます。</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>終了</translation>
+    </message>
+</context>
+<context>
     <name>KDJob</name>
     <message>
         <source>Canceled</source>
@@ -555,6 +590,14 @@
         <source>YiB</source>
         <translation>YB</translation>
     </message>
+    <message>
+        <source>Corrupt installation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
@@ -916,11 +959,11 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Downloading archive hash for component: %1</source>
-        <translation>コンポーネントのアーカイブハッシュのダウンロード中: %1</translation>
+        <translation type="obsolete">コンポーネントのアーカイブハッシュのダウンロード中: %1</translation>
     </message>
     <message>
         <source>Downloading archive for component: %1</source>
-        <translation>コンポーネントのアーカイブのダウンロード中: %1</translation>
+        <translation type="obsolete">コンポーネントのアーカイブのダウンロード中: %1</translation>
     </message>
     <message>
         <source>Scheme not supported: %1 (%2)</source>
@@ -929,6 +972,10 @@ Error while loading %2</source>
     <message>
         <source>Could not find component for: %1.</source>
         <translation>コンポーネント %1 を見つけることができませんでした。</translation>
+    </message>
+    <message>
+        <source>Downloading archive &apos;%1&apos; for component: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -996,6 +1043,65 @@ Error while loading %2</source>
     </message>
 </context>
 <context>
+    <name>QInstaller::FileTaskObserver</name>
+    <message>
+        <source> of </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> received.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/sec</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> day</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> second</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> - </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> remaining.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation type="unfinished"> - 残り時間: 不明。</translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Completing the %1 Wizard</source>
@@ -1026,86 +1132,86 @@ Error while loading %2</source>
     <name>QInstaller::GetRepositoryMetaInfoJob</name>
     <message>
         <source>Empty repository URL.</source>
-        <translation>リポジトリの URL が空です。</translation>
+        <translation type="obsolete">リポジトリの URL が空です。</translation>
     </message>
     <message>
         <source>Retrieving component meta information...</source>
-        <translation>コンポーネントのメタ情報を取得中...</translation>
+        <translation type="obsolete">コンポーネントのメタ情報を取得中...</translation>
     </message>
     <message>
         <source>Invalid repository URL: %1</source>
-        <translation>無効なリポジトリ URL: %1</translation>
+        <translation type="obsolete">無効なリポジトリ URL: %1</translation>
     </message>
     <message>
         <source>URL scheme not supported: %1 (%2)</source>
-        <translation>この URL スキームはサポートしてません: %1 (%2)</translation>
+        <translation type="obsolete">この URL スキームはサポートしてません: %1 (%2)</translation>
     </message>
     <message>
         <source>Could not move Updates.xml to target location. Error: %1</source>
-        <translation>Updates.xml をターゲットパスへ移動できませんでした。エラー: %1</translation>
+        <translation type="obsolete">Updates.xml をターゲットパスへ移動できませんでした。エラー: %1</translation>
     </message>
     <message>
         <source>Could not open Updates.xml for reading. Error: %1</source>
-        <translation>読み込み用に Updates.xml を開けませんでした。エラー: %1</translation>
+        <translation type="obsolete">読み込み用に Updates.xml を開けませんでした。エラー: %1</translation>
     </message>
     <message>
         <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
-        <translation>リポジトリ %1 から有効なバージョンの Updates.xml を取得することができませんでした。エラー: %2</translation>
+        <translation type="obsolete">リポジトリ %1 から有効なバージョンの Updates.xml を取得することができませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Download Error</source>
-        <translation>ダウンロードエラー</translation>
+        <translation type="obsolete">ダウンロードエラー</translation>
     </message>
     <message>
         <source>Parsing component meta information...</source>
-        <translation>コンポーネントのメタ情報をパース中...</translation>
+        <translation type="obsolete">コンポーネントのメタ情報をパース中...</translation>
     </message>
     <message>
         <source>Repository updates received.</source>
-        <translation>リポジトリの更新を取得しました。</translation>
+        <translation type="obsolete">リポジトリの更新を取得しました。</translation>
     </message>
     <message>
         <source>Finished updating component meta information.</source>
-        <translation>コンポーネントのメタ情報の更新が完了しました。</translation>
+        <translation type="obsolete">コンポーネントのメタ情報の更新が完了しました。</translation>
     </message>
     <message>
         <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
-        <translation>リポジトリ %1 から Updates.xml を取得することができませんでした。エラー: %2</translation>
+        <translation type="obsolete">リポジトリ %1 から Updates.xml を取得することができませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Retrieving component information from remote repository...</source>
-        <translation>リモートのリポジトリからコンポーネントの情報を取得中...</translation>
+        <translation type="obsolete">リモートのリポジトリからコンポーネントの情報を取得中...</translation>
     </message>
     <message>
         <source>Could not open meta info archive: %1. Error: %2</source>
-        <translation>メタ情報アーカイブ %1 を開けませんでした。エラー: %2</translation>
+        <translation type="obsolete">メタ情報アーカイブ %1 を開けませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>The hash of one component does not match the expected one.</source>
-        <translation>あるコンポーネントのハッシュ値が既定の値と合致しません。</translation>
+        <translation type="obsolete">あるコンポーネントのハッシュ値が既定の値と合致しません。</translation>
     </message>
     <message>
         <source>Bad hash.</source>
-        <translation>ハッシュ値が一致しません。</translation>
+        <translation type="obsolete">ハッシュ値が一致しません。</translation>
     </message>
     <message>
         <source>Could not download meta information for component: %1. Error: %2</source>
-        <translation>コンポーネント %1 用のメタ情報をダウンロードできませんでした。エラー: %2</translation>
+        <translation type="obsolete">コンポーネント %1 用のメタ情報をダウンロードできませんでした。エラー: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::GetRepositoryMetaInfoJob::ZipRunnable</name>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
+        <translation type="obsolete">&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>%1 の展開中に未知の例外が発生しました。</translation>
+        <translation type="obsolete">%1 の展開中に未知の例外が発生しました。</translation>
     </message>
     <message>
         <source>Could not open %1 for reading. Error: %2</source>
-        <translation>読み込み用に %1 を開けませんでした。エラー: %2</translation>
+        <translation type="obsolete">読み込み用に %1 を開けませんでした。エラー: %2</translation>
     </message>
 </context>
 <context>
@@ -1240,11 +1346,62 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Cannot invoke otool. Is Xcode installed?</source>
-        <translation>otool を起動できません。Xcode はインストールされていますか?</translation>
+        <translation type="obsolete">otool を起動できません。Xcode はインストールされていますか?</translation>
     </message>
     <message>
         <source>Cannot start process %0.</source>
         <translation>プロセス %0 を起動できません。</translation>
+    </message>
+    <message>
+        <source>Cannot run otool. Is Xcode installed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::MetadataJob</name>
+    <message>
+        <source>Missing package manager core engine.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing meta information download...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta data download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during download.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failure to fetch repositories.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during extracting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracting meta information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while extracting &apos;%1&apos;: %2</source>
+        <translation type="unfinished">&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught while extracting %1.</source>
+        <translation type="unfinished">%1 の展開中に未知の例外が発生しました。</translation>
+    </message>
+    <message>
+        <source>Could not open %1 for reading. Error: %2</source>
+        <translation type="unfinished">読み込み用に %1 を開けませんでした。エラー: %2</translation>
     </message>
 </context>
 <context>
@@ -1506,6 +1663,10 @@ Installing component %1</source>
         <source>Could not find any update source information.</source>
         <translation>更新元情報が見つかりませんでした。</translation>
     </message>
+    <message>
+        <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -1523,31 +1684,31 @@ Installing component %1</source>
     </message>
     <message>
         <source>Do you want to abort the %1 process?</source>
-        <translation>プロセス %1 を中断しますか?</translation>
+        <translation type="obsolete">プロセス %1 を中断しますか?</translation>
     </message>
     <message>
         <source>uninstallation</source>
-        <translation>アンインストール</translation>
+        <translation type="obsolete">アンインストール</translation>
     </message>
     <message>
         <source>installation</source>
-        <translation>インストール</translation>
+        <translation type="obsolete">インストール</translation>
     </message>
     <message>
         <source>installer</source>
-        <translation>インストーラ</translation>
+        <translation type="obsolete">インストーラ</translation>
     </message>
     <message>
         <source>uninstaller</source>
-        <translation>アンインストーラ</translation>
+        <translation type="obsolete">アンインストーラ</translation>
     </message>
     <message>
         <source>maintenance</source>
-        <translation>メンテナンス</translation>
+        <translation type="obsolete">メンテナンス</translation>
     </message>
     <message>
         <source>Do you want to quit the %1 application?</source>
-        <translation>アプリケーション %1 を終了しますか?</translation>
+        <translation type="obsolete">アプリケーション %1 を終了しますか?</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -1562,6 +1723,26 @@ Installing component %1</source>
 Please copy the installer to a local drive</source>
         <translation>ネットワーク上からのインストールができません。
 インストーラをローカルドライブにコピーしてください</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the installation process?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the uninstallation process?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to quit the installer application?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to quit the uninstaller application?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to quit the maintenance application?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1955,7 +2136,7 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     <name>QInstallerCreator::Archive</name>
     <message>
         <source>Could not create %1: %2</source>
-        <translation>%1 を作成できませんでした: %2</translation>
+        <translation type="obsolete">%1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Could not open archive file %1 for reading.</source>
@@ -2478,41 +2659,6 @@ as root and then clicking ok.</source>
     </message>
 </context>
 <context>
-    <name>IntroductionPageImpl</name>
-    <message>
-        <source>Package manager</source>
-        <translation>パッケージマネージャ</translation>
-    </message>
-    <message>
-        <source>Update components</source>
-        <translation>コンポーネントの更新</translation>
-    </message>
-    <message>
-        <source>Remove all components</source>
-        <translation>すべてのコンポーネントの削除</translation>
-    </message>
-    <message>
-        <source>Retrieving information from remote installation sources...</source>
-        <translation>リモートのインストール元から情報を取得しています...</translation>
-    </message>
-    <message>
-        <source>At least one valid and enabled repository required for this action to succeed.</source>
-        <translation>このアクションの実行にはひとつ以上の有効なリポジトリが必要です。</translation>
-    </message>
-    <message>
-        <source>No updates available.</source>
-        <translation>新しい更新はありません。</translation>
-    </message>
-    <message>
-        <source> Only local package management available.</source>
-        <translation> ローカルのパッケージ管理のみ利用できます。</translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation>終了</translation>
-    </message>
-</context>
-<context>
     <name>TargetDirectoryPageImpl</name>
     <message>
         <source>The installation path cannot be empty, please specify a valid folder.</source>
@@ -2548,7 +2694,7 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>As the install directory is completely deleted installing in %1 is forbidden.</source>
-        <translation>インストールしたディレクトリはアンインストール時に完全に削除されるため、%1 へのインストールは許可できません。</translation>
+        <translation type="obsolete">インストールしたディレクトリはアンインストール時に完全に削除されるため、%1 へのインストールは許可できません。</translation>
     </message>
     <message>
         <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2567,6 +2713,10 @@ Do you want to continue?</source>
     <message>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
         <translation>既存のファイルあるいはシンボリックリンクを選択しました。他のインストール先を選択してください。</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

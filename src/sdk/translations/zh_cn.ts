@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="zh_CN">
 <context>
     <name>Component</name>
     <message>
         <source>Could not open archive %1: %2</source>
-        <translation>无法打开存档 %1:%2</translation>
+        <translation>无法打开存档 %1: %2</translation>
     </message>
 </context>
 <context>
@@ -84,7 +85,7 @@
     </message>
     <message>
         <source>Could not backup existing file %1: %2</source>
-        <translation>无法备份现有文件 %1:%2</translation>
+        <translation>无法备份现有文件 %1: %2</translation>
     </message>
     <message>
         <source>TODO</source>
@@ -95,15 +96,15 @@
     <name>KDUpdater::AppendFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>无法备份文件 %1:%2</translation>
+        <translation>无法备份文件 %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 2 个。</translation>
+        <translation type="obsolete">参数无效:已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
         <source>Could not open file %1 for writing: %2</source>
-        <translation>无法打开文件 %1 进行写入:%2</translation>
+        <translation type="obsolete">无法打开文件 %1 进行写入: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
@@ -115,7 +116,19 @@
     </message>
     <message>
         <source>Could not restore backup file for %1: %2</source>
-        <translation>无法恢复 %1 的备份文件:%2</translation>
+        <translation>无法恢复 %1 的备份文件: %2</translation>
+    </message>
+    <message>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
+    </message>
+    <message>
+        <source>exactly 2</source>
+        <translation>恰好 2 个</translation>
+    </message>
+    <message>
+        <source>Could not open file &apos;%1&apos; for writing: %2</source>
+        <translation>无法打开文件 %1 进行写入: %2</translation>
     </message>
 </context>
 <context>
@@ -126,30 +139,34 @@
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 2 个。</translation>
+        <translation>参数无效: 已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
         <source>Could not remove destination file %1: %2</source>
-        <translation>无法删除目标文件 %1:%2</translation>
+        <translation>无法删除目标文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not copy %1 to %2: %3</source>
-        <translation>无法将 %1 复制到 %2:%3</translation>
+        <translation>无法将 %1 复制到 %2: %3</translation>
     </message>
     <message>
         <source>Could not delete file %1: %2</source>
-        <translation>无法删除文件 %1:%2</translation>
+        <translation>无法删除文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not restore backup file into %1: %2</source>
-        <translation>无法将备份文件恢复到 %1 中:%2</translation>
+        <translation>无法将备份文件恢复到 %1 中: %2</translation>
+    </message>
+    <message>
+        <source>Could not copy a non-existent file: %1</source>
+        <translation>无法拷贝一个不存在的文件: %1</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::DeleteOperation</name>
     <message>
         <source>Cannot create backup of %1: %2</source>
-        <translation>无法创建 %1 的备份:%2</translation>
+        <translation>无法创建 %1 的备份: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
@@ -157,18 +174,18 @@
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>无法恢复 %1 的备份文件:%2</translation>
+        <translation>无法恢复 %1 的备份文件: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ExecuteOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 2 个。</translation>
+        <translation type="obsolete">参数无效:已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
         <source>Execution failed: %1</source>
-        <translation>执行失败:%1</translation>
+        <translation type="obsolete">执行失败: %1</translation>
     </message>
 </context>
 <context>
@@ -187,70 +204,110 @@
     </message>
     <message>
         <source> of </source>
-        <translation> / </translation>
+        <translation type="obsolete"> / </translation>
     </message>
     <message>
         <source> downloaded.</source>
-        <translation> 已下载。</translation>
+        <translation type="obsolete"> 已下载。</translation>
     </message>
     <message>
         <source>/sec</source>
-        <translation>/秒</translation>
+        <translation type="obsolete">/秒</translation>
     </message>
     <message>
         <source> day</source>
-        <translation> 天</translation>
+        <translation type="obsolete"> 天</translation>
     </message>
     <message>
         <source> days</source>
-        <translation> 天</translation>
+        <translation type="obsolete"> 天</translation>
     </message>
     <message>
         <source> hour</source>
-        <translation> 小时</translation>
+        <translation type="obsolete"> 小时</translation>
     </message>
     <message>
         <source> hours</source>
-        <translation> 小时</translation>
+        <translation type="obsolete"> 小时</translation>
     </message>
     <message>
         <source> minute</source>
-        <translation> 分</translation>
+        <translation type="obsolete"> 分</translation>
     </message>
     <message>
         <source> minutes</source>
-        <translation> 分钟</translation>
+        <translation type="obsolete"> 分钟</translation>
     </message>
     <message>
         <source> second</source>
-        <translation> 秒</translation>
+        <translation type="obsolete"> 秒</translation>
     </message>
     <message>
         <source> seconds</source>
-        <translation> 秒</translation>
+        <translation type="obsolete"> 秒</translation>
     </message>
     <message>
         <source> - </source>
-        <translation> - </translation>
+        <translation type="obsolete"> - </translation>
     </message>
     <message>
         <source> remaining.</source>
-        <translation> 剩余。</translation>
+        <translation type="obsolete"> 剩余。</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
         <translation> - 剩余时间未知。</translation>
     </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 downloaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(%1/sec)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDUpdater::HttpDownloader</name>
     <message>
-        <source>Cannot download %1: Writing to file '%2' failed: %3</source>
-        <translation>无法下载 %1:写入文件“%2”失败:%3</translation>
+        <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
+        <translation>无法下载 %1: 写入文件“%2”失败: %3</translation>
     </message>
     <message>
         <source>Cannot download %1: Could not create %2: %3</source>
-        <translation>无法下载 %1:无法创建 %2:%3</translation>
+        <translation>无法下载 %1: 无法创建 %2: %3</translation>
     </message>
     <message>
         <source>%1 at %2</source>
@@ -260,20 +317,40 @@
         <source>Authentication request canceled.</source>
         <translation>已取消身份验证请求。</translation>
     </message>
+    <message>
+        <source>Secure Connection Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error during connection to: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This could be a problem with the server&apos;s configuration, or it could be someone trying to impersonate the server.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If you have connected to this server successfully in the past or trust this server, the error may be temporary and you can try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Try again</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
-        <source>Cannot open source file '%1' for reading.</source>
+        <source>Cannot open source file &apos;%1&apos; for reading.</source>
         <translation>无法打开源文件“%1”进行读取。</translation>
     </message>
     <message>
-        <source>Cannot open destination file '%1' for writing.</source>
+        <source>Cannot open destination file &apos;%1&apos; for writing.</source>
         <translation>无法打开目标文件“%1”进行写入。</translation>
     </message>
     <message>
         <source>Writing to %1 failed: %2</source>
-        <translation>写入 %1 失败:%2</translation>
+        <translation>写入 %1 失败: %2</translation>
     </message>
 </context>
 <context>
@@ -284,11 +361,11 @@
     </message>
     <message>
         <source>Could not create folder %1: Unknown error.</source>
-        <translation>无法创建文件夹 %1:未知错误。</translation>
+        <translation>无法创建文件夹 %1: 未知错误。</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>无法删除目录 %1:%2</translation>
+        <translation>无法删除目录 %1: %2</translation>
     </message>
 </context>
 <context>
@@ -303,15 +380,15 @@
     </message>
     <message>
         <source>Could not remove destination file %1: %2</source>
-        <translation>无法删除目标文件 %1:%2</translation>
+        <translation>无法删除目标文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not copy %1 to %2: %3</source>
-        <translation>无法将 %1 复制到 %2:%3</translation>
+        <translation>无法将 %1 复制到 %2: %3</translation>
     </message>
     <message>
         <source>Cannot copy %1 to %2: %3</source>
-        <translation>无法将 %1 复制到 %2:%3</translation>
+        <translation>无法将 %1 复制到 %2: %3</translation>
     </message>
     <message>
         <source>Cannot remove file %1.</source>
@@ -319,14 +396,14 @@
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>无法恢复 %1 的备份文件:%2</translation>
+        <translation>无法恢复 %1 的备份文件: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PackagesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>%1 包含无效的内容:%2</translation>
+        <translation>%1 包含无效的内容: %2</translation>
     </message>
     <message>
         <source>The file %1 does not exist.</source>
@@ -338,30 +415,30 @@
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>%1 中存在解析错误，位于 %2，%3:%4</translation>
+        <translation>%1 中存在解析错误，位于 %2，%3: %4</translation>
     </message>
     <message>
-        <source>Root element %1 unexpected, should be 'Packages'.</source>
-        <translation>根元素 %1 与预期不符，应为“包”。</translation>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>根元素 %1 与预期不符，应为 Packages。</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PrependFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>无法备份文件 %1:%2</translation>
+        <translation>无法备份文件 %1: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 2 个。</translation>
+        <translation>参数无效: 已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
         <source>Could not open file %1 for reading: %2</source>
-        <translation>无法打开文件 %1 进行读取:%2</translation>
+        <translation>无法打开文件 %1 进行读取: %2</translation>
     </message>
     <message>
         <source>Could not open file %1 for writing: %2</source>
-        <translation>无法打开文件 %1 进行写入:%2</translation>
+        <translation>无法打开文件 %1 进行写入: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
@@ -373,13 +450,13 @@
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>无法恢复 %1 的备份文件:%2</translation>
+        <translation>无法恢复 %1 的备份文件: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Could not read resource file "%1". Reason:</source>
+        <source>Could not read resource file &quot;%1&quot;. Reason:</source>
         <translation>无法读取源文件“%1”。原因:</translation>
     </message>
 </context>
@@ -387,19 +464,19 @@
     <name>KDUpdater::RmdirOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 1 个。</translation>
+        <translation>参数无效: 已给定 %1 个参数，应为 1 个。</translation>
     </message>
     <message>
         <source>Could not remove folder %1: The folder does not exist.</source>
-        <translation>无法删除文件夹 %1:该文件夹不存在。</translation>
+        <translation>无法删除文件夹 %1: 该文件夹不存在。</translation>
     </message>
     <message>
         <source>Could not remove folder %1: %2</source>
-        <translation>无法删除文件夹 %1:%2</translation>
+        <translation>无法删除文件夹 %1: %2</translation>
     </message>
     <message>
         <source>Cannot recreate directory %1: %2</source>
-        <translation>无法重新创建目录 %1:%2</translation>
+        <translation>无法重新创建目录 %1: %2</translation>
     </message>
 </context>
 <context>
@@ -437,22 +514,22 @@
     <name>KDUpdater::Update</name>
     <message>
         <source>Downloading update...</source>
-        <translation>正在下载更新...</translation>
+        <translation type="obsolete">正在下载更新...</translation>
     </message>
     <message>
         <source>Update downloaded</source>
-        <translation>已下载更新</translation>
+        <translation type="obsolete">已下载更新</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdateCompatOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 1 个。</translation>
+        <translation type="obsolete">参数无效: 已给定 %1 个参数，应为 1 个。</translation>
     </message>
     <message>
         <source>Cannot restore previous compat-level</source>
-        <translation>无法恢复先前的兼容级别</translation>
+        <translation type="obsolete">无法恢复先前的兼容级别</translation>
     </message>
 </context>
 <context>
@@ -467,14 +544,14 @@
     </message>
     <message>
         <source>%1 updates found.</source>
-        <translation>已找到 %1 个更新。</translation>
+        <translation type="obsolete">已找到 %1 个更新。</translation>
     </message>
     <message>
         <source>Downloading Updates.xml from update sources.</source>
         <translation>正在从更新源下载 Updates.xml。</translation>
     </message>
     <message>
-        <source>Could not download updates from %1 ('%2')</source>
+        <source>Could not download updates from %1 (&apos;%2&apos;)</source>
         <translation>无法从 %1 (“%2”)下载更新</translation>
     </message>
     <message>
@@ -483,23 +560,23 @@
     </message>
     <message>
         <source>Looking for compatibility update...</source>
-        <translation>正在查找兼容性更新...</translation>
+        <translation type="obsolete">正在查找兼容性更新...</translation>
     </message>
     <message>
         <source>Found compatibility update.</source>
-        <translation>已找到兼容性更新。</translation>
+        <translation type="obsolete">已找到兼容性更新。</translation>
     </message>
     <message>
         <source>Update not found.</source>
-        <translation>未找到更新。</translation>
+        <translation type="obsolete">未找到更新。</translation>
     </message>
     <message>
         <source>Compatibility update found.</source>
-        <translation>已找到兼容性更新。</translation>
+        <translation type="obsolete">已找到兼容性更新。</translation>
     </message>
     <message>
         <source>No compatibility updates found.</source>
-        <translation>未找到兼容性更新。</translation>
+        <translation type="obsolete">未找到兼容性更新。</translation>
     </message>
     <message>
         <source>Computing applicable updates.</source>
@@ -509,62 +586,68 @@
         <source>Application updates computed.</source>
         <translation>应用程序更新计算完毕。</translation>
     </message>
+    <message numerus="yes">
+        <source>%n update(s) found.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>KDUpdater::UpdatePackageOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 3 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 3 个。</translation>
+        <translation type="obsolete">参数无效:已给定 %1 个参数，应为 3 个。</translation>
     </message>
     <message>
         <source>Cannot update %1-%2</source>
-        <translation>无法更新 %1-%2</translation>
+        <translation type="obsolete">无法更新 %1-%2</translation>
     </message>
     <message>
         <source>Cannot restore %1-%2</source>
-        <translation>无法恢复 %1-%2</translation>
+        <translation type="obsolete">无法恢复 %1-%2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdateSourcesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>%1 包含无效的内容:%2</translation>
+        <translation>%1 包含无效的内容: %2</translation>
     </message>
     <message>
-        <source>Could not read "%1"</source>
+        <source>Could not read &quot;%1&quot;</source>
         <translation>无法读取“%1”</translation>
     </message>
     <message>
         <source>XML Parse error in %1 at %2, %3: %4</source>
-        <translation>%1 中存在 XML 解析错误，位于 %2，%3:%4</translation>
+        <translation>%1 中存在 XML 解析错误，位于 %2，%3: %4</translation>
     </message>
     <message>
-        <source>Root element %1 unexpected, should be "UpdateSources"</source>
-        <translation>根元素 %1 与预期不符，应为“更新源”</translation>
+        <source>Root element %1 unexpected, should be &quot;UpdateSources&quot;</source>
+        <translation>根元素 %1 与预期不符，应为 UpdateSources</translation>
     </message>
     <message>
-        <source>Could not save changes to "%1": %2</source>
-        <translation>无法将更改保存到“%1”:%2</translation>
+        <source>Could not save changes to &quot;%1&quot;: %2</source>
+        <translation>无法将更改保存到“%1”: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdatesInfoData</name>
     <message>
         <source>Updates.xml contains invalid content: %1</source>
-        <translation>Updates.xml 包含无效的内容:%1</translation>
+        <translation>Updates.xml 包含无效的内容: %1</translation>
     </message>
     <message>
-        <source>Could not read "%1"</source>
+        <source>Could not read &quot;%1&quot;</source>
         <translation>无法读取“%1”</translation>
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>%1 中存在解析错误，位于 %2，%3:%4</translation>
+        <translation>%1 中存在解析错误，位于 %2，%3: %4</translation>
     </message>
     <message>
-        <source>Root element %1 unexpected, should be "Updates".</source>
-        <translation>根元素 %1 与预期不符，应为“更新”。</translation>
+        <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
+        <translation>根元素 %1 与预期不符，应为 Updates。</translation>
     </message>
     <message>
         <source>ApplicationName element is missing.</source>
@@ -588,26 +671,26 @@
     </message>
     <message>
         <source>PackageUpdate element without UpdateFile</source>
-        <translation>PackageUpdate 元素缺少 UpdateFile</translation>
+        <translation type="obsolete">PackageUpdate 元素缺少 UpdateFile</translation>
     </message>
     <message>
         <source>CompatUpdate element without CompatLevel</source>
-        <translation>CompatUpdate 元素缺少 CompatLevel</translation>
+        <translation type="obsolete">CompatUpdate 元素缺少 CompatLevel</translation>
     </message>
     <message>
         <source>CompatUpdate element without ReleaseDate</source>
-        <translation>CompatUpdate 元素缺少 ReleaseDate</translation>
+        <translation type="obsolete">CompatUpdate 元素缺少 ReleaseDate</translation>
     </message>
     <message>
         <source>CompatUpdate element without UpdateFile</source>
-        <translation>CompatUpdate 元素缺少 UpdateFile</translation>
+        <translation type="obsolete">CompatUpdate 元素缺少 UpdateFile</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
         <source>Could not list archive: QIODevice not set or already destroyed.</source>
-        <translation>无法列出存档:QIODevice 尚未设置或已损坏。</translation>
+        <translation>无法列出存档: QIODevice 尚未设置或已损坏。</translation>
     </message>
 </context>
 <context>
@@ -618,10 +701,57 @@
     </message>
 </context>
 <context>
+    <name>QInstaller</name>
+    <message>
+        <source>bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>KiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ZiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Corrupt installation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::AddQtCreatorArrayValueOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 4</source>
@@ -644,23 +774,23 @@
     <name>QInstaller::Component</name>
     <message>
         <source>Could not open the requested script file at %1: %2.</source>
-        <translation>无法打开位于 %1 的请求脚本文件:%2.</translation>
+        <translation type="obsolete">无法打开位于 %1 的请求脚本文件: %2.</translation>
     </message>
     <message>
         <source>Exception while loading the component script: %1</source>
-        <translation>加载组件脚本时出现异常:%1</translation>
+        <translation type="obsolete">加载组件脚本时出现异常: %1</translation>
     </message>
     <message>
         <source>Could not open the requested translation file at %1</source>
-        <translation>无法打开位于 %1 的请求翻译文件:</translation>
+        <translation type="obsolete">无法打开位于 %1 的请求翻译文件:</translation>
     </message>
     <message>
         <source>Could not open the requested UI file at %1: %2</source>
-        <translation>无法打开位于 %1 的请求 UI 文件:%2</translation>
+        <translation type="obsolete">无法打开位于 %1 的请求 UI 文件: %2</translation>
     </message>
     <message>
         <source>Could not open the requested license file at %1: %2</source>
-        <translation>无法打开位于 %1 的请求许可文件:%2</translation>
+        <translation type="obsolete">无法打开位于 %1 的请求许可文件: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -671,16 +801,44 @@
         <translation>错误:运算 %1 不存在</translation>
     </message>
     <message>
-        <source>Can't resolve isAutoDependOn in %1</source>
-        <translation>无法解析 %1 中的 isAutoDependOn</translation>
+        <source>Can&apos;t resolve isAutoDependOn in %1</source>
+        <translation type="obsolete">无法解析 %1 中的 isAutoDependOn</translation>
     </message>
     <message>
-        <source>Can't resolve isDefault in %1</source>
-        <translation>无法解析 %1 中的 isDefault</translation>
+        <source>Can&apos;t resolve isDefault in %1</source>
+        <translation type="obsolete">无法解析 %1 中的 isDefault</translation>
     </message>
     <message>
         <source>Update Info: </source>
-        <translation>更新信息:</translation>
+        <translation>更新信息: </translation>
+    </message>
+    <message>
+        <source>Could not open the requested translation file &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error has occurred while reading the UI file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot resolve isAutoDependOn in %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot resolve isDefault in %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -700,6 +858,10 @@
     <message>
         <source>Size</source>
         <translation>大小</translation>
+    </message>
+    <message>
+        <source>Release Date</source>
+        <translation>发布日期</translation>
     </message>
 </context>
 <context>
@@ -766,10 +928,37 @@
     </message>
 </context>
 <context>
+    <name>QInstaller::ConsumeOutputOperation</name>
+    <message>
+        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
+    </message>
+    <message>
+        <source>at least 2</source>
+        <translation>至少 2 个</translation>
+    </message>
+    <message>
+        <source>Needed installer object in %1 operation is empty.</source>
+        <translation>%1 运算中所需的安装程序对象为空。</translation>
+    </message>
+    <message>
+        <source>Can not save the output of %1 to an empty installer key value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running &apos;%1&apos; resulted in a crash.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>2 or 3</source>
@@ -785,7 +974,7 @@
     </message>
     <message>
         <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
-        <translation>%0 中存在无效的参数:目录无效:%1 %2</translation>
+        <translation>%0 中存在无效的参数: 目录无效: %1 %2</translation>
     </message>
     <message>
         <source>Could not create %0</source>
@@ -797,7 +986,7 @@
     </message>
     <message>
         <source>Could not copy %0 to %1, error was: %3</source>
-        <translation>无法将 %0 复制到 %1，错误为:%3</translation>
+        <translation>无法将 %0 复制到 %1，错误为: %3</translation>
     </message>
     <message>
         <source>Could not remove %0</source>
@@ -808,7 +997,7 @@
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
@@ -827,7 +1016,7 @@
     <name>QInstaller::CreateLinkOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
@@ -842,11 +1031,11 @@
     </message>
     <message>
         <source>Could not move file %1 to %2. Error: %3</source>
-        <translation>无法将文件 %1 移动到 %2。错误:%3</translation>
+        <translation>无法将文件 %1 移动到 %2。错误: %3</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
@@ -854,31 +1043,31 @@
     </message>
     <message>
         <source>Installer needs to be an offline version: %1.</source>
-        <translation>安装程序必须为离线版本:%1.</translation>
+        <translation>安装程序必须为离线版本: %1.</translation>
     </message>
     <message>
         <source>Could not open file: %1</source>
-        <translation>无法打开文件:%1</translation>
+        <translation>无法打开文件: %1</translation>
     </message>
     <message>
         <source>Could not read: %1. Error: %2</source>
-        <translation>无法读取:%1.错误:%2</translation>
+        <translation>无法读取: %1.错误: %2</translation>
     </message>
     <message>
         <source>Could not open file: %1. Error: %2</source>
-        <translation>无法打开文件:%1.错误:%2</translation>
+        <translation>无法打开文件: %1. 错误: %2</translation>
     </message>
     <message>
         <source>Could not create target dir: %1.</source>
-        <translation>无法创建目标目录:%1.</translation>
+        <translation>无法创建目标目录: %1.</translation>
     </message>
     <message>
         <source>Unknown exception caught: %1.</source>
-        <translation>捕获未知异常:%1.</translation>
+        <translation>捕获未知异常: %1.</translation>
     </message>
     <message>
         <source>Removing file: %0</source>
-        <translation>正在删除文件:%0</translation>
+        <translation>正在删除文件: %0</translation>
     </message>
     <message>
         <source>Could not remove %0.</source>
@@ -886,30 +1075,34 @@
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>无法删除目录 %1:%2</translation>
+        <translation>无法删除目录 %1: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation>%0 中存在无效的参数: 已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>2 or 3</source>
         <translation>2 或 3 个</translation>
     </message>
     <message>
-        <source> (optional: 'workingDirectory=...')</source>
-        <translation> (可选:"workingDirectory=...")</translation>
+        <source> (optional: &apos;workingDirectory=...&apos;)</source>
+        <translation type="obsolete"> (可选:&quot;workingDirectory=...&quot;)</translation>
     </message>
     <message>
         <source>Could not create folder %1: %2.</source>
-        <translation>无法创建文件夹 %1:%2.</translation>
+        <translation>无法创建文件夹 %1: %2.</translation>
     </message>
     <message>
         <source>Could not create link %1: %2</source>
-        <translation>无法创建链接 %1:%2</translation>
+        <translation>无法创建链接 %1: %2</translation>
+    </message>
+    <message>
+        <source> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -936,29 +1129,33 @@
     </message>
     <message>
         <source>Could not download archive: %1 : %2</source>
-        <translation>无法下载存档:%1 :%2</translation>
+        <translation>无法下载存档: %1 : %2</translation>
     </message>
     <message>
         <source>Could not fetch archives: %1
 Error while loading %2</source>
-        <translation>无法提取存档:%1
+        <translation>无法提取存档: %1
 加载 %2 时出现错误</translation>
     </message>
     <message>
         <source>Downloading archive hash for component: %1</source>
-        <translation>正在下载组件的存档散列:%1</translation>
+        <translation type="obsolete">正在下载组件的存档散列: %1</translation>
     </message>
     <message>
         <source>Downloading archive for component: %1</source>
-        <translation>正在下载组件的存档:%1</translation>
+        <translation type="obsolete">正在下载组件的存档: %1</translation>
     </message>
     <message>
         <source>Scheme not supported: %1 (%2)</source>
-        <translation>不支持的方案:%1 (%2)</translation>
+        <translation>不支持的方案: %1 (%2)</translation>
     </message>
     <message>
         <source>Could not find component for: %1.</source>
-        <translation>无法下载以下项目的组件:%1.</translation>
+        <translation>无法下载以下项目的组件: %1.</translation>
+    </message>
+    <message>
+        <source>Downloading archive &apos;%1&apos; for component: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -972,20 +1169,24 @@ Error while loading %2</source>
         <translation>至少 1 个</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start detached: "%1"</source>
-        <translation>执行失败:无法开始分离:“%1”</translation>
+        <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
+        <translation>执行失败: 无法开始分离: %1</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start: "%1"</source>
-        <translation>执行失败:无法开始:“%1”</translation>
+        <source>Execution failed: Could not start: &quot;%1&quot;</source>
+        <translation type="obsolete">执行失败:无法开始:“%1”</translation>
     </message>
     <message>
-        <source>Execution failed(Crash): "%1"</source>
-        <translation>执行失败(崩溃):“%1”</translation>
+        <source>Execution failed(Crash): &quot;%1&quot;</source>
+        <translation>执行失败(崩溃): %1</translation>
     </message>
     <message>
-        <source>Execution failed(Unexpected exit code: %1): "%2"</source>
-        <translation>执行失败(意外退出代码:%1):“%2”</translation>
+        <source>Execution failed(Unexpected exit code: %1): &quot;%2&quot;</source>
+        <translation>执行失败(意外退出代码: %1): %2</translation>
+    </message>
+    <message>
+        <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -996,7 +1197,11 @@ Error while loading %2</source>
     </message>
     <message>
         <source>2 or 3</source>
-        <translation>2 或 3 个</translation>
+        <translation type="obsolete">2 或 3 个</translation>
+    </message>
+    <message>
+        <source>2 to 4</source>
+        <translation>2 到 4 个 {2 ?}</translation>
     </message>
 </context>
 <context>
@@ -1014,15 +1219,74 @@ Error while loading %2</source>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
         <source>Could not open %1 for reading: %2.</source>
-        <translation>无法打开 %1 进行读取:%2.</translation>
+        <translation>无法打开 %1 进行读取: %2.</translation>
     </message>
     <message>
-        <source>Error while extracting '%1': %2</source>
-        <translation>提取“%1”时出现错误:%2</translation>
+        <source>Error while extracting &apos;%1&apos;: %2</source>
+        <translation>提取 %1 时出现错误: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>提取 %1 时捕获未知异常。</translation>
+        <translation>提取 %1 时捕获到未知异常。</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::FileTaskObserver</name>
+    <message>
+        <source> of </source>
+        <translation type="unfinished"> / </translation>
+    </message>
+    <message>
+        <source> received.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/sec</source>
+        <translation>/秒</translation>
+    </message>
+    <message>
+        <source> day</source>
+        <translation> 天</translation>
+    </message>
+    <message>
+        <source> days</source>
+        <translation> 天</translation>
+    </message>
+    <message>
+        <source> hour</source>
+        <translation> 小时</translation>
+    </message>
+    <message>
+        <source> hours</source>
+        <translation> 小时</translation>
+    </message>
+    <message>
+        <source> minute</source>
+        <translation> 分</translation>
+    </message>
+    <message>
+        <source> minutes</source>
+        <translation> 分钟</translation>
+    </message>
+    <message>
+        <source> second</source>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <source> seconds</source>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <source> - </source>
+        <translation type="unfinished"> - </translation>
+    </message>
+    <message>
+        <source> remaining.</source>
+        <translation> 剩余。</translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation> - 剩余时间未知。</translation>
     </message>
 </context>
 <context>
@@ -1056,86 +1320,86 @@ Error while loading %2</source>
     <name>QInstaller::GetRepositoryMetaInfoJob</name>
     <message>
         <source>Empty repository URL.</source>
-        <translation>储存库 URL 为空。</translation>
+        <translation type="obsolete">储存库 URL 为空。</translation>
     </message>
     <message>
         <source>Invalid repository URL: %1</source>
-        <translation>储存库 URL 无效:%1</translation>
+        <translation type="obsolete">储存库 URL 无效: %1</translation>
     </message>
     <message>
         <source>URL scheme not supported: %1 (%2)</source>
-        <translation>不支持的 URL 方案:%1 (%2)</translation>
+        <translation type="obsolete">不支持的 URL 方案: %1 (%2)</translation>
     </message>
     <message>
         <source>Retrieving component meta information...</source>
-        <translation>正在检索组件元信息...</translation>
+        <translation type="obsolete">正在检索组件元信息...</translation>
     </message>
     <message>
         <source>Could not move Updates.xml to target location. Error: %1</source>
-        <translation>无法将 Updates.xml 移动到目标位置。错误:%1</translation>
+        <translation type="obsolete">无法将 Updates.xml 移动到目标位置。错误: %1</translation>
     </message>
     <message>
         <source>Could not open Updates.xml for reading. Error: %1</source>
-        <translation>无法打开 Updates.xml 进行读取。错误:%1</translation>
+        <translation type="obsolete">无法打开 Updates.xml 进行读取。错误: %1</translation>
     </message>
     <message>
         <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
-        <translation>无法从储存库提取有效版本的 Updates.xml:%1.错误:%2</translation>
+        <translation type="obsolete">无法从储存库提取有效版本的 Updates.xml: %1.错误: %2</translation>
     </message>
     <message>
         <source>Download Error</source>
-        <translation>下载错误</translation>
+        <translation type="obsolete">下载错误</translation>
     </message>
     <message>
         <source>Parsing component meta information...</source>
-        <translation>正在解析组件元信息...</translation>
+        <translation type="obsolete">正在解析组件元信息...</translation>
     </message>
     <message>
         <source>Repository updates received.</source>
-        <translation>已接收储存库更新。</translation>
+        <translation type="obsolete">已接收储存库更新。</translation>
     </message>
     <message>
         <source>Finished updating component meta information.</source>
-        <translation>已完成组件元信息更新。</translation>
+        <translation type="obsolete">已完成组件元信息更新。</translation>
     </message>
     <message>
         <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
-        <translation>无法从储存库提取 Updates.xml:%1.错误:%2</translation>
+        <translation type="obsolete">无法从储存库提取 Updates.xml: %1.错误: %2</translation>
     </message>
     <message>
         <source>Retrieving component information from remote repository...</source>
-        <translation>正在从远程储存库检索组件信息...</translation>
+        <translation type="obsolete">正在从远程储存库检索组件信息...</translation>
     </message>
     <message>
         <source>Could not open meta info archive: %1. Error: %2</source>
-        <translation>无法打开元信息存档:%1.错误:%2</translation>
+        <translation type="obsolete">无法打开元信息存档: %1.错误: %2</translation>
     </message>
     <message>
         <source>The hash of one component does not match the expected one.</source>
-        <translation>某个组件的散列与预期不符。</translation>
+        <translation type="obsolete">某个组件的散列与预期不符。</translation>
     </message>
     <message>
         <source>Bad hash.</source>
-        <translation>散列错误。</translation>
+        <translation type="obsolete">散列错误。</translation>
     </message>
     <message>
         <source>Could not download meta information for component: %1. Error: %2</source>
-        <translation>无法下载以下组件的元信息:%1.错误:%2</translation>
+        <translation type="obsolete">无法下载以下组件的元信息: %1.错误: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::GetRepositoryMetaInfoJob::ZipRunnable</name>
     <message>
-        <source>Error while extracting '%1': %2</source>
-        <translation>提取“%1”时出现错误:%2</translation>
+        <source>Error while extracting &apos;%1&apos;: %2</source>
+        <translation type="obsolete">提取“%1”时出现错误: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>提取 %1 时捕获未知异常。</translation>
+        <translation type="obsolete">提取 %1 时捕获未知异常。</translation>
     </message>
     <message>
         <source>Could not open %1 for reading. Error: %2</source>
-        <translation>无法打开 %1 进行读取。错误:%2</translation>
+        <translation type="obsolete">无法打开 %1 进行读取。错误: %2</translation>
     </message>
 </context>
 <context>
@@ -1236,7 +1500,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Can not write license file: %1.</source>
-        <translation>无法写入许可文件:%1.</translation>
+        <translation>无法写入许可文件: %1.</translation>
     </message>
     <message>
         <source>No license files found to delete.</source>
@@ -1269,12 +1533,67 @@ Error while loading %2</source>
         <translation>其中一个给定参数为空。参数1=%1；参数2=%2；参数3=%3</translation>
     </message>
     <message>
-        <source>Can't invoke otool. Is Xcode installed?</source>
-        <translation>无法调用 otool。是否已安装 Xcode?</translation>
+        <source>Can&apos;t invoke otool. Is Xcode installed?</source>
+        <translation type="obsolete">无法调用 otool。是否已安装 Xcode?</translation>
     </message>
     <message>
-        <source>Can't start process %0.</source>
-        <translation>无法启动进程 %0。</translation>
+        <source>Can&apos;t start process %0.</source>
+        <translation type="obsolete">无法启动进程 %0。</translation>
+    </message>
+    <message>
+        <source>Cannot run otool. Is Xcode installed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start process %0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::MetadataJob</name>
+    <message>
+        <source>Missing package manager core engine.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing meta information download...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta data download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during download.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failure to fetch repositories.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during extracting.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracting meta information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while extracting &apos;%1&apos;: %2</source>
+        <translation>提取“%1”时出现错误: %2</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught while extracting %1.</source>
+        <translation>提取 %1 时捕获未知异常。</translation>
+    </message>
+    <message>
+        <source>Could not open %1 for reading. Error: %2</source>
+        <translation>无法打开 %1 进行读取。错误: %2</translation>
     </message>
 </context>
 <context>
@@ -1307,7 +1626,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>由于无法取得管理员权限，因此无法完全删除某些组件:%1.</translation>
+        <translation>由于无法取得管理员权限，因此无法完全删除某些组件: %1.</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -1336,6 +1655,10 @@ Downloading packages...</source>
     <message>
         <source>invalid</source>
         <translation>无效</translation>
+    </message>
+    <message>
+        <source>There is an important update available, please run the updater first.</source>
+        <translation>存在重要更新，请先运行升级程序。</translation>
     </message>
 </context>
 <context>
@@ -1370,7 +1693,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Could not write installer configuration to %1: %2</source>
-        <translation>无法将安装程序配置写入 %1:%2</translation>
+        <translation>无法将安装程序配置写入 %1: %2</translation>
     </message>
     <message>
         <source>Stop Processes</source>
@@ -1398,11 +1721,11 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Could not write uninstaller data to %1: %2</source>
-        <translation>无法将卸载程序数据写入 %1:%2</translation>
+        <translation>无法将卸载程序数据写入 %1: %2</translation>
     </message>
     <message>
         <source>Could not write uninstaller to %1: %2</source>
-        <translation>无法将卸载程序写入 %1:%2</translation>
+        <translation>无法将卸载程序写入 %1: %2</translation>
     </message>
     <message>
         <source>Found a binary data file, but we are the installer and we should read the binary resource from our very own binary!</source>
@@ -1410,15 +1733,15 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Could not write uninstaller binary data to %1: %2</source>
-        <translation>无法将卸载程序二进制数据写入 %1:%2</translation>
+        <translation>无法将卸载程序二进制数据写入 %1: %2</translation>
     </message>
     <message>
         <source>ProductName should be set</source>
         <translation>未设置 ProductName</translation>
     </message>
     <message>
-        <source>Variable 'TargetDir' not set.</source>
-        <translation>未设置变量"TargetDir"。</translation>
+        <source>Variable &apos;TargetDir&apos; not set.</source>
+        <translation>未设置变量&quot;TargetDir&quot;。</translation>
     </message>
     <message>
         <source>Preparing the installation...</source>
@@ -1516,15 +1839,15 @@ Installing component %1</source>
     </message>
     <message>
         <source>Could not retrieve remote tree: %1.</source>
-        <translation>无法检索远程树:%1.</translation>
+        <translation>无法检索远程树: %1.</translation>
     </message>
     <message>
         <source>Failure to read packages from: %1.</source>
-        <translation>未能从以下位置读取包:%1.</translation>
+        <translation>未能从以下位置读取包: %1.</translation>
     </message>
     <message>
         <source>Could not retrieve meta information: %1</source>
-        <translation>无法检索元信息:%1</translation>
+        <translation>无法检索元信息: %1</translation>
     </message>
     <message>
         <source>Could not add temporary update source information.</source>
@@ -1533,6 +1856,10 @@ Installing component %1</source>
     <message>
         <source>Could not find any update source information.</source>
         <translation>无法找到任何更新源信息。</translation>
+    </message>
+    <message>
+        <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1551,31 +1878,31 @@ Installing component %1</source>
     </message>
     <message>
         <source>Do you want to abort the %1 process?</source>
-        <translation>您是否要中止 %1 进程?</translation>
+        <translation type="obsolete">您是否要中止 %1 进程?</translation>
     </message>
     <message>
         <source>uninstallation</source>
-        <translation>卸载</translation>
+        <translation type="obsolete">卸载</translation>
     </message>
     <message>
         <source>installation</source>
-        <translation>安装</translation>
+        <translation type="obsolete">安装</translation>
     </message>
     <message>
         <source>installer</source>
-        <translation>安装程序</translation>
+        <translation type="obsolete">安装程序</translation>
     </message>
     <message>
         <source>uninstaller</source>
-        <translation>卸载程序</translation>
+        <translation type="obsolete">卸载程序</translation>
     </message>
     <message>
         <source>maintenance</source>
-        <translation>维护</translation>
+        <translation type="obsolete">维护</translation>
     </message>
     <message>
         <source>Do you want to quit the %1 application?</source>
-        <translation>您是否要退出 %1 应用程序?</translation>
+        <translation type="obsolete">您是否要退出 %1 应用程序?</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -1590,6 +1917,26 @@ Installing component %1</source>
 Please copy the installer to a local drive</source>
         <translation>不能从网络位置进行安装。
 请将安装程序复制到本地磁盘</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the installation process?</source>
+        <translation>您是否要退出取消安装进程?</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the uninstallation process?</source>
+        <translation>您是否要退出取消卸载进程?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the installer application?</source>
+        <translation>您是否要退出安装程序?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the uninstaller application?</source>
+        <translation>您是否要退出卸载程序?</translation>
+    </message>
+    <message>
+        <source>Do you want to quit the maintenance application?</source>
+        <translation>您是否要退出维护程序?</translation>
     </message>
 </context>
 <context>
@@ -1638,10 +1985,10 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>恰好 3 个</translation>
+        <translation type="obsolete">恰好 3 个</translation>
     </message>
     <message>
-        <source>First argument should be 'linux', 'mac' or 'windows'. No other type is supported at this time.</source>
+        <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
         <translation>第一个参数应为“linux”、“mac”或“windows”。目前不支持其他类型。</translation>
     </message>
     <message>
@@ -1654,7 +2001,7 @@ Please copy the installer to a local drive</source>
         <source>The output of 
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: "%2"</source>
+output: &quot;%2&quot;</source>
         <translation>有关
 %1 -query 的输出
 不可解析。请访问 https://bugreports.qt-project.org，使用此对话框提交错误报告。
@@ -1682,6 +2029,18 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 这可能会导致 Qt 版本受到破坏。
 您可以先关闭杀毒软件再重新启动安装程序，这可能会有帮助。</translation>
     </message>
+    <message>
+        <source>3 or 4</source>
+        <translation>3 或 4 个</translation>
+    </message>
+    <message>
+        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <translation>“%1”运算中所需的安装程序对象为空。</translation>
+    </message>
+    <message>
+        <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -1698,8 +2057,8 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
         <translation>已做好卸载准备</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color="red"&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>设置程序现已准备就绪，可以开始从您的计算机中删除 %1。&lt;br&gt;&lt;font color="red"&gt;程序目录 %2 将被完全删除&lt;/font&gt;，包括该目录中的所有内容!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>设置程序现已准备就绪，可以开始从您的计算机中删除 %1。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;程序目录 %2 将被完全删除&lt;/font&gt;，包括该目录中的所有内容!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -1727,18 +2086,18 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
-        <translation>磁盘空间不足，无法存储临时文件和安装文件!可用空间:%1，至少需要 %2。</translation>
+        <translation>磁盘空间不足，无法存储临时文件和安装文件! 可用空间: %1，至少需要 %2。</translation>
     </message>
     <message>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
-        <translation>磁盘空间不足，无法存储所有选定的组件!可用空间:%1，至少需要:%2.</translation>
+        <translation>磁盘空间不足，无法存储所有选定的组件! 可用空间: %1，至少需要: %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
-        <translation>磁盘空间不足，无法存储临时文件!可用空间:%1，至少需要:%2.</translation>
+        <translation>磁盘空间不足，无法存储临时文件! 可用空间: %1，至少需要: %2.</translation>
     </message>
     <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume's space available afterwards. %1</source>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
         <translation>您选定用于安装文件的卷似乎有足够的空间存储安装文件，但存储后该卷的可用空间将不到 1%。%1</translation>
     </message>
     <message>
@@ -1762,27 +2121,27 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     <name>QInstaller::RegisterDefaultDebuggerOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>恰好 2 个</translation>
+        <translation type="obsolete">恰好 2 个</translation>
     </message>
     <message>
-        <source>Needed installer object in "%1" operation is empty.</source>
-        <translation>“%1”运算中所需的安装程序对象为空。</translation>
+        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <translation type="obsolete">“%1”运算中所需的安装程序对象为空。</translation>
     </message>
     <message>
         <source>There is no value set for %1 on the installer object.</source>
-        <translation>没有为安装程序对象上的 %1 设定值。</translation>
+        <translation type="obsolete">没有为安装程序对象上的 %1 设定值。</translation>
     </message>
     <message>
-        <source>Can't read from tool chains xml file(%1) correctly.</source>
-        <translation>无法从工具链 xml 文件(%1)中正确读取。</translation>
+        <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
+        <translation type="obsolete">无法从工具链 xml 文件(%1)中正确读取。</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, 2 expected.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，应为 2 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，应为 2 个。</translation>
     </message>
 </context>
 <context>
@@ -1797,65 +2156,65 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
     <message>
         <source>Register File Type: Invalid arguments</source>
-        <translation>寄存器文件类型:参数无效</translation>
+        <translation>寄存器文件类型: 参数无效</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterQtInCreatorQNXOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>at least 5</source>
-        <translation>至少 5 个</translation>
+        <translation type="obsolete">至少 5 个</translation>
     </message>
     <message>
-        <source>Needed installer object in "%1" operation is empty.</source>
-        <translation>“%1”运算中所需的安装程序对象为空。</translation>
+        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <translation type="obsolete">“%1”运算中所需的安装程序对象为空。</translation>
     </message>
     <message>
         <source>There is no value set for %1 on the installer object.</source>
-        <translation>没有为安装程序对象上的 %1 设定值。</translation>
+        <translation type="obsolete">没有为安装程序对象上的 %1 设定值。</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，至少应为 4 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，至少应为 4 个。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterToolChainOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>at least 4</source>
-        <translation>至少 4 个</translation>
+        <translation type="obsolete">至少 4 个</translation>
     </message>
     <message>
-        <source>Needed installer object in '%1' operation is empty.</source>
-        <translation>“%1”运算中所需的安装程序对象为空。</translation>
+        <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
+        <translation type="obsolete">“%1”运算中所需的安装程序对象为空。</translation>
     </message>
     <message>
-        <source>There is no value set for '%1' on the installer object.</source>
-        <translation>没有为安装程序对象上的“%1”设定值。</translation>
+        <source>There is no value set for &apos;%1&apos; on the installer object.</source>
+        <translation type="obsolete">没有为安装程序对象上的“%1”设定值。</translation>
     </message>
     <message>
-        <source>Can't read from tool chains xml file(%1) correctly.</source>
-        <translation>无法从工具链 xml 文件(%1)中正确读取。</translation>
+        <source>Can&apos;t read from tool chains xml file(%1) correctly.</source>
+        <translation type="obsolete">无法从工具链 xml 文件(%1)中正确读取。</translation>
     </message>
     <message>
         <source>Some arguments are not right in %1 operation.</source>
-        <translation>%1 运算中的某些参数不正确。</translation>
+        <translation type="obsolete">%1 运算中的某些参数不正确。</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, minimum 4 expected.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，至少应为 4 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，至少应为 4 个。</translation>
     </message>
     <message>
-        <source>Needed installer object in "%1" operation is empty.</source>
-        <translation>“%1”运算中所需的安装程序对象为空。</translation>
+        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
+        <translation type="obsolete">“%1”运算中所需的安装程序对象为空。</translation>
     </message>
 </context>
 <context>
@@ -1877,9 +2236,28 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
 </context>
 <context>
+    <name>QInstaller::ScriptEngine</name>
+    <message>
+        <source>Could not open the requested script file at %1: %2.</source>
+        <translation type="unfinished">无法打开位于 %1 的请求脚本文件: %2.</translation>
+    </message>
+    <message>
+        <source>Exception while loading the component script: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load the component script inside a script context: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fatal error while evaluating a script.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::SelfRestartOperation</name>
     <message>
-        <source>Installer object needed in '%1' operation is empty.</source>
+        <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
         <translation>“%1”运算中所需的安装程序对象为空。</translation>
     </message>
     <message>
@@ -1888,33 +2266,33 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
     <message>
         <source>Self Restart: Invalid arguments</source>
-        <translation>自重启:参数无效</translation>
+        <translation>自重启: 参数无效</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetDemosPathOnQtOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>恰好 2 个</translation>
+        <translation type="obsolete">恰好 2 个</translation>
     </message>
     <message>
         <source>The output of 
-'%1 -query'
+&apos;%1 -query&apos;
 is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
-        <translation>有关
+        <translation type="obsolete">有关
 “%1 -query”的输出
 不可解析。请访问 https://bugreports.qt-project.org，使用此对话框提交错误报告。
-输出:%2</translation>
+输出: %2</translation>
     </message>
     <message>
-        <source>Qt patch error: new Qt demo path '%1'
+        <source>Qt patch error: new Qt demo path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation>Qt 补丁错误:新 Qt 演示路径“%1”
+        <translation type="obsolete">Qt 补丁错误:新 Qt 演示路径“%1”
 必须少于 255 个字符。</translation>
     </message>
 </context>
@@ -1922,26 +2300,26 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetExamplesPathOnQtOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>恰好 2 个</translation>
+        <translation type="obsolete">恰好 2 个</translation>
     </message>
     <message>
         <source>The output of 
-'%1 -query'
+&apos;%1 -query&apos;
 is not parseable. Please file a bugreport with this dialog at https://bugreports.qt-project.org.
 output: %2</source>
-        <translation>有关
+        <translation type="obsolete">有关
 “%1 -query”的输出
 不可解析。请访问 https://bugreports.qt-project.org，使用此对话框提交错误报告。
-输出:%2</translation>
+输出: %2</translation>
     </message>
     <message>
-        <source>Qt patch error: new Qt example path '%1'
+        <source>Qt patch error: new Qt example path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation>Qt 补丁错误:新 Qt 示例路径“%1”
+        <translation type="obsolete">Qt 补丁错误:新 Qt 示例路径“%1”
 必须少于 255 个字符。</translation>
     </message>
 </context>
@@ -1949,16 +2327,16 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetImportsPathOnQtCoreOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>恰好 2 个</translation>
+        <translation type="obsolete">恰好 2 个</translation>
     </message>
     <message>
-        <source>Qt patch error: new Qt imports path '%1'
+        <source>Qt patch error: new Qt imports path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation>Qt 补丁错误:新 Qt 导入路径“%1”
+        <translation type="obsolete">Qt 补丁错误:新 Qt 导入路径“%1”
 必须少于 255 个字符。</translation>
     </message>
 </context>
@@ -1966,31 +2344,31 @@ needs to be less than 255 characters.</source>
     <name>QInstaller::SetPathOnQtCoreOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>恰好 3 个</translation>
+        <translation type="obsolete">恰好 3 个</translation>
     </message>
     <message>
         <source>The second type/value needs to be one of: %1</source>
-        <translation>第二个类型/值必须是下列之一:%1</translation>
+        <translation type="obsolete">第二个类型/值必须是下列之一: %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SetPluginPathOnQtCoreOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
+        <translation type="obsolete">%0 中存在无效的参数:已给定 %1 个参数，%2 应为 %3 个。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>恰好 2 个</translation>
+        <translation type="obsolete">恰好 2 个</translation>
     </message>
     <message>
-        <source>Qt patch error: new Qt plugin path '%1'
+        <source>Qt patch error: new Qt plugin path &apos;%1&apos;
 needs to be less than 255 characters.</source>
-        <translation>Qt 补丁错误:新 Qt 插件路径“%1”
+        <translation type="obsolete">Qt 补丁错误:新 Qt 插件路径“%1”
 必须少于 255 个字符。</translation>
     </message>
 </context>
@@ -2009,16 +2387,27 @@ needs to be less than 255 characters.</source>
         <translation> (rootInstallPath、group、key、value)</translation>
     </message>
     <message>
-        <source>Needed installer object in "%1" operation is empty.</source>
+        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
         <translation>“%1”运算中所需的安装程序对象为空。</translation>
     </message>
     <message>
-        <source>There is no value set for '%1' on the installer object.</source>
+        <source>There is no value set for &apos;%1&apos; on the installer object.</source>
         <translation>没有为安装程序对象上的“%1”设定值。</translation>
     </message>
     <message>
-        <source>Needed installer object in '%1' operation is empty.</source>
+        <source>Needed installer object in &apos;%1&apos; operation is empty.</source>
         <translation>“%1”运算中所需的安装程序对象为空。</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SettingsOperation</name>
+    <message>
+        <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2032,20 +2421,20 @@ needs to be less than 255 characters.</source>
         <translation>恰好 2 个</translation>
     </message>
     <message>
-        <source>None of the arguments can be empty: source '%1', target '%2'.</source>
-        <translation>参数均不得为空:源“%1”，目标“%2”。</translation>
+        <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
+        <translation>参数均不得为空: 源 %1，目标 %2。</translation>
     </message>
     <message>
-        <source>Can not move source '%1' to target '%2', because target exists and is not removable.</source>
-        <translation>无法将源“%1”移动到目标“%2”，因为目标已经存在且不可删除。</translation>
+        <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
+        <translation>无法将源 %1 移动到目标 %2，因为目标已经存在且不可删除。</translation>
     </message>
     <message>
-        <source>Can not move source '%1' to target '%2': %3</source>
-        <translation>无法将源“%1”移动到目标“%2”:%3</translation>
+        <source>Can not move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
+        <translation>无法将源 %1 移动到目标 %2: %3</translation>
     </message>
     <message>
-        <source>Move '%1' to '%2'.</source>
-        <translation>将“%1”移动到“%2”</translation>
+        <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
+        <translation>将 %1 移动到 %2</translation>
     </message>
 </context>
 <context>
@@ -2055,7 +2444,7 @@ needs to be less than 255 characters.</source>
         <translation>开始菜单快捷方式</translation>
     </message>
     <message>
-        <source>Select the Start Menu in which you would like to create the program's shortcuts. You can also enter a name to create a new folder.</source>
+        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
         <translation>选择您希望在其中创建程序快捷方式的开始菜单。您还可以输入名称以创建新文件夹。</translation>
     </message>
 </context>
@@ -2088,7 +2477,7 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>由于安装目录已完全删除，因此禁止在 %1 中进行安装。</translation>
+        <translation type="obsolete">由于安装目录已完全删除，因此禁止在 %1 中进行安装。</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -2102,12 +2491,43 @@ needs to be less than 255 characters.</source>
         <source>Select Installation Folder</source>
         <translation>选择安装文件夹</translation>
     </message>
+    <message>
+        <source>As the install directory is completely deleted on uninstall, installing in %1 is forbidden.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::TestRepository</name>
+    <message>
+        <source>Empty repository URL.</source>
+        <translation>储存库 URL 为空。</translation>
+    </message>
+    <message>
+        <source>URL scheme not supported: %1 (%2).</source>
+        <translation>不支持的 URL 方案: %1 (%2).</translation>
+    </message>
+    <message>
+        <source>Got a timeout while testing: &apos;%1&apos;</source>
+        <translation>测试 %1 超时</translation>
+    </message>
+    <message>
+        <source>Could not parse Updates.xml! Error: %1.</source>
+        <translation>无法解析 Updates.xml! 错误: %1.</translation>
+    </message>
+    <message>
+        <source>Updates.xml could not be opened for reading!</source>
+        <translation>无法打开 Updates.xml 进行读取!</translation>
+    </message>
+    <message>
+        <source>Updates.xml could not be found on server!</source>
+        <translation>无法在服务器上找到 Updates.xml!</translation>
+    </message>
 </context>
 <context>
     <name>QInstallerCreator::Archive</name>
     <message>
         <source>Could not create %1: %2</source>
-        <translation>无法创建 %1:%2</translation>
+        <translation type="obsolete">无法创建 %1: %2</translation>
     </message>
     <message>
         <source>Could not open archive file %1 for reading.</source>
@@ -2138,11 +2558,11 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>Searched whole file, no marker found</source>
-        <translation>已搜索整个文件，未找到标记</translation>
+        <translation type="obsolete">已搜索整个文件，未找到标记</translation>
     </message>
     <message>
         <source>Could not seek to %1 in file %2: %3</source>
-        <translation>无法在文件 %2 中找到 %1:%3</translation>
+        <translation type="obsolete">无法在文件 %2 中找到 %1: %3</translation>
     </message>
     <message>
         <source>No marker found, stopped after %1.</source>
@@ -2150,15 +2570,15 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>No marker found, unknown exception caught.</source>
-        <translation>未找到标记，捕获未知异常。</translation>
+        <translation type="obsolete">未找到标记，捕获未知异常。</translation>
     </message>
     <message>
         <source>Cannot create zipped file for path %1: %2</source>
-        <translation>无法为路径 %1 创建压缩文件:%2</translation>
+        <translation>无法为路径 %1 创建压缩文件: %2</translation>
     </message>
     <message>
         <source>Could not seek to in-binary resource. (offset: %1, length: %2)</source>
-        <translation>无法找到二进制内资源。(偏移:%1，长度:%2)</translation>
+        <translation>无法找到二进制内资源。(偏移: %1，长度: %2)</translation>
     </message>
     <message>
         <source>Could not register in-binary resource.</source>
@@ -2166,7 +2586,7 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>Could not open binary %1: %2</source>
-        <translation>无法打开二进制文件 %1:%2</translation>
+        <translation>无法打开二进制文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not seek to binary layout section.</source>
@@ -2210,11 +2630,11 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>Could not remove file %1: %2</source>
-        <translation>无法删除文件 %1:%2</translation>
+        <translation>无法删除文件 %1: %2</translation>
     </message>
     <message>
         <source>Failed to overwrite %1: %2</source>
-        <translation>覆盖 %1 失败:%2</translation>
+        <translation>覆盖 %1 失败: %2</translation>
     </message>
     <message>
         <source>Registry path %1 is not writable</source>
@@ -2226,7 +2646,7 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>Number of arguments does not match: one is required</source>
-        <translation>参数数量不匹配:需要一个</translation>
+        <translation>参数数量不匹配: 需要一个</translation>
     </message>
     <message>
         <source>Could not get package manager core.</source>
@@ -2234,31 +2654,31 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>This process should be stopped before continuing: %1</source>
-        <translation>必须先停止此进程才能继续操作:%1</translation>
+        <translation>必须先停止此进程才能继续操作: %1</translation>
     </message>
     <message>
         <source>These processes should be stopped before continuing: %1</source>
-        <translation>必须先停止以下进程才能继续操作:%1</translation>
+        <translation>必须先停止以下进程才能继续操作: %1</translation>
     </message>
     <message>
         <source>Cannot open file %1 for reading: %2</source>
-        <translation>无法打开文件 %1 进行读取:%2</translation>
+        <translation>无法打开文件 %1 进行读取: %2</translation>
     </message>
     <message>
         <source>Cannot open file %1 for writing: %2</source>
-        <translation>无法打开文件 %1 进行写入:%2</translation>
+        <translation>无法打开文件 %1 进行写入: %2</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
-        <translation>写入 %1 字节后失败:%2</translation>
+        <translation>写入 %1 字节后失败: %2</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
-        <translation>读取 %1 字节后失败:%2</translation>
+        <translation>读取 %1 字节后失败: %2</translation>
     </message>
     <message>
         <source>Could not remove folder %1: %2</source>
-        <translation>无法删除文件夹 %1:%2</translation>
+        <translation>无法删除文件夹 %1: %2</translation>
     </message>
     <message>
         <source>Could not create folder %1</source>
@@ -2266,42 +2686,42 @@ needs to be less than 255 characters.</source>
     </message>
     <message>
         <source>Could not copy file from %1 to %2: %3</source>
-        <translation>无法将文件从 %1 复制到 %2:%3</translation>
+        <translation>无法将文件从 %1 复制到 %2: %3</translation>
     </message>
     <message>
         <source>Could not move file from %1 to %2: %3</source>
-        <translation>无法将文件从 %1 移动到 %2:%3</translation>
+        <translation>无法将文件从 %1 移动到 %2: %3</translation>
     </message>
     <message>
         <source>Could not create folder %1: %2</source>
-        <translation>无法创建文件夹 %1:%2</translation>
+        <translation>无法创建文件夹 %1: %2</translation>
     </message>
     <message>
         <source>Could not open temporary file: %1</source>
-        <translation>无法打开临时文件:%1</translation>
+        <translation>无法打开临时文件: %1</translation>
     </message>
     <message>
         <source>Could not open temporary file for template %1: %2</source>
-        <translation>无法打开模板 %1 的临时文件:%2</translation>
+        <translation>无法打开模板 %1 的临时文件: %2</translation>
     </message>
     <message>
         <source>Could not create temporary folder for template %1: %2</source>
-        <translation>无法为模板 %1 创建临时文件夹:%2</translation>
+        <translation type="obsolete">无法为模板 %1 创建临时文件夹: %2</translation>
     </message>
     <message>
         <source>Authorization Error</source>
         <translation>授权错误</translation>
     </message>
     <message>
-        <source>Couldn't get authorization.</source>
-        <translation>无法获得授权。</translation>
+        <source>Couldn&apos;t get authorization.</source>
+        <translation type="obsolete">无法获得授权。</translation>
     </message>
     <message>
-        <source>Couldn't get authorization that is needed for continuing the installation.
+        <source>Couldn&apos;t get authorization that is needed for continuing the installation.
 Either abort the installation or use the fallback solution by running
 %1
 as root and then clicking ok.</source>
-        <translation>无法获得继续安装所需的授权。
+        <translation type="obsolete">无法获得继续安装所需的授权。
 您可以中止安装，也可以使用备用解决方案，以根用户身份运行
 %1
 ，然后单击“确定”。</translation>
@@ -2312,23 +2732,23 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Could not backup file %1: %2</source>
-        <translation>无法备份文件 %1:%2</translation>
+        <translation>无法备份文件 %1: %2</translation>
     </message>
     <message>
         <source>Failed to copy file %1: %2</source>
-        <translation>复制文件 %1 失败:%2</translation>
+        <translation>复制文件 %1 失败: %2</translation>
     </message>
     <message>
         <source>Could not create folder at %1: %2</source>
-        <translation>无法在 %1 创建文件夹:%2</translation>
+        <translation>无法在 %1 创建文件夹: %2</translation>
     </message>
     <message>
         <source>Path exists but is not a folder: %1</source>
-        <translation>路径存在，但不是文件夹:%1</translation>
+        <translation>路径存在，但不是文件夹: %1</translation>
     </message>
     <message>
         <source>Could not create folder: %1</source>
-        <translation>无法创建文件夹:%1</translation>
+        <translation>无法创建文件夹: %1</translation>
     </message>
     <message>
         <source>Could not create temporary file</source>
@@ -2392,15 +2812,15 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Could not open file: %1 (%2)</source>
-        <translation>无法打开文件:%1 (%2)</translation>
+        <translation>无法打开文件: %1 (%2)</translation>
     </message>
     <message>
-        <source>Could not create symlink at '%1'. Another one is already existing.</source>
+        <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
         <translation>无法在“%1”创建符号链接。另一个符号链接已经存在。</translation>
     </message>
     <message>
-        <source>Could not read symlink target from file '%1'.</source>
-        <translation>无法从文件“%1”中读取符号链接目标。</translation>
+        <source>Could not read symlink target from file &apos;%1&apos;.</source>
+        <translation>无法从文件 %1 中读取符号链接目标。</translation>
     </message>
     <message>
         <source>Could not create symlink at %1. %2</source>
@@ -2408,7 +2828,7 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>internal code: %1</source>
-        <translation>内部代码:%1</translation>
+        <translation>内部代码: %1</translation>
     </message>
     <message>
         <source>not enough memory</source>
@@ -2416,7 +2836,7 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Error: %1</source>
-        <translation>错误:%1</translation>
+        <translation>错误: %1</translation>
     </message>
     <message>
         <source>Could not create archive %1. %2</source>
@@ -2432,27 +2852,27 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Could not create output file for writing: %1</source>
-        <translation>无法创建输出文件进行写入:%1</translation>
+        <translation>无法创建输出文件进行写入: %1</translation>
     </message>
     <message>
-        <source>Error while extracting '%1': %2</source>
-        <translation>提取“%1”时出现错误:%2</translation>
+        <source>Error while extracting &apos;%1&apos;: %2</source>
+        <translation>提取 %1 时出现错误: %2</translation>
     </message>
     <message>
-        <source>Failed to open '%1' for reading.</source>
+        <source>Failed to open &apos;%1&apos; for reading.</source>
         <translation>打开“%1”读取失败。</translation>
     </message>
     <message>
-        <source>Failed to open '%1' for writing.</source>
-        <translation>打开“%1”写入失败。</translation>
+        <source>Failed to open &apos;%1&apos; for writing.</source>
+        <translation>打开 %1 写入失败。</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, %2 to %3 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 %2 到 %3 个。</translation>
+        <translation>参数无效: 已给定 %1 个参数，应为 %2 到 %3 个。</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, %2 expected.</source>
-        <translation>参数无效:已给定 %1 个参数，应为 %2 个。</translation>
+        <translation>参数无效: 已给定 %1 个参数，应为 %2 个。</translation>
     </message>
     <message>
         <source>Error while elevating access rights.</source>
@@ -2460,15 +2880,15 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Failed to seek in file %1: %2</source>
-        <translation>无法在文件 %1 中找到以下内容:%2</translation>
+        <translation>无法在文件 %1 中找到以下内容: %2</translation>
     </message>
     <message>
         <source>Could not open the requested script file at %1: %2</source>
-        <translation>无法打开位于 %1 的请求脚本文件:%2</translation>
+        <translation type="obsolete">无法打开位于 %1 的请求脚本文件: %2</translation>
     </message>
     <message>
         <source>Exception while loading the control script %1</source>
-        <translation>加载控制脚本 %1 时出现异常</translation>
+        <translation type="obsolete">加载控制脚本 %1 时出现异常</translation>
     </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
@@ -2484,30 +2904,49 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>Could not create lock file %1: %2</source>
-        <translation>无法创建锁定文件 %1:%2</translation>
+        <translation>无法创建锁定文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not write PID to lock file %1: %2</source>
-        <translation>无法将 PID 写入锁定文件 %1:%2</translation>
+        <translation>无法将 PID 写入锁定文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not lock lock file %1: %2</source>
-        <translation>无法锁定锁定文件 %1:%2</translation>
+        <translation>无法锁定锁定文件 %1: %2</translation>
     </message>
     <message>
         <source>Could not unlock lock file %1: %2</source>
-        <translation>无法解锁锁定文件 %1:%2</translation>
+        <translation>无法解锁锁定文件 %1: %2</translation>
     </message>
     <message>
         <source>Failed to seek in file %1. Reason: %2.</source>
-        <translation>无法在文件 %1 中找到。原因:%2.</translation>
+        <translation>无法在文件 %1 中找到。原因: %2.</translation>
+    </message>
+    <message>
+        <source>Could not create temporary directory at %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not create temporary directory at %1: unknown error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get authorization.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not get authorization that is needed for continuing the installation.
+Either abort the installation or use the fallback solution by running
+%1
+as root and then clicking ok.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>Could not open settings file %1 for reading: %2</source>
-        <translation>无法打开设置文件 %1 进行读取:%2</translation>
+        <translation>无法打开设置文件 %1 进行读取: %2</translation>
     </message>
 </context>
 <context>
@@ -2681,13 +3120,11 @@ as root and then clicking ok.</source>
     </message>
     <message>
         <source>As the install directory is completely deleted installing in %1 is forbidden.</source>
-        <translation>由于安装目录已完全删除，因此禁止在 %1 中进行安装。</translation>
+        <translation type="obsolete">由于安装目录已完全删除，因此禁止在 %1 中进行安装。</translation>
     </message>
     <message>
-        <source>The folder you selected exists already and contains an installation.
-Do you want to overwrite it?</source>
-        <translation>您选择的文件夹已经存在并包含安装文件。
-您是否要覆盖它?</translation>
+        <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>您选择的文件夹已经存在并包含安装文件。请选择其它文件夹。</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty folder for installation.
@@ -2703,28 +3140,32 @@ Do you want to continue?</source>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
         <translation>您已为安装文件选择了一个现有的文件或符号链接，请选择其他安装目标。</translation>
     </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>由于安装目录已完全删除，因此禁止在 %1 中进行安装。</translation>
+    </message>
 </context>
 <context>
     <name>TestRepository</name>
     <message>
         <source>Empty repository URL.</source>
-        <translation>储存库 URL 为空。</translation>
+        <translation type="obsolete">储存库 URL 为空。</translation>
     </message>
     <message>
         <source>URL scheme not supported: %1 (%2).</source>
-        <translation>不支持的 URL 方案:%1 (%2).</translation>
+        <translation type="obsolete">不支持的 URL 方案: %1 (%2).</translation>
     </message>
     <message>
         <source>Could not parse Updates.xml! Error: %1.</source>
-        <translation>无法解析 Updates.xml!错误:%1.</translation>
+        <translation type="obsolete">无法解析 Updates.xml! 错误: %1.</translation>
     </message>
     <message>
         <source>Updates.xml could not be opened for reading!</source>
-        <translation>无法打开 Updates.xml 进行读取!</translation>
+        <translation type="obsolete">无法打开 Updates.xml 进行读取!</translation>
     </message>
     <message>
         <source>Updates.xml could not be found on server!</source>
-        <translation>无法在服务器上找到 Updates.xml!</translation>
+        <translation type="obsolete">无法在服务器上找到 Updates.xml!</translation>
     </message>
 </context>
 </TS>

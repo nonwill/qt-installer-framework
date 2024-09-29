@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>Component</name>
     <message>
@@ -35,63 +35,63 @@
     <name>GetRepositoryMetaInfoJob</name>
     <message>
         <source>Empty repository URL.</source>
-        <translation>Пустой URL хранилища.</translation>
+        <translation type="obsolete">Пустой URL хранилища.</translation>
     </message>
     <message>
         <source>Invalid repository URL: %1</source>
-        <translation>Неверный URL хранилища: %1</translation>
+        <translation type="obsolete">Неверный URL хранилища: %1</translation>
     </message>
     <message>
         <source>URL scheme not supported: %1 (%2)</source>
-        <translation>Схема URL не поддерживается: %1 (%2)</translation>
+        <translation type="obsolete">Схема URL не поддерживается: %1 (%2)</translation>
     </message>
     <message>
         <source>Retrieving component meta information...</source>
-        <translation>Получение метаданных компонета...</translation>
+        <translation type="obsolete">Получение метаданных компонета...</translation>
     </message>
     <message>
         <source>Could not open Updates.xml for reading. Error: %1</source>
-        <translation>Не удалось открыть Updates.xml для чтения: Ошибка: %1</translation>
+        <translation type="obsolete">Не удалось открыть Updates.xml для чтения: Ошибка: %1</translation>
     </message>
     <message>
         <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
-        <translation>Не удалось загрузить корректную версию Updates.xml из хранилища: %1. Ошибка: %2</translation>
+        <translation type="obsolete">Не удалось загрузить корректную версию Updates.xml из хранилища: %1. Ошибка: %2</translation>
     </message>
     <message>
         <source>Download Error</source>
-        <translation>Ошибка загрузки</translation>
+        <translation type="obsolete">Ошибка загрузки</translation>
     </message>
     <message>
         <source>Parsing component meta information...</source>
-        <translation>Разбор метаданных компонента...</translation>
+        <translation type="obsolete">Разбор метаданных компонента...</translation>
     </message>
     <message>
         <source>Repository updates received.</source>
-        <translation>Получены обновления хранилища.</translation>
+        <translation type="obsolete">Получены обновления хранилища.</translation>
     </message>
     <message>
         <source>Could not move Updates.xml to target location. Error: %1</source>
-        <translation>Не удалось переместить Updates.xml. Ошибка: %1</translation>
+        <translation type="obsolete">Не удалось переместить Updates.xml. Ошибка: %1</translation>
     </message>
     <message>
         <source>Finished updating component meta information.</source>
-        <translation>Завершена обработка метаданных компонента.</translation>
+        <translation type="obsolete">Завершена обработка метаданных компонента.</translation>
     </message>
     <message>
         <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
-        <translation>Не удалось загрузить Updates.xml из хранилища: %1. Ошибка: %2</translation>
+        <translation type="obsolete">Не удалось загрузить Updates.xml из хранилища: %1. Ошибка: %2</translation>
     </message>
     <message>
         <source>Retrieving component information from remote repository...</source>
-        <translation>Получение информации о компоненте из внешнего хранилища...</translation>
+        <translation type="obsolete">Получение информации о компоненте из внешнего хранилища...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
-        <translation>Загрузка метаданных отменена.</translation>
+        <translation type="obsolete">Загрузка метаданных отменена.</translation>
     </message>
     <message>
         <source>Unknown exception.</source>
-        <translation>Неизвестное исключение.</translation>
+        <translation type="obsolete">Неизвестное исключение.</translation>
     </message>
 </context>
 <context>
