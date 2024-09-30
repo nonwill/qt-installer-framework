@@ -1085,6 +1085,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
 
     const QStringList arguments = QCoreApplication::arguments();
     if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))
+        || arguments.contains(QLatin1String("--silence")) || arguments.contains(QLatin1String("Silence"))
         || ignoreSslErrors()) {
             reply->ignoreSslErrors();
             return;

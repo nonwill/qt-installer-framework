@@ -330,6 +330,11 @@ int main(int argc, char *argv[])
                 const QString value = argument.section(QLatin1Char('='), 1, 1);
                 params.insert(name, value);
                 core.setValue(name, value);
+            } else if (argument == QLatin1String("--silence") || argument == QLatin1String("Silence")) {
+                ++i;
+                controlScript = QString::fromLatin1(":/scripts/silent_installer.qs");
+                if (!QFileInfo(controlScript).exists())
+                    return PackageManagerCore::Failure;
             } else if (argument == QLatin1String("--script") || argument == QLatin1String("Script")) {
                 ++i;
                 if (i < args.size()) {

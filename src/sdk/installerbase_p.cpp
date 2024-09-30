@@ -186,6 +186,8 @@ void InstallerBase::showUsage()
     std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --proxy" << std::setw(WIDTH2)
         << "Set system proxy on Win and Mac." << std::endl
         << std::setw(WIDTH1) << " " << std::setw(WIDTH2) << "This option has no effect on Linux." << std::endl;
+    std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --silence" << std::setw(WIDTH2)
+        << "Start in silent installer mode" << std::endl;
     std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --verbose" << std::setw(WIDTH2)
         << "Show debug output on the console" << std::endl;
     std::cout << std::setw(WIDTH1) << std::setiosflags(std::ios::left) << "  --create-offline-repository"
