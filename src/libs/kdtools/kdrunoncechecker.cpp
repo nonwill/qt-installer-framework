@@ -1,39 +1,27 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,99 +31,74 @@
 #include "kdlockfile.h"
 #include "kdsysinfo.h"
 
-#include <QtCore/QList>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QList>
 
 #include <algorithm>
 
 using namespace KDUpdater;
 
-class KDRunOnceChecker::Private
-{
-public:
-    Private(const QString &filename);
-
-    KDLockFile m_lockfile;
-    bool m_hasLock;
-};
-
-KDRunOnceChecker::Private::Private(const QString &filename)
-    : m_lockfile(filename)
-    , m_hasLock(false)
-{}
-
 KDRunOnceChecker::KDRunOnceChecker(const QString &filename)
-    :d(new Private(filename))
-{}
+    : m_lockfile(filename)
+{
+}
 
 KDRunOnceChecker::~KDRunOnceChecker()
 {
-    delete d;
+    if (!m_lockfile.unlock())
+        qWarning() << m_lockfile.errorString().toUtf8().constData();
 }
 
 class ProcessnameEquals
 {
 public:
-    ProcessnameEquals(const QString &name): m_name(name) {}
+    ProcessnameEquals(const QString &name)
+#ifdef Q_OS_WIN
+        : m_name(name.toLower())
+#else
+        : m_name(name)
+#endif
+    {}
 
     bool operator()(const ProcessInfo &info)
     {
-#ifndef Q_OS_WIN
-        if (info.name == m_name)
+#ifdef Q_OS_WIN
+        const QString infoName = info.name.toLower();
+        if (infoName == QDir::toNativeSeparators(m_name))
             return true;
-        const QFileInfo fi(info.name);
+#else
+        const QString infoName = info.name;
+#endif
+        if (infoName == m_name)
+            return true;
+
+        const QFileInfo fi(infoName);
         if (fi.fileName() == m_name || fi.baseName() == m_name)
             return true;
         return false;
-#else
-        if (info.name.toLower() == m_name.toLower())
-            return true;
-        if (info.name.toLower() == QDir::toNativeSeparators(m_name.toLower()))
-            return true;
-        const QFileInfo fi(info.name);
-        if (fi.fileName().toLower() == m_name.toLower() || fi.baseName().toLower() == m_name.toLower())
-            return true;
-        return info.name == m_name;
-#endif
     }
 
 private:
     QString m_name;
 };
 
-bool KDRunOnceChecker::isRunning(Dependencies depends)
+bool KDRunOnceChecker::isRunning(KDRunOnceChecker::ConditionFlags flags)
 {
-    bool running = false;
-    switch (depends) {
-        case Lockfile: {
-            const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if (locked)
-                d->m_hasLock = true;
-            running = running || ! locked;
-        }
-        break;
-        case ProcessList: {
-            const QList<ProcessInfo> allProcesses = runningProcesses();
-            const QString appName = qApp->applicationFilePath();
-            //QList< ProcessInfo >::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            running = running || /*it != allProcesses.constEnd()*/count > 1;
-        }
-        break;
-        case Both: {
-            const QList<ProcessInfo> allProcesses = runningProcesses();
-            const QString appName = qApp->applicationFilePath();
-            //QList<ProcessInfo>::const_iterator it = std::find_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(), ProcessnameEquals(appName));
-            const bool locked = d->m_hasLock || d->m_lockfile.lock();
-            if (locked)
-                d->m_hasLock = true;
-            running = running || ( /*it != allProcesses.constEnd()*/count > 1 && !locked);
-        }
-        break;
+    if (flags.testFlag(ConditionFlag::ProcessList)) {
+        const QList<ProcessInfo> allProcesses = runningProcesses();
+        const int count = std::count_if(allProcesses.constBegin(), allProcesses.constEnd(),
+            ProcessnameEquals(QCoreApplication::applicationFilePath()));
+        return (count > 1);
     }
 
-    return running;
+    if (flags.testFlag(ConditionFlag::Lockfile)) {
+        const bool locked = m_lockfile.lock();
+        if (!locked)
+            qWarning() << m_lockfile.errorString().toUtf8().constData();
+        return !locked;
+    }
+    return false;
 }

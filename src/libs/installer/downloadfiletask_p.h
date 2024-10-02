@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,30 +30,40 @@
 #define DOWNLOADFILETASK_P_H
 
 #include "downloadfiletask.h"
+#include <observer.h>
 
+#include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
+#include <memory>
+#include <unordered_map>
+
 QT_BEGIN_NAMESPACE
-class QFile;
 class QSslError;
 QT_END_NAMESPACE
 
 namespace QInstaller {
 
-class FileTaskObserver;
-
 struct Data
 {
+    Q_DISABLE_COPY(Data)
+
     Data()
-        : file(0), observer(0) {}
-    Data(QFile *f, FileTaskObserver *o, const FileTaskItem &fti)
-        : file(f), observer(o), taskItem(fti)
+        : file(nullptr)
+        , observer(nullptr)
     {}
-    QFile *file;
-    FileTaskObserver *observer;
+
+    Data(const FileTaskItem &fti)
+        : taskItem(fti)
+        , file(nullptr)
+        , observer(new FileTaskObserver(QCryptographicHash::Sha1))
+    {}
+
     FileTaskItem taskItem;
+    std::unique_ptr<QFile> file;
+    std::unique_ptr<FileTaskObserver> observer;
 };
 
 class Downloader : public QObject
@@ -92,6 +89,7 @@ private slots:
     void onSslErrors(const QList<QSslError> &sslErrors);
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+    void onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 
 
 private:
@@ -104,8 +102,8 @@ private:
     int m_finished;
     QNetworkAccessManager m_nam;
     QList<FileTaskItem> m_items;
-    QHash<QNetworkReply*, Data> m_downloads;
     QMultiHash<QNetworkReply*, QUrl> m_redirects;
+    std::unordered_map<QNetworkReply*, std::unique_ptr<Data>> m_downloads;
 };
 
 }   // namespace QInstaller

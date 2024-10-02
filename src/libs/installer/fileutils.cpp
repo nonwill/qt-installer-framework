@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -258,11 +245,11 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
         if (fi.isSymLink() || fi.isFile()) {
             QFile f(fi.filePath());
             if (!f.remove()) {
-                QString errorMessage = QObject::tr("Could not remove file %1: %2").arg(f.fileName(), f.errorString());
-                if (ignoreErrors)
-                    qWarning() << errorMessage;
-                else
+                const QString errorMessage = QCoreApplication::translate("QInstaller",
+                    "Could not remove file %1: %2").arg(f.fileName(), f.errorString());
+                if (!ignoreErrors)
                     throw Error(errorMessage);
+                qWarning() << errorMessage;
             }
         }
     }
@@ -299,19 +286,15 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
     foreach (const QString &dir, dirs) {
         errno = 0;
         if (d.exists(path) && !d.rmdir(dir)) {
-            QString errorMessage = QObject::tr("Could not remove folder %1: %2").arg(dir,
-                errnoToQString(errno));
-            if (ignoreErrors)
-                qWarning() << errorMessage;
-            else
+            const QString errorMessage = QCoreApplication::translate("QInstaller",
+                "Could not remove folder %1: %2").arg(dir, errnoToQString(errno));
+            if (!ignoreErrors)
                 throw Error(errorMessage);
+            qWarning() << errorMessage;
         }
     }
 }
 
-/*!
- \internal
- */
 class RemoveDirectoryThread : public QThread
 {
 public:
@@ -320,6 +303,7 @@ public:
         , p(path)
         , ignore(ignoreErrors)
     {
+        setObjectName(QLatin1String("RemoveDirectory"));
     }
 
     const QString &error() const
@@ -372,9 +356,10 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
-    if (!QDir().mkpath(targetDir))
-        throw Error(QObject::tr("Could not create folder %1").arg(targetDir));
-
+    if (!QDir().mkpath(targetDir)) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1")
+            .arg(targetDir));
+    }
     QDirIterator it(sourceDir, QDir::NoDotAndDotDot | QDir::AllEntries);
     while (it.hasNext()) {
         const QFileInfo i(it.next());
@@ -385,7 +370,8 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
             if (!f.copy(target)) {
-                throw Error(QObject::tr("Could not copy file from %1 to %2: %3").arg(f.fileName(), target,
+                throw Error(QCoreApplication::translate("QInstaller",
+                    "Could not copy file from %1 to %2: %3").arg(f.fileName(), target,
                     f.errorString()));
             }
         }
@@ -396,9 +382,10 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
     Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
-    if (!QDir().mkpath(targetDir))
-        throw Error(QObject::tr("Could not create folder %1").arg(targetDir));
-
+    if (!QDir().mkpath(targetDir)) {
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1")
+            .arg(targetDir));
+    }
     QDirIterator it(sourceDir, QDir::NoDotAndDotDot | QDir::AllEntries);
     while (it.hasNext()) {
         const QFileInfo i(it.next());
@@ -412,7 +399,8 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
             QFile f(i.filePath());
             const QString target = QDir(targetDir).absoluteFilePath(i.fileName());
             if (!f.rename(target)) {
-                throw Error(QObject::tr("Could not move file from %1 to %2: %3").arg(f.fileName(), target,
+                throw Error(QCoreApplication::translate("QInstaller",
+                    "Could not move file from %1 to %2: %3").arg(f.fileName(), target,
                     f.errorString()));
             }
         }
@@ -423,14 +411,14 @@ void QInstaller::mkdir(const QString &path)
 {
     errno = 0;
     if (!QDir().mkdir(QFileInfo(path).absoluteFilePath()))
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1: %2").arg(path, errnoToQString(errno)));
 }
 
 void QInstaller::mkpath(const QString &path)
 {
     errno = 0;
     if (!QDir().mkpath(QFileInfo(path).absoluteFilePath()))
-        throw Error(QObject::tr("Could not create folder %1: %2").arg(path, errnoToQString(errno)));
+        throw Error(QCoreApplication::translate("QInstaller", "Could not create folder %1: %2").arg(path, errnoToQString(errno)));
 }
 
 QString QInstaller::generateTemporaryFileName(const QString &templ)
@@ -438,7 +426,7 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
     if (templ.isEmpty()) {
         QTemporaryFile f;
         if (!f.open())
-            throw Error(QObject::tr("Could not open temporary file: %1").arg(f.errorString()));
+            throw Error(QCoreApplication::translate("QInstaller", "Could not open temporary file: %1").arg(f.errorString()));
         return f.fileName();
     }
 
@@ -455,7 +443,7 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
 
     QFile f(tmp.arg(templ, suffix).arg(count));
     if (!f.open(QIODevice::WriteOnly))
-        throw Error(QObject::tr("Could not open temporary file for template %1: %2").arg(templ, f.errorString()));
+        throw Error(QCoreApplication::translate("QInstaller", "Could not open temporary file for template %1: %2").arg(templ, f.errorString()));
     f.remove();
     return f.fileName();
 }

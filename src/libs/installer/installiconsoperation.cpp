@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,15 +30,10 @@
 #include "fileutils.h"
 #include "packagemanagercore.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QDirIterator>
 #include <QDebug>
-
-#if QT_VERSION >= 0x040600
-#   include <QProcessEnvironment>
-#else
-#   include <QProcess>
-#endif
+#include <QDir>
+#include <QDirIterator>
+#include <QProcessEnvironment>
 
 using namespace QInstaller;
 
@@ -61,19 +43,9 @@ QString InstallIconsOperation::targetDirectory()
     if (hasValue(QLatin1String("targetdirectory")))
         return value(QLatin1String("targetdirectory")).toString();
 
-#if QT_VERSION >= 0x040600
     const QProcessEnvironment env;
     QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-#else
-    QStringList XDG_DATA_DIRS;
-    const QStringList env = QProcess::systemEnvironment();
-    for (QStringList::const_iterator it = env.begin(); it != env.end(); ++it) {
-        if (it->startsWith(QLatin1String("XDG_DATA_DIRS=")))
-            XDG_DATA_DIRS = it->mid(it->indexOf(QLatin1Char('=')) + 1).split(QLatin1Char(':'));
-     }
-#endif
-
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share/pixmaps")); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".icons"))); // default path
@@ -144,7 +116,7 @@ bool InstallIconsOperation::performOperation()
 
     if (source.isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(QObject::tr("Invalid Argument: source folder must not be empty."));
+        setErrorString(tr("Invalid Argument: source folder must not be empty."));
         return false;
     }
 
@@ -193,7 +165,7 @@ bool InstallIconsOperation::performOperation()
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
-                    setErrorString(QObject::tr("Could not backup file %1: %2").arg(target, bf.errorString()));
+                    setErrorString(tr("Could not backup file %1: %2").arg(target, bf.errorString()));
                     undoOperation();
                     return false;
                 }
@@ -206,7 +178,7 @@ bool InstallIconsOperation::performOperation()
                 QString errStr;
                 if (!deleteFileNowOrLater(target, &errStr)) {
                     setError(UserDefinedError);
-                    setErrorString(QObject::tr("Failed to overwrite %1: %2").arg(target, errStr));
+                    setErrorString(tr("Failed to overwrite %1: %2").arg(target, errStr));
                     undoOperation();
                     return false;
                 }
@@ -217,7 +189,7 @@ bool InstallIconsOperation::performOperation()
             QFile cf(source);
             if (!cf.copy(target)) {
                 setError(UserDefinedError);
-                setErrorString(QObject::tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
+                setErrorString(tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
                 undoOperation();
                 return false;
             }
@@ -227,7 +199,7 @@ bool InstallIconsOperation::performOperation()
             setValue(QLatin1String("files"), files);
         } else if (fi.isDir() && !QDir(target).exists()) {
             if (!QDir().mkpath(target)) {
-                setErrorString(QObject::tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
+                setErrorString(tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
                 undoOperation();
                 return false;
             }

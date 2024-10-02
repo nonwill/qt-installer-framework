@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,9 +30,32 @@
 
 #include <QFile>
 #include <QLocale>
+#include <QPair>
+#include <QVector>
 #include <QUrl>
+#include <QStringList>
 
 using namespace KDUpdater;
+
+/*!
+    \internal
+
+    Returns ["en-us", "en"] for "en-us".
+*/
+QStringList KDUpdater::localeCandidates(const QString &locale_)
+{
+    QStringList candidates;
+    QString locale = locale_;
+    candidates.reserve(locale.count(QLatin1Char('-')));
+    forever {
+        candidates.append(locale);
+        int r = locale.lastIndexOf(QLatin1Char('-'));
+        if (r <= 0)
+            break;
+        locale.truncate(r);
+    }
+    return candidates;
+}
 
 UpdatesInfoData::UpdatesInfoData()
      : error(UpdatesInfo::NotYetReadError)
@@ -123,6 +133,7 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
         return false;
 
     UpdateInfo info;
+    QMap<QString, QString> localizedDescriptions;
     for (int i = 0; i < updateE.childNodes().count(); i++) {
         QDomElement childE = updateE.childNodes().at(i).toElement();
         if (childE.isNull())
@@ -148,18 +159,25 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
                 childE.attribute(QLatin1String("inheritVersionFrom")));
             info.data[childE.tagName()] = childE.text();
         } else if (childE.tagName() == QLatin1String("Description")) {
-            QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
-            if (!info.data.contains(QLatin1String("Description")) && (languageAttribute.isEmpty()))
-                info.data[childE.tagName()] = childE.text();
-
-            // overwrite default if we have a language specific description
-            if (languageAttribute == QLocale().name().toLower())
-                info.data[childE.tagName()] = childE.text();
+            if (!childE.hasAttribute(QLatin1String("xml:lang")))
+                info.data[QLatin1String("Description")] = childE.text();
+            QString languageAttribute = childE.attribute(QLatin1String("xml:lang"), QLatin1String("en"));
+            localizedDescriptions.insert(languageAttribute.toLower(), childE.text());
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
             info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
         } else {
             info.data[childE.tagName()] = childE.text();
+        }
+    }
+
+    QStringList candidates;
+    foreach (const QString &lang, QLocale().uiLanguages())
+        candidates << KDUpdater::localeCandidates(lang.toLower());
+    foreach (const QString &candidate, candidates) {
+        if (localizedDescriptions.contains(candidate)) {
+            info.data[QLatin1String("Description")] = localizedDescriptions.value(candidate);
+            break;
         }
     }
 

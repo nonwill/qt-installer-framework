@@ -135,6 +135,7 @@ public:
     QSet<Repository> userRepositories() const;
     void setUserRepositories(const QSet<Repository> &repositories);
     void addUserRepositories(const QSet<Repository> &repositories);
+    Settings::Update updateUserRepositories(const QHash<QString, QPair<Repository, Repository> > &updates);
 
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;

@@ -72,7 +72,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
 
     Q_PROPERTY(QString name READ name)
     Q_PROPERTY(QString displayName READ displayName)
-    Q_PROPERTY(bool selected READ isSelected WRITE setSelected)
     Q_PROPERTY(bool autoCreateOperations READ autoCreateOperations WRITE setAutoCreateOperations)
     Q_PROPERTY(QStringList archives READ archives)
     Q_PROPERTY(QStringList userInterfaces READ userInterfaces)
@@ -85,12 +84,6 @@ class INSTALLER_EXPORT Component : public QObject, public QScriptable, public Co
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
 
 public:
-    enum Kind
-    {
-        Descendants = 0x1000,     // all descendants of the current component (children, grandchildren, etc.)
-        DirectChildrenOnly = 0x2000     // all child components of the current component
-    };
-
     explicit Component(PackageManagerCore *core);
     ~Component();
 
@@ -98,7 +91,11 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs) const
         {
-            return lhs->value(scSortingPriority).toInt() < rhs->value(scSortingPriority).toInt();
+            const int lhsPriority = lhs->value(scSortingPriority).toInt();
+            const int rhsPriority = rhs->value(scSortingPriority).toInt();
+            if (lhsPriority == rhsPriority)
+                return lhs->displayName() > rhs->displayName();
+            return lhsPriority < rhsPriority;
         }
     };
 
@@ -106,7 +103,11 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs) const
         {
-            return lhs->value(scSortingPriority).toInt() > rhs->value(scSortingPriority).toInt();
+            const int lhsPriority = lhs->value(scSortingPriority).toInt();
+            const int rhsPriority = rhs->value(scSortingPriority).toInt();
+            if (lhsPriority == rhsPriority)
+                return lhs->displayName() < rhs->displayName();
+            return lhsPriority > rhsPriority;
         }
     };
 
@@ -123,7 +124,8 @@ public:
     Component *parentComponent() const;
     void appendComponent(Component *component);
     void removeComponent(Component *component);
-    QList<Component*> childComponents(Component::Kind kind) const;
+    QList<Component*> descendantComponents() const;
+    QList<Component*> allChildComponents() const;
 
     void loadComponentScript();
 
@@ -142,7 +144,7 @@ public:
     Q_INVOKABLE virtual void createOperationsForArchive(const QString &archive);
     Q_INVOKABLE virtual void createOperationsForPath(const QString &path);
 
-    Q_INVOKABLE QList<QPair<QString, bool> > pathesForUninstallation() const;
+    QList<QPair<QString, bool> > pathsForUninstallation() const;
     Q_INVOKABLE void registerPathForUninstallation(const QString &path, bool wipe = false);
 
     OperationList operations() const;
@@ -197,6 +199,7 @@ public:
     Q_INVOKABLE void setInstalled();
     Q_INVOKABLE bool isInstalled() const;
     Q_INVOKABLE bool installationRequested() const;
+    bool isSelectedForInstallation() const;
 
     Q_INVOKABLE void setUninstalled();
     Q_INVOKABLE bool isUninstalled() const;
@@ -219,12 +222,11 @@ public:
     bool validatePage();
 
 public Q_SLOTS:
-    void setSelected(bool selected);
     void setAutoCreateOperations(bool autoCreateOperations);
 
 Q_SIGNALS:
     void loaded();
-    void selectedChanged(bool selected);
+    void virtualStateChanged();
     void valueChanged(const QString &key, const QString &value);
 
 private Q_SLOTS:

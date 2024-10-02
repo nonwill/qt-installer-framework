@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -49,60 +36,81 @@
 #include <QFile>
 #include <QTextStream>
 
+using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
-   \class KDUpdater::UpdateSourcesInfo kdupdaterupdatesourcesinfo.h KDUpdaterUpdateSourcesInfo
-   \brief Provides access to information about the update sources set for the application.
+    \inmodule kdupdater
+    \class KDUpdater::UpdateSourcesInfo
+    \brief The UpdateSourcesInfo class provides access to information about the update sources set
+        for the application.
 
-   An update source is a repository that contains updates applicable for the application.
-   Applications can download updates from the update source and install them locally.
+    An update source is a repository that contains updates applicable for the application.
+    Applications can download updates from the update source and install them locally.
 
-   Each application can have one or more update sources from which it can download updates.
-   Information about update source is stored in a file called UpdateSources.xml. This class helps
-   access and modify the UpdateSources.xml file.
+    Each application can have one or more update sources from which it can download updates.
+    Information about update source is stored in a file called UpdateSources.xml. This class helps
+    access and modify the UpdateSources.xml file.
 
-   The complete file name of the UpdateSources.xml file can be specified via the \ref setFileName()
-   method. The class then parses the XML file and makes available information contained in
-   that XML file through an easy to use API. You can
+    The complete file name of the UpdateSources.xml file can be specified via the setFileName()
+    method. The class then parses the XML file and makes available information contained in
+    that XML file through an easy to use API. You can:
 
-   \li Get update sources information via the \ref updateSourceInfoCount() and \ref updateSourceInfo()
-   methods.
-   \li You can add/remove/change update source information via the \ref addUpdateSourceInfo(),
-   \ref removeUpdateSource(), \ref setUpdateSourceAt() methods.
+    \list
+        \li Get update sources information via the updateSourceInfoCount() and updateSourceInfo()
+            methods.
+        \li Add or remove update source information via the addUpdateSourceInfo() and
+            removeUpdateSourceInfo() methods.
+    \endlist
 
-   The class emits appropriate signals to inform listeners about changes in the update application.
+    The class emits appropriate signals to inform listeners about changes in the update application.
 */
 
-/*! \enum UpdateSourcesInfo::Error
- * Error codes related to retrieving update sources
- */
+/*!
+    \fn KDUpdater::operator==(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::NoError
- * No error occurred
- */
+    Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
+*/
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::NotYetReadError
- * The package information was not parsed yet from the XML file
- */
+/*!
+    \fn KDUpdater::operator!=(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::CouldNotReadSourceFileError
- * the specified update source file could not be read (does not exist or not readable)
- */
+    Returns \c true if \a lhs and \a rhs are different; otherwise returns \c false.
+*/
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::InvalidXmlError
- * The source file contains invalid XML.
- */
+/*!
+    \enum UpdateSourcesInfo::Error
+    Error codes related to retrieving update sources.
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::InvalidContentError
- * The source file contains valid XML, but does not match the expected format for source descriptions
- */
+    \value NoError                     No error occurred.
+    \value NotYetReadError             The update source information was not parsed yet from the
+                                       XML file.
+    \value CouldNotReadSourceFileError The specified update source file could not be read
+                                       (does not exist or is not readable).
+    \value InvalidXmlError             The source file contains invalid XML.
+    \value InvalidContentError         The source file contains valid XML, but does not match the
+                                       expected format for source descriptions.
+    \value CouldNotSaveChangesError    Changes made to the object could not be saved back to the
+                                       source file.
+*/
 
-/*! \var UpdateSourcesInfo::Error UpdateSourcesInfo::CouldNotSaveChangesError
- * Changes made to the object could be saved back to the source file
- */
+/*!
+    \fn void UpdateSourcesInfo::reset()
 
-using namespace KDUpdater;
+    This signal is emitted whenever the contents of this UpdateSourcesInfo are refreshed, usually
+    from within the refresh() slot.
+*/
+
+/*!
+    \fn void UpdateSourcesInfo::updateSourceInfoAdded(const UpdateSourceInfo &info)
+
+    This signal is emitted when \c UpdateSourceInfo \a info is added.
+*/
+
+/*!
+    \fn void UpdateSourcesInfo::updateSourceInfoRemoved(const UpdateSourceInfo &info)
+
+    This signal is emitted when \c UpdateSourceInfo \a info is removed.
+*/
 
 struct UpdateSourceInfoPriorityHigherThan
 {
@@ -165,7 +173,8 @@ UpdateSourcesInfo::~UpdateSourcesInfo()
 }
 
 /*!
-   \internal
+    Returns \c true if UpdateSourcesInfo is valid; otherwise returns \c false.
+    You can use the errorString() method to receive a descriptive error message.
 */
 bool UpdateSourcesInfo::isValid() const
 {
@@ -173,34 +182,43 @@ bool UpdateSourcesInfo::isValid() const
 }
 
 /*!
-   returns a human-readable description of the error
- */
+    Returns a human-readable description of the last error that occurred.
+*/
 QString UpdateSourcesInfo::errorString() const
 {
     return d->errorMessage;
 }
 
 /*!
-   returns the last error
- */
+    Returns the error that was found during the processing of the update sources XML file. If no
+    error was found, returns NoError.
+*/
 UpdateSourcesInfo::Error UpdateSourcesInfo::error() const
 {
     return d->error;
 }
 
+/*!
+    Returns the modified state of this object. The modified state defines if there where
+    modifications done to the update-sources that need to be written to the updates XML file
+    that will restore the update-sources on the next run.
+*/
 bool UpdateSourcesInfo::isModified() const
 {
     return d->modified;
 }
 
+/*!
+    Sets the modified state of the object to \a modified.
+*/
 void UpdateSourcesInfo::setModified(bool modified)
 {
     d->modified = modified;
 }
 
 /*!
-   Sets the complete file name of the UpdateSources.xml file. The function also issues a call
-   to refresh() to reload package information from the XML file.
+   Sets the complete file name of the update sources XML file to \a fileName. The function also
+   issues a call to refresh() to reload update sources from the XML file.
 
    \sa KDUpdater::Application::setUpdateSourcesXMLFileName()
 */
@@ -214,7 +232,7 @@ void UpdateSourcesInfo::setFileName(const QString &fileName)
 }
 
 /*!
-   Returns the name of the UpdateSources.xml file that this class referred to.
+   Returns the name of the update sources XML file that this class refers to.
 */
 QString UpdateSourcesInfo::fileName() const
 {
@@ -230,8 +248,8 @@ int UpdateSourcesInfo::updateSourceInfoCount() const
 }
 
 /*!
-   Returns the update source info structure at \c index. If an invalid index is passed
-   the function returns a dummy constructor.
+   Returns the update source info structure at \a index. If an invalid index is passed, the
+   function returns a \l{default-constructed value}.
 */
 UpdateSourceInfo UpdateSourcesInfo::updateSourceInfo(int index) const
 {
@@ -242,8 +260,8 @@ UpdateSourceInfo UpdateSourcesInfo::updateSourceInfo(int index) const
 }
 
 /*!
-   Adds an update source info to this class. Upon successful addition, the class emits a
-   \ref updateSourceInfoAdded() signal.
+   Adds the given update source info \a info to this class. Upon successful addition, the class
+   emits an updateSourceInfoAdded() signal.
 */
 void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
 {
@@ -256,8 +274,8 @@ void UpdateSourcesInfo::addUpdateSourceInfo(const UpdateSourceInfo &info)
 }
 
 /*!
-   Removes an update source info from this class. Upon successful removal, the class emits a
-   \ref updateSourceInfoRemoved() signal.
+   Removes the given update source info \a info from this class. Upon successful removal, the class
+   emits an updateSourceInfoRemoved() signal.
 */
 void UpdateSourcesInfo::removeUpdateSourceInfo(const UpdateSourceInfo &info)
 {
@@ -269,7 +287,7 @@ void UpdateSourcesInfo::removeUpdateSourceInfo(const UpdateSourceInfo &info)
 }
 
 /*!
-   This slot reloads the update source information from UpdateSources.xml.
+   Reloads the update source information from update sources XML file.
 */
 void UpdateSourcesInfo::refresh()
 {
@@ -405,32 +423,45 @@ void UpdateSourcesInfo::UpdateSourcesInfoData::addChildElement(QDomDocument &doc
 }
 
 /*!
-   \ingroup kdupdater
-   \struct KDUpdater::UpdateSourceInfo kdupdaterupdatesourcesinfo.h KDUpdaterUpdateSourcesInfo
-   \brief Describes a single update source
+    \inmodule kdupdater
+    \class KDUpdater::UpdateSourceInfo
+    \brief The UpdateSourceInfo class specifies a single update source.
 
-   An update source is a repository that contains updates applicable for the application.
-   This structure describes a single update source in terms of name, title, description, url and priority.
+    An update source is a repository that contains updates applicable for the application.
+    This structure describes a single update source in terms of name, title, description,
+    url, and priority.
 */
 
 /*!
-   \var QString KDUpdater::UpdateSourceInfo::name
+    \fn UpdateSourceInfo::UpdateSourceInfo()
+
+    Constructs an empty update source info object. The object's priority is set to -1. All other
+    class members are initialized using a \l{default-constructed value}.
 */
 
 /*!
-   \var QString KDUpdater::UpdateSourceInfo::title
+    \variable UpdateSourceInfo::name
+    \brief The name of the update source.
 */
 
 /*!
-   \var QString KDUpdater::UpdateSourceInfo::description
+    \variable UpdateSourceInfo::title
+    \brief The title of the update source.
 */
 
 /*!
-   \var QUrl KDUpdater::UpdateSourceInfo::url
+    \variable UpdateSourceInfo::description
+    \brief The description of the update source.
 */
 
 /*!
-   \var QUrl KDUpdater::UpdateSourceInfo::priority
+    \variable UpdateSourceInfo::url
+    \brief The URL of the update source.
+*/
+
+/*!
+    \variable UpdateSourceInfo::priority
+    \brief The priority of the update source.
 */
 
 namespace KDUpdater {

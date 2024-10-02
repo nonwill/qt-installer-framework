@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -57,6 +44,31 @@ using namespace QInstaller;
 
 // -- PerformInstallationForm
 
+/*!
+    \class QInstaller::PerformInstallationForm
+    \inmodule QtInstallerFramework
+    \brief The PerformInstallationForm class shows progress information about
+     the installation state.
+
+     A progress bar indicates the progress of the installation, update, or
+     uninstallation.
+
+     The page contains a button for showing or hiding detailed information
+     about the progress in an \e {details browser}. The text on the button
+     changes depending on whether the details browser is currently shown or
+     hidden.
+*/
+
+/*!
+    \fn PerformInstallationForm::showDetailsChanged()
+
+    This signal is emitted when the end users select the details button to show
+    or hide progress details.
+*/
+
+/*!
+    Constructs the perform installation UI with \a parent as parent.
+*/
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
     : QObject(parent)
     , m_progressBar(0)
@@ -67,6 +79,9 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
 {
 }
 
+/*!
+    Sets up the perform installation UI specified by \a widget.
+*/
 void PerformInstallationForm::setupUi(QWidget *widget)
 {
     QVBoxLayout *baseLayout = new QVBoxLayout(widget);
@@ -120,16 +135,26 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_progressBar->setRange(0, 100);
 }
 
+/*!
+    Shows the details button if \a visible is \c true.
+*/
 void PerformInstallationForm::setDetailsWidgetVisible(bool visible)
 {
     m_detailsButton->setVisible(visible);
 }
 
+/*!
+    Displays \a details about progress of the installation in the details
+    browser.
+*/
 void PerformInstallationForm::appendProgressDetails(const QString &details)
 {
     m_detailsBrowser->append(details);
 }
 
+/*!
+    Updates the progress of the installation on the progress bar.
+*/
 void PerformInstallationForm::updateProgress()
 {
     QInstaller::ProgressCoordinator *progressCoordninator = QInstaller::ProgressCoordinator::instance();
@@ -144,7 +169,11 @@ void PerformInstallationForm::updateProgress()
     m_progressLabel->setText(m_progressLabel->fontMetrics().elidedText(progressCoordninator->labelText(),
         Qt::ElideRight, m_progressLabel->width()));
 }
-
+/*!
+    Sets the text of the details button to \uicontrol {Hide Details} or
+    \uicontrol {Show Details} depending on whether the details are currently
+    shown or hidden. Emits the showDetailsChanged() signal.
+*/
 void PerformInstallationForm::toggleDetails()
 {
     const bool willShow = !isShowingDetails();
@@ -157,11 +186,18 @@ void PerformInstallationForm::toggleDetails()
     emit showDetailsChanged();
 }
 
+/*!
+    Clears the contents of the details browser.
+*/
 void PerformInstallationForm::clearDetailsBrowser()
 {
     m_detailsBrowser->clear();
 }
 
+/*!
+    Enables the details button with the text \uicontrol {Show Details} and hides
+    the details browser.
+*/
 void PerformInstallationForm::enableDetails()
 {
     m_detailsButton->setEnabled(true);
@@ -169,34 +205,53 @@ void PerformInstallationForm::enableDetails()
     m_detailsBrowser->setVisible(false);
 }
 
+/*!
+    Starts the update progress timer.
+*/
 void PerformInstallationForm::startUpdateProgress()
 {
     m_updateTimer->start();
     updateProgress();
 }
 
+/*!
+    Stops the update progress timer.
+*/
 void PerformInstallationForm::stopUpdateProgress()
 {
     m_updateTimer->stop();
     updateProgress();
 }
 
+/*!
+    Enables the details button if \a enable is \c true.
+*/
 void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 {
     m_detailsButton->setEnabled(enable);
 }
 
+/*!
+    Scrolls to the bottom of the details browser.
+*/
 void PerformInstallationForm::scrollDetailsToTheEnd()
 {
     m_detailsBrowser->horizontalScrollBar()->setValue(0);
     m_detailsBrowser->verticalScrollBar()->setValue(m_detailsBrowser->verticalScrollBar()->maximum());
 }
 
+/*!
+    Returns \c true if the details browser is visible.
+*/
 bool PerformInstallationForm::isShowingDetails() const
 {
     return m_detailsBrowser->isVisible();
 }
 
+/*!
+    Changes the label text according to the changes in the download status
+    specified by \a status.
+*/
 void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 {
     m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,

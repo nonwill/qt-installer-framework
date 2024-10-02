@@ -1,39 +1,27 @@
+
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -41,10 +29,9 @@
 #include "downloadfiletask.h"
 
 #include "downloadfiletask_p.h"
-#include "observer.h"
 
+#include <QCoreApplication>
 #include <QEventLoop>
-#include <QFile>
 #include <QFileInfo>
 #include <QNetworkProxyFactory>
 #include <QSslError>
@@ -52,6 +39,12 @@
 #include <QTimer>
 
 namespace QInstaller {
+
+AuthenticationRequiredException::AuthenticationRequiredException(Type type, const QString &message)
+    : TaskException(message)
+    , m_type(type)
+{
+}
 
 Downloader::Downloader()
     : m_finished(0)
@@ -62,16 +55,10 @@ Downloader::Downloader()
 Downloader::~Downloader()
 {
     m_nam.disconnect();
-    foreach (QNetworkReply *const reply, m_downloads.keys()) {
-        reply->disconnect();
-        reply->abort();
-        reply->deleteLater();
-    }
-
-    foreach (const Data &data, m_downloads.values()) {
-        data.file->close();
-        delete data.file;
-        delete data.observer;
+    for (const auto &pair : m_downloads) {
+        pair.first->disconnect();
+        pair.first->abort();
+        pair.first->deleteLater();
     }
 }
 
@@ -85,8 +72,10 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     fi.setExpectedResultCount(items.count());
 
     m_nam.setProxyFactory(networkProxyFactory);
-    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
-        SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
+        SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
+    connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
+            SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
     QTimer::singleShot(0, this, SLOT(doDownload()));
 }
 
@@ -117,10 +106,39 @@ void Downloader::onReadyRead()
     if (!reply)
         return;
 
-    const Data &data = m_downloads[reply];
+    Data &data = *m_downloads[reply];
+    if (!data.file) {
+        std::unique_ptr<QFile> file = nullptr;
+        const QString target = data.taskItem.target();
+        if (target.isEmpty()) {
+            std::unique_ptr<QTemporaryFile> tmp(new QTemporaryFile);
+            tmp->setAutoRemove(false);
+            file = std::move(tmp);
+        } else {
+            std::unique_ptr<QFile> tmp(new QFile(target));
+            file = std::move(tmp);
+        }
+
+        if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
+            m_futureInterface->reportException(TaskException(tr("Target file '%1' already exists "
+                "but is not a file.").arg(file->fileName())));
+            return;
+        }
+
+        if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            //: %2 is a sentence describing the error
+            m_futureInterface->reportException(TaskException(tr("Could not open target '%1' for "
+                "write. Error: %2.").arg(file->fileName(), file->errorString())));
+            return;
+        }
+        data.file = std::move(file);
+    }
+
     if (!data.file->isOpen()) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Target '%1' not "
-            "open for write. Error: %2.").arg(data.file->fileName(), data.file->errorString())));
+        //: %2 is a sentence describing the error.
+        m_futureInterface->reportException(
+                    TaskException(tr("Target '%1' not open for write. Error: %2.").arg(
+                                          data.file->fileName(), data.file->errorString())));
         return;
     }
 
@@ -136,9 +154,10 @@ void Downloader::onReadyRead()
         while (written < read) {
             const qint64 toWrite = data.file->write(buffer.constData() + written, read - written);
             if (toWrite < 0) {
-                m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Writing "
-                    "to target '%1' failed. Error: %2.").arg(data.file->fileName(),
-                    data.file->errorString())));
+                //: %2 is a sentence describing the error.
+                m_futureInterface->reportException(
+                            TaskException(tr("Writing to target '%1' failed. Error: %2.").arg(
+                                                  data.file->fileName(), data.file->errorString())));
                 return;
             }
             written += toWrite;
@@ -149,8 +168,8 @@ void Downloader::onReadyRead()
         data.observer->addCheckSumData(buffer.data(), read);
 
         int progress = m_finished * 100;
-        foreach (const Data &data, m_downloads.values())
-            progress += data.observer->progressValue();
+        for (const auto &pair : m_downloads)
+            progress += pair.second->observer->progressValue();
         if (!reply->attribute(QNetworkRequest::RedirectionTargetAttribute).isValid()) {
             m_futureInterface->setProgressValueAndText(progress / m_items.count(),
                 data.observer->progressText());
@@ -160,18 +179,16 @@ void Downloader::onReadyRead()
 
 void Downloader::onFinished(QNetworkReply *reply)
 {
-    const Data &data = m_downloads[reply];
-    const QString filename = data.file->fileName();
+    Data &data = *m_downloads[reply];
+    const QString filename = data.file ? data.file->fileName() : QString();
     if (!m_futureInterface->isCanceled()) {
         if (reply->attribute(QNetworkRequest::RedirectionTargetAttribute).isValid()) {
             const QUrl url = reply->url()
                 .resolved(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl());
             const QList<QUrl> redirects = m_redirects.values(reply);
             if (!redirects.contains(url)) {
-                data.file->close();
-                data.file->remove();
-                delete data.file;
-                delete data.observer;
+                if (data.file)
+                    data.file->remove();
 
                 FileTaskItem taskItem = data.taskItem;
                 taskItem.insert(TaskRole::SourceFile, url.toString());
@@ -181,13 +198,13 @@ void Downloader::onFinished(QNetworkReply *reply)
                     m_redirects.insertMulti(redirectReply, redirect);
                 m_redirects.insertMulti(redirectReply, url);
 
-                m_downloads.remove(reply);
+                m_downloads.erase(reply);
                 m_redirects.remove(reply);
                 reply->deleteLater();
                 return;
             } else {
-                m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Redirect"
-                    " loop detected '%1'.").arg(url.toString())));
+                m_futureInterface->reportException(TaskException(tr("Redirect loop detected '%1'.")
+                    .arg(url.toString())));
                 return;
             }
         }
@@ -203,22 +220,18 @@ void Downloader::onFinished(QNetworkReply *reply)
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
     if (!expectedCheckSum.isEmpty()) {
         if (expectedCheckSum != data.observer->checkSum().toHex()) {
-            m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Checksum"
-                " mismatch detected '%1'.").arg(reply->url().toString())));
+            m_futureInterface->reportException(TaskException(tr("Checksum mismatch detected '%1'.")
+                .arg(reply->url().toString())));
         }
     }
     m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
 
-    data.file->close();
-    delete data.file;
-    delete data.observer;
-
-    m_downloads.remove(reply);
+    m_downloads.erase(reply);
     m_redirects.remove(reply);
     reply->deleteLater();
 
     m_finished++;
-    if (m_downloads.isEmpty() || m_futureInterface->isCanceled()) {
+    if (m_downloads.empty() || m_futureInterface->isCanceled()) {
         m_futureInterface->reportFinished();
         emit finished();    // emit finished, so the event loop can shutdown
     }
@@ -227,20 +240,36 @@ void Downloader::onFinished(QNetworkReply *reply)
 void Downloader::onError(QNetworkReply::NetworkError error)
 {
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
+
+    if (error == QNetworkReply::ProxyAuthenticationRequiredError)
+        return; // already handled by onProxyAuthenticationRequired
+    if (error == QNetworkReply::AuthenticationRequiredError)
+        return; // already handled by onAuthenticationRequired
+
     if (reply) {
-        const Data &data = m_downloads[reply];
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Network error "
-            "while downloading target '%1'. Error: %2.").arg(data.file->fileName(),
-            reply->errorString())));
+        const Data &data = *m_downloads[reply];
+        //Do not throw error if Updates.xml not found. The repository might be removed
+        //with RepositoryUpdate in Updates.xml later.
+        if (data.taskItem.source().contains(QLatin1String("Updates.xml"), Qt::CaseInsensitive)) {
+            qDebug() << QString::fromLatin1("Network error while downloading '%1': %2.").arg(
+                   data.taskItem.source(), reply->errorString());
+        } else {
+            m_futureInterface->reportException(
+                TaskException(tr("Network error while downloading '%1': %2.").arg(
+                                      data.taskItem.source(), reply->errorString())));
+        }
+        //: %2 is a sentence describing the error
+
     } else {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Unknown network "
-            "error while downloading. Error: %1.").arg(error)));
+        //: %1 is a sentence describing the error
+        m_futureInterface->reportException(
+                    TaskException(tr("Unknown network error while downloading: %1.").arg(error)));
     }
 }
 
 void Downloader::onSslErrors(const QList<QSslError> &sslErrors)
 {
-#if defined(QT_NO_SSL) || defined(QT_NO_OPENSSL)
+#ifdef QT_NO_SSL
     Q_UNUSED(sslErrors);
 #else
     foreach (const QSslError &error, sslErrors)
@@ -253,27 +282,41 @@ void Downloader::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
     Q_UNUSED(bytesReceived)
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
     if (reply) {
-        const Data &data = m_downloads[reply];
+        const Data &data = *m_downloads[reply];
         data.observer->setBytesToTransfer(bytesTotal);
     }
 }
 
 void Downloader::onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator)
 {
-    if (!authenticator || !reply || !m_downloads.contains(reply))
+    if (!authenticator || !reply || m_downloads.find(reply) == m_downloads.cend())
         return;
 
-    FileTaskItem *item = &m_downloads[reply].taskItem;
+    FileTaskItem *item = &m_downloads[reply]->taskItem;
     const QAuthenticator auth = item->value(TaskRole::Authenticator).value<QAuthenticator>();
-    if (!auth.user().isEmpty()) {
+    if (auth.user().isEmpty()) {
+        AuthenticationRequiredException e(AuthenticationRequiredException::Type::Server,
+            QCoreApplication::translate("AuthenticationRequiredException", "%1 at %2")
+            .arg(authenticator->realm(), reply->url().host()));
+        item->insert(TaskRole::Authenticator, QVariant::fromValue(QAuthenticator(*authenticator)));
+        e.setFileTaskItem(*item);
+        m_futureInterface->reportException(e);
+    } else {
         authenticator->setUser(auth.user());
         authenticator->setPassword(auth.password());
         item->insert(TaskRole::Authenticator, QVariant()); // clear so we fail on next call
-    } else {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not "
-            "authenticate using the provided credentials. Source: '%1'.").arg(reply->url()
-            .toString())));
     }
+}
+
+void Downloader::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *)
+{
+    // Report to GUI thread.
+    // (MetadataJob will ask for username/password, and restart the download ...)
+    AuthenticationRequiredException e(AuthenticationRequiredException::Type::Proxy,
+        QCoreApplication::translate("AuthenticationRequiredException",
+        "Proxy requires authentication."));
+    e.setProxy(proxy);
+    m_futureInterface->reportException(e);
 }
 
 
@@ -284,8 +327,8 @@ bool Downloader::testCanceled()
     // TODO: figure out how to implement pause and resume
     if (m_futureInterface->isPaused()) {
         m_futureInterface->togglePaused();  // Note: this will trigger cancel
-        m_futureInterface->reportException(FileTaskException(QLatin1String("Pause and resume not "
-            "supported by network transfers.")));
+        m_futureInterface->reportException(
+                    TaskException(tr("Pause and resume not supported by network transfers.")));
     }
     return m_futureInterface->isCanceled();
 }
@@ -294,41 +337,20 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
 {
     QUrl const source = item.source();
     if (!source.isValid()) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Invalid source "
-            "'%1'. Error: %2.").arg(source.toString(), source.errorString())));
-        return 0;
-    }
-
-    QScopedPointer<QFile> file;
-    const QString target = item.target();
-    if (target.isEmpty()) {
-        QTemporaryFile *tmp = new QTemporaryFile;
-        tmp->setAutoRemove(false);
-        file.reset(tmp);
-    } else {
-        file.reset(new QFile(target));
-    }
-
-    if (file->exists() && (!QFileInfo(file->fileName()).isFile())) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Target file "
-            "'%1' already exists but is not a file.").arg(file->fileName())));
-        return 0;
-    }
-
-    if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        m_futureInterface->reportException(FileTaskException(QString::fromLatin1("Could not open "
-            "target '%1' for write. Error: %2.").arg(file->fileName(), file->errorString())));
+        //: %2 is a sentence describing the error
+        m_futureInterface->reportException(TaskException(tr("Invalid source '%1'. Error: %2.")
+            .arg(source.toString(), source.errorString())));
         return 0;
     }
 
     QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
-    m_downloads.insert(reply, Data(file.take(), new FileTaskObserver(QCryptographicHash::Sha1), item));
+    std::unique_ptr<Data> data(new Data(item));
+    m_downloads[reply] = std::move(data);
 
     connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
         SLOT(onError(QNetworkReply::NetworkError)));
-#ifndef QT_NO_OPENSSL
-    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(onSslErrors(QList<QSslError>)));
 #endif
     connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64,

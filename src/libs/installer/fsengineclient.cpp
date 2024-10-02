@@ -786,8 +786,7 @@ void FSEngineClientHandler::Private::maybeStartServer()
     serverStarting = true;
 
     if (startServerAsAdmin) {
-        AdminAuthorization auth;
-        serverStarted = auth.authorize() && auth.execute(0, serverCommand, serverArguments);
+        serverStarted = QInstaller::AdminAuthorization::hasAdminRights() && QInstaller::AdminAuthorization::execute(0, serverCommand, serverArguments);
 
         if (!serverStarted) {
             // something went wrong with authorizing, either user pressed cancel or entered

@@ -1,39 +1,26 @@
 /****************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,6 +30,7 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "qsettingswrapper.h"
+#include "utils.h"
 
 #include <QDesktopServices>
 #include <QDir>
@@ -66,6 +54,8 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
     m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
     m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
+    m_variables.insert(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
+    m_variables.insert(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
 
     QString dir = QLatin1String("/opt");
 #ifdef Q_OS_WIN
@@ -87,20 +77,32 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("os"), QLatin1String("mac"));
 #elif defined(Q_OS_LINUX)
     m_variables.insert(QLatin1String("os"), QLatin1String("x11"));
-#elif defined(Q_OS_QWS)
-    m_variables.insert(QLatin1String("os"), QLatin1String("Qtopia"));
 #else
     // TODO: add more platforms as needed...
 #endif
 
-    try {
-        m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-            QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode);
-    } catch (const Error &e) {
-        // TODO: try better error handling
-        qCritical("Could not parse Config: %s", qPrintable(e.message()));
-        return;
+#ifdef Q_OS_WIN
+    QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
+        "CurrentVersion\\Explorer\\Shell Folders"), QSettingsWrapper::NativeFormat);
+
+    const QString programs = user.value(QLatin1String("Programs"), QString()).toString();
+    const QString allPrograms = system.value(QLatin1String("Common Programs"), QString()).toString();
+
+    QString desktop;
+    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
+        desktop = system.value(QLatin1String("Desktop")).toString();
+    } else {
+        desktop = user.value(QLatin1String("Desktop")).toString();
     }
+    m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
+    m_variables.insert(QLatin1String("UserStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(programs));
+    m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"), replaceWindowsEnvironmentVariables(allPrograms));
+#endif
+
+    m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
+        QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode);
 
     // fill the variables defined in the settings
     m_variables.insert(QLatin1String("ProductName"), m_settings.applicationName());

@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,28 +30,45 @@
 
 #include "kdupdaterapplication.h"
 
+#include <QDataStream>
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QTemporaryFile>
 
-/*!
-   \ingroup kdupdater
-   \class KDUpdater::UpdateOperation kdupdaterupdateoperation.h KDUpdaterUpdateOperation
-   \brief Abstract base class for update operations.
+using namespace KDUpdater;
 
-   The \ref KDUpdater::UpdateOperation is an abstract class that specifies an interface for
+/*!
+   \inmodule kdupdater
+   \class KDUpdater::UpdateOperation
+   \brief The UpdateOperation class is an abstract base class for update operations.
+
+   The KDUpdater::UpdateOperation is an abstract class that specifies an interface for
    update operations. Concrete implementations of this class must perform a single update
-   operation like copy, move, delete etc.
+   operation, such as copy, move, or delete.
 
    \note Two separate threads cannot be using a single instance of KDUpdater::UpdateOperation
    at the same time.
 */
 
+/*!
+    \enum UpdateOperation::Error
+    This enum code specifies error codes related to operation arguments and
+    operation runtime failures.
+
+    \value  NoError
+            No error occurred.
+    \value  InvalidArguments
+            Number of arguments does not match or an invalid argument was set.
+    \value  UserDefinedError
+            An error occurred during operation run. Use UpdateOperation::errorString()
+            to get the human-readable description of the error that occurred.
+*/
+
 /*
- * \internal
- * Returns a filename for a temporary file based on \a templateName
- */
+    \internal
+    Returns a filename for a temporary file based on \a templateName.
+*/
 static QString backupFileName(const QString &templateName)
 {
     const QFileInfo templ(templateName);
@@ -76,17 +80,15 @@ static QString backupFileName(const QString &templateName)
     return name;
 }
 
-using namespace KDUpdater;
-
 /*!
-   Constructor
+    \internal
 */
 UpdateOperation::UpdateOperation()
     : m_error(0)
 {}
 
 /*!
-   Destructor
+    \internal
 */
 UpdateOperation::~UpdateOperation()
 {
@@ -95,9 +97,9 @@ UpdateOperation::~UpdateOperation()
 }
 
 /*!
-   Returns the update operation name.
+    Returns the update operation name.
 
-   \sa setName()
+    \sa setName()
 */
 QString UpdateOperation::name() const
 {
@@ -105,10 +107,10 @@ QString UpdateOperation::name() const
 }
 
 /*!
-   Returns a command line string that describes the update operation. The returned
-   string would be of the form
+    Returns a command line string that describes the update operation. The returned string will be
+    of the form:
 
-   <name> <arg1> <arg2> <arg3> ....
+    \c{<name> <arg1> <arg2> <arg3> ....}
 */
 QString UpdateOperation::operationCommand() const
 {
@@ -117,7 +119,7 @@ QString UpdateOperation::operationCommand() const
 }
 
 /*!
- Returns true if there exists a setting called \a name. Otherwise returns false.
+    Returns \c true if a value called \a name exists, otherwise returns \c false.
 */
 bool UpdateOperation::hasValue(const QString &name) const
 {
@@ -125,8 +127,7 @@ bool UpdateOperation::hasValue(const QString &name) const
 }
 
 /*!
- Clears the value of setting \a name and removes it.
- \post hasValue( \a name ) returns false.
+    Clears the value of \a name and removes it.
 */
 void UpdateOperation::clearValue(const QString &name)
 {
@@ -134,16 +135,15 @@ void UpdateOperation::clearValue(const QString &name)
 }
 
 /*!
- Returns the value of setting \a name. If the setting does not exists,
- this returns an empty QVariant.
+    Returns the value of \a name. If the value does not exist, returns an empty QVariant.
 */
 QVariant UpdateOperation::value(const QString &name) const
 {
-    return hasValue(name) ? m_values[name] : QVariant();
+    return m_values.value(name);
 }
 
 /*!
-  Sets the value of setting \a name to \a value.
+    Sets the value of \a name to \a value.
 */
 void UpdateOperation::setValue(const QString &name, const QVariant &value)
 {
@@ -151,8 +151,8 @@ void UpdateOperation::setValue(const QString &name, const QVariant &value)
 }
 
 /*!
-   Sets a update operation name. Subclasses will have to provide a unique
-   name to describe this operation.
+    Sets the name of the operation to \a name. Subclasses will have to provide a unique name to
+    describe the operation.
 */
 void UpdateOperation::setName(const QString &name)
 {
@@ -160,8 +160,7 @@ void UpdateOperation::setName(const QString &name)
 }
 
 /*!
-   Through this function, arguments to the update operation can be specified
-   to the update operation.
+   Sets the arguments for the update operation to \a args.
 */
 void UpdateOperation::setArguments(const QStringList &args)
 {
@@ -169,7 +168,7 @@ void UpdateOperation::setArguments(const QStringList &args)
 }
 
 /*!
-   Returns the last set function arguments.
+    Returns the arguments of the update operation.
 */
 QStringList UpdateOperation::arguments() const
 {
@@ -189,7 +188,11 @@ struct StartsWith
     QString m_searchTerm;
 };
 
-
+/*!
+    Searches the arguments for the key specified by \a key. If it can find the
+    key, it returns the value set for it. Otherwise, it returns \a defaultValue.
+    Arguments are specified in the following form: \c{key=value}.
+*/
 QString UpdateOperation::argumentKeyValue(const QString &key, const QString &defaultValue) const
 {
     const QString keySeparater(key + QLatin1String("="));
@@ -211,7 +214,7 @@ QString UpdateOperation::argumentKeyValue(const QString &key, const QString &def
 }
 
 /*!
-   Returns error details in case performOperation() failed.
+    Returns a human-readable description of the last error that occurred.
 */
 QString UpdateOperation::errorString() const
 {
@@ -219,25 +222,31 @@ QString UpdateOperation::errorString() const
 }
 
 /*!
- * Can be used by subclasses to report more detailed error codes (optional).
- * To check if an operation was successful, use the return value of performOperation().
- */
+    Returns the error that was found during the processing of the operation. If no
+    error was found, returns NoError. Subclasses can set more detailed error codes (optional).
+
+    \note To check if an operation was successful, use the return value of performOperation(),
+    undoOperation(), or testOperation().
+*/
 int UpdateOperation::error() const
 {
     return m_error;
 }
 
 /*!
- * Used by subclasses to set the error string.
- */
+    Sets the human-readable description of the last error that occurred to \a str.
+*/
 void UpdateOperation::setErrorString(const QString &str)
 {
     m_errorString = str;
 }
 
 /*!
- * Used by subclasses to set the error code.
- */
+    Sets the error condition to be \a error. The human-readable message is set to \a errorString.
+
+    \sa UpdateOperation::error()
+    \sa UpdateOperation::errorString()
+*/
 void UpdateOperation::setError(int error, const QString &errorString)
 {
     m_error = error;
@@ -246,22 +255,24 @@ void UpdateOperation::setError(int error, const QString &errorString)
 }
 
 /*!
-   Clears the previously set argument list and application
+    Clears the previously set arguments.
 */
 void UpdateOperation::clear()
 {
     m_arguments.clear();
 }
 
+/*!
+    Returns the list of files that are scheduled for later deletion.
+*/
 QStringList UpdateOperation::filesForDelayedDeletion() const
 {
     return m_delayedDeletionFiles;
 }
 
 /*!
-   Registers a file to be deleted later, once the application was restarted
-   (and the file isn't used anymore for sure).
-   @param files the files to be registered
+     Registers a list of \a files to be deleted later once the application was restarted and the
+     file or files are not used anymore.
 */
 void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 {
@@ -269,7 +280,10 @@ void UpdateOperation::registerForDelayedDeletion(const QStringList &files)
 }
 
 /*!
- Tries to delete \a file. If \a file can't be deleted, it gets registered for delayed deletion.
+    Tries to delete \a file. If \a file cannot be deleted, it is registered for delayed deletion.
+
+    If a backup copy of the file cannot be created, returns \c false and displays the error
+    message specified by \a errorString.
 */
 bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorString)
 {
@@ -283,7 +297,7 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     QFile f(file);
     if (!f.rename(backup)) {
         if (errorString)
-            *errorString = f.errorString();
+            *errorString = tr("Renaming %1 into %2 failed with %3.").arg(file, backup, f.errorString());
         return false;
     }
     registerForDelayedDeletion(QStringList(backup));
@@ -291,38 +305,47 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
 }
 
 /*!
-   \fn virtual void KDUpdater::UpdateOperation::backup() = 0;
+    \fn virtual void KDUpdater::UpdateOperation::backup() = 0;
 
-   Subclasses must implement this function to backup any data before performing the action.
+    Subclasses must implement this function to back up any data before performing the action.
 */
 
 /*!
-   \fn virtual bool KDUpdater::UpdateOperation::performOperation() = 0;
+    \fn virtual bool KDUpdater::UpdateOperation::performOperation() = 0;
 
-   Subclasses must implement this function to perform the update operation
+    Subclasses must implement this function to perform the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
-   \fn virtual bool KDUpdater::UpdateOperation::undoOperation() = 0;
+    \fn virtual bool KDUpdater::UpdateOperation::undoOperation() = 0;
 
-   Subclasses must implement this function to perform the reverse of the operation.
+    Subclasses must implement this function to perform the undo of the update operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
-   \fn virtual bool KDUpdater::UpdateOperation::testOperation() = 0;
+    \fn virtual bool KDUpdater::UpdateOperation::testOperation() = 0;
 
-   Subclasses must implement this function to perform the test operation.
+    Subclasses must implement this function to perform the test operation.
+
+    Returns \c true if the operation is successful.
 */
 
 /*!
-   \fn virtual bool KDUpdater::UpdateOperation::clone() = 0;
+    \fn virtual bool KDUpdater::UpdateOperation::clone() const = 0;
 
-   Subclasses must implement this function to clone the current operation.
+    Subclasses must implement this function to clone the current operation.
 */
 
 /*!
-  Saves this UpdateOperation in XML. You can override this method to store your own extra-data.
-  The default implementation is taking care of arguments and values set via setValue.
+    Saves operation arguments and values as an XML document and returns the
+    document. You can override this method to store your
+    own extra-data. Extra-data can be any data that you need to store to perform or undo the
+    operation. The default implementation is taking care of arguments and values set via
+    UpdateOperation::setValue().
 */
 QDomDocument UpdateOperation::toXml() const
 {
@@ -365,8 +388,8 @@ QDomDocument UpdateOperation::toXml() const
 }
 
 /*!
-  Restores UpdateOperation's arguments and values from the XML document \a doc.
-  Returns true on success, otherwise false.
+    Restores operation arguments and values from the XML document \a doc. Returns \c true on
+    success, otherwise \c false.
 */
 bool UpdateOperation::fromXml(const QDomDocument &doc)
 {
@@ -406,9 +429,10 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
 }
 
 /*!
-  Restores UpdateOperation's arguments and values from the XML document at path \a xml.
-  Returns true on success, otherwise false.
-  \overload
+    \overload
+
+    Restores operation arguments and values from the XML file at path \a xml. Returns \c true on
+    success, otherwise \c false.
 */
 bool UpdateOperation::fromXml(const QString &xml)
 {

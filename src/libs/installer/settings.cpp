@@ -471,6 +471,39 @@ void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
+static bool apply(const QHash<QString, QPair<Repository, Repository> > &updates, QHash <QUrl, Repository> &reposToUpdate)
+{
+    bool update = false;
+    QList<QPair<Repository, Repository> > values = updates.values(QLatin1String("replace"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (reposToUpdate.contains(data.second.url())) {
+            update = true;
+            reposToUpdate.remove(data.second.url());
+            reposToUpdate.insert(data.first.url(), data.first);
+        }
+    }
+
+    values = updates.values(QLatin1String("remove"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (reposToUpdate.contains(data.first.url())) {
+            update = true;
+            reposToUpdate.remove(data.first.url());
+        }
+    }
+
+    values = updates.values(QLatin1String("add"));
+    for (int a = 0; a < values.count(); ++a) {
+        const QPair<Repository, Repository> data = values.at(a);
+        if (!reposToUpdate.contains(data.first.url())) {
+            update = true;
+            reposToUpdate.insert(data.first.url(), data.first);
+        }
+    }
+    return update;
+}
+
 Settings::Update
 Settings::updateDefaultRepositories(const QHash<QString, QPair<Repository, Repository> > &updates)
 {
@@ -483,38 +516,10 @@ Settings::updateDefaultRepositories(const QHash<QString, QPair<Repository, Repos
         defaultRepos.insert(repository.url(), repository);
     }
 
-    bool update = false;
-    QList<QPair<Repository, Repository> > values = updates.values(QLatin1String("replace"));
-    for (int a = 0; a < values.count(); ++a) {
-        const QPair<Repository, Repository> data = values.at(a);
-        if (defaultRepos.contains(data.second.url())) {
-            update = true;
-            defaultRepos.remove(data.second.url());
-            defaultRepos.insert(data.first.url(), data.first);
-        }
-    }
-
-    values = updates.values(QLatin1String("remove"));
-    for (int a = 0; a < values.count(); ++a) {
-        const QPair<Repository, Repository> data = values.at(a);
-        if (defaultRepos.contains(data.first.url())) {
-            update = true;
-            defaultRepos.remove(data.first.url());
-        }
-    }
-
-    values = updates.values(QLatin1String("add"));
-    for (int a = 0; a < values.count(); ++a) {
-        const QPair<Repository, Repository> data = values.at(a);
-        if (!defaultRepos.contains(data.first.url())) {
-            update = true;
-            defaultRepos.insert(data.first.url(), data.first);
-        }
-    }
-
-    if (update)
+    const bool updated = apply(updates, defaultRepos);
+    if (updated)
         setDefaultRepositories(defaultRepos.values().toSet());
-    return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
+    return updated ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
 QSet<Repository> Settings::temporaryRepositories() const
@@ -550,6 +555,24 @@ void Settings::addUserRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
         d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
+}
+
+Settings::Update
+Settings::updateUserRepositories(const QHash<QString, QPair<Repository, Repository> > &updates)
+{
+    if (updates.isEmpty())
+        return Settings::NoUpdatesApplied;
+
+    QHash <QUrl, Repository> reposToUpdate;
+    foreach (const QVariant &variant, d->m_data.values(scUserRepositories)) {
+        const Repository repository = variant.value<Repository>();
+        reposToUpdate.insert(repository.url(), repository);
+    }
+
+    const bool updated = apply(updates, reposToUpdate);
+    if (updated)
+        setUserRepositories(reposToUpdate.values().toSet());
+    return updated ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
 bool Settings::containsValue(const QString &key) const

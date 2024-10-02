@@ -52,6 +52,7 @@
 #include <lib7z_facade.h>
 #include <operationrunner.h>
 #include <packagemanagercore.h>
+#include <packagemanagerproxyfactory.h>
 #include <packagemanagergui.h>
 #include <qinstallerglobal.h>
 #include <settings.h>

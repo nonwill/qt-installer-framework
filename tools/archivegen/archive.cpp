@@ -58,7 +58,7 @@ using namespace QInstaller;
 static void printUsage()
 {
     std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory.7z directories" << std::endl;
+        << " directory.7z [files | directories]" << std::endl;
 }
 
 int main(int argc, char *argv[])

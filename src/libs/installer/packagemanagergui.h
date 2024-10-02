@@ -304,7 +304,6 @@ protected:
     void leaving();
 
 private Q_SLOTS:
-    void targetDirSelected();
     void dirRequested();
 
 private:

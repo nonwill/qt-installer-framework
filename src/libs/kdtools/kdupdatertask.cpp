@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -44,20 +31,33 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
-   \class KDUpdater::Task kdupdatertask.h KDUpdaterTask
-   \brief Base class for all task classes in KDUpdater
+   \inmodule kdupdater
+   \class KDUpdater::Task
+   \brief The Task class is the base class for all tasks in KDUpdater.
 
    This class is the base class for all task classes in KDUpdater. Task is an activity that
    occupies certain amount of execution time. It can be started, stopped (or canceled), paused and
    resumed. Tasks can report progress and error messages which an application can show in any
    sort of UI. The KDUpdater::Task class provides a common interface for dealing with all kinds of
-   tasks in KDUpdater. The class diagram show in this class documentation will help in pointing out
-   the task classes in KDUpdater.
+   tasks in KDUpdater.
 
-   User should be carefull of these points:
-   \li Instances of this class cannot be created. Only instance of the subclasses can be created
-   \li Task classes can be started only once.
+   User should be careful of these points:
+   \list
+        \li Task classes can be started only once.
+        \li Instances of this class cannot be created. Only instances of the subclasses can.
+    \endlist
+*/
+
+/*!
+    \enum Task::Capability
+    This enum value sets the capabilities of the task.
+
+    \value NoCapability
+           The task has no capabilities, so it cannot be paused or stopped.
+    \value Pausable
+           The task can be paused.
+    \value Stoppable
+           The task can be stopped.
 */
 
 /*!
@@ -93,15 +93,7 @@ QString Task::name() const
 
 /*!
    Returns the capabilities of the task. It is a combination of one or more
-   Capability flags. Defined as follows
-   \code
-   enum Task::Capability
-   {
-       NoCapability	= 0,
-       Pausable     = 1,
-       Stoppable    = 2
-   };
-   \endcode
+   Task::Capability flags.
 */
 int Task::capabilities() const
 {
@@ -125,7 +117,7 @@ QString Task::errorString() const
 }
 
 /*!
-   Returns whether the task has started and is running or not.
+   Returns whether the task has started and is running.
 */
 bool Task::isRunning() const
 {
@@ -201,7 +193,7 @@ void Task::run()
 }
 
 /*!
-   Stops the task, provided the task has \ref Stoppable capability.
+   Stops the task, provided the task has the Task::Stoppable capability.
 
    \note Once the task is stopped, it cannot be restarted.
 */
@@ -240,7 +232,7 @@ void Task::stop()
 }
 
 /*!
-   Paused the task, provided the task has \ref Pausable capability.
+   Pauses the task, provided the task has the Task::Pausable capability.
 */
 void Task::pause()
 {
@@ -363,88 +355,95 @@ void Task::reportDone()
         deleteLater();
 }
 
+/*!
+    Returns \c true if the task will be automatically deleted.
+*/
 bool Task::autoDelete() const
 {
     return m_autoDelete;
 }
 
+/*!
+    Automatically deletes the task if \a autoDelete is \c true.
+*/
 void Task::setAutoDelete(bool autoDelete)
 {
     m_autoDelete = autoDelete;
 }
 
 /*!
-   \fn virtual bool KDUpdater::Task::doStart() = 0;
+   \fn virtual void KDUpdater::Task::doRun() = 0;
+
+   Returns \c 0 if the task is run.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doStop() = 0;
+
+   Returns \c true if the task is stopped.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doPause() = 0;
+
+   Returns \c true if the task is paused.
 */
 
 /*!
    \fn virtual bool KDUpdater::Task::doResume() = 0;
+
+   Returns \c true if the task is resumed.
 */
 
 /*!
-   \signal void KDUpdater::Task::error(int code, const QString& errorText)
+   \fn void Task::error(int code, const QString &errorText)
 
    This signal is emitted to notify an error during the execution of this task.
-   \param code Error code
-   \param errorText A string describing the error.
 
-   Error codes are just integers, there are however built in errors represented
-   by the KDUpdater::Error enumeration
-   \code
-   enum Error
-   {
-   ECannotStartTask,
-   ECannotPauseTask,
-   ECannotResumeTask,
-   ECannotStopTask,
-   EUnknown
-   };
-   \endcode
+   The \a code parameter indicates the error that was found during the execution of the
+   task, while the \a errorText is the human-readable description of the last error that occurred.
 */
 
 /*!
-   \signal void KDUpdater::Task::progress(int percent, const QString& progressText)
+    \fn void Task::progressValue(int percent)
 
-   This signal is emitted to nofity progress made by the task.
-
-   \param percent Percentage of progress made
-   \param progressText A string describing the progress made
+    This signal is emitted to report progress made by the task. The \a percent parameter gives
+    the progress made as a percentage.
 */
 
 /*!
-   \signal void KDUpdater::Task::started()
+    \fn void Task::progressText(const QString &progressText)
+
+    This signal is emitted to report the progress made by the task. The \a progressText parameter
+    represents the progress made in a human-readable form.
+*/
+
+/*!
+   \fn void Task::started()
 
    This signal is emitted when the task has started.
 */
 
 /*!
-   \signal void KDUpdater::Task::paused()
+   \fn void Task::paused()
 
    This signal is emitted when the task has paused.
 */
 
 /*!
-   \signal void KDUpdater::Task::resumed()
+   \fn void Task::resumed()
 
    This signal is emitted when the task has resumed.
 */
 
 /*!
-   \signal void KDUpdater::Task::stopped()
+   \fn void Task::stopped()
 
    This signal is emitted when the task has stopped (or canceled).
 */
 
 /*!
-   \signal void KDUpdater::Task::finished()
+   \fn void Task::finished()
 
    This signal is emitted when the task has finished.
 */

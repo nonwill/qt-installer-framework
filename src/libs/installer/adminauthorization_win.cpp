@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -44,6 +31,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QSettings>
 
 #include <qt_windows.h>
 
@@ -52,6 +40,8 @@
 #  define SEE_MASK_NOASYNC 0x00000100
 # endif
 #endif
+
+namespace QInstaller {
 
 struct DeCoInitializer
 {
@@ -66,17 +56,6 @@ struct DeCoInitializer
     }
     bool neededCoInit;
 };
-
-AdminAuthorization::AdminAuthorization()
-{
-}
-
-bool AdminAuthorization::authorize()
-{
-    setAuthorized();
-    emit authorized();
-    return true;
-}
 
 bool AdminAuthorization::hasAdminRights()
 {
@@ -99,34 +78,22 @@ bool AdminAuthorization::hasAdminRights()
     return isInAdminGroup;
 }
 
-//copied from qsystemerror.cpp in Qt
-static QString windowsErrorString(int errorCode)
-{
-    QString ret;
-    wchar_t *string = 0;
-    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
-                  NULL,
-                  errorCode,
-                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                  (LPWSTR)&string,
-                  0,
-                  NULL);
-    ret = QString::fromWCharArray(string);
-    LocalFree((HLOCAL)string);
-
-    if (ret.isEmpty() && errorCode == ERROR_MOD_NOT_FOUND)
-        ret = QString::fromLatin1("The specified module could not be found.");
-
-    ret.append(QLatin1String(" (0x"));
-    ret.append(QString::number(uint(errorCode), 16).rightJustified(8, QLatin1Char('0')));
-    ret.append(QLatin1String(")"));
-
-    return ret;
-}
-
 bool AdminAuthorization::execute(QWidget *, const QString &program, const QStringList &arguments)
 {
     DeCoInitializer _;
+
+    // AdminAuthorization::execute uses UAC to ask for admin privileges. If the user is no
+    // administrator yet and the computer's policies are set to not use UAC (which is the case
+    // in some corporate networks), the call to execute() will simply succeed and not at all
+    // launch the child process. To avoid this, we detect this situation here and return early.
+    if (!hasAdminRights()) {
+        QLatin1String key("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\"
+            "Policies\\System");
+        QSettings registry(key, QSettings::NativeFormat);
+        const QVariant enableLUA = registry.value(QLatin1String("EnableLUA"));
+        if ((enableLUA.type() == QVariant::Int) && (enableLUA.toInt() == 0))
+            return false;
+    }
 
     const QString file = QDir::toNativeSeparators(program);
     const QString args = QInstaller::createCommandline(QString(), arguments);
@@ -146,7 +113,9 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
         return true;
     } else {
         qWarning() << QString::fromLatin1("Error while starting elevated process: %1, "
-            "Error: %2").arg(program, windowsErrorString(GetLastError()));
+            "Error: %2").arg(program).arg(GetLastError());
     }
     return false;
 }
+
+} // namespace QInstaller

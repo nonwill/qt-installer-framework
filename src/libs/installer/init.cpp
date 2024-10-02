@@ -58,18 +58,9 @@
 #include "linereplaceoperation.h"
 #include "minimumprogressoperation.h"
 #include "licenseoperation.h"
-#include "applyproductkeyoperation.h"
 #include "settingsoperation.h"
-
-// QtSDK specific
-#include "qtpatchoperation.h"
 #include "consumeoutputoperation.h"
-#include "setqtcreatorvalueoperation.h"
-#include "addqtcreatorarrayvalueoperation.h"
 
-#ifdef Q_OS_MAC
-#   include "macreplaceinstallnamesoperation.h"
-#endif // Q_OS_MAC
 
 #include "utils.h"
 
@@ -79,6 +70,7 @@
 #include "7zCrc.h"
 
 #include <QtPlugin>
+#include <QElapsedTimer>
 
 #include <iostream>
 
@@ -138,7 +130,6 @@ static void initArchives()
 #if defined(QT_STATIC)
 static void initResources()
 {
-    Q_INIT_RESOURCE(patch_file_lists);
     Q_INIT_RESOURCE(installer);
     // Qt5 or better qmake generates that automatically, so this is only needed on Qt4
 # if QT_VERSION < 0x050000
@@ -181,6 +172,12 @@ static QByteArray trimAndPrepend(QtMsgType type, const QByteArray &msg)
     return ba;
 }
 
+// start timer on construction (so we can use it as static member)
+class Uptime : public QElapsedTimer {
+public:
+    Uptime() { start(); }
+};
+
 #if QT_VERSION < 0x050000
 static void messageHandler(QtMsgType type, const char *msg)
 {
@@ -199,7 +196,10 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     }
 #endif
 
-    verbose() << ba << std::endl;
+    static Uptime uptime;
+    QString t = QLatin1Char('[') + QString::number(uptime.elapsed()) + QLatin1String("] ");
+
+    verbose() << t.toUtf8() << ba << std::endl;
     if (!isVerbose() && type != QtDebugMsg)
         std::cout << ba.constData() << std::endl << std::endl;
 
@@ -242,20 +242,10 @@ void QInstaller::init()
     factory.registerUpdateOperation<LineReplaceOperation>(QLatin1String("LineReplace"));
     factory.registerUpdateOperation<MinimumProgressOperation>(QLatin1String("MinimumProgress"));
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
-    factory.registerUpdateOperation<ApplyProductKeyOperation>(QLatin1String("ApplyProductKey"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
 
-    // QtSDK specific
-    factory.registerUpdateOperation<SetQtCreatorValueOperation>(QLatin1String("SetQtCreatorValue"));
-    factory.registerUpdateOperation<AddQtCreatorArrayValueOperation>(QLatin1String("AddQtCreatorArrayValue"));
-    factory.registerUpdateOperation<QtPatchOperation>(QLatin1String("QtPatch"));
-
     FileDownloaderFactory::setFollowRedirects(true);
-
-#ifdef Q_OS_MAC
-    factory.registerUpdateOperation<MacReplaceInstallNamesOperation>(QLatin1String("ReplaceInstallNames"));
-#endif // Q_OS_MAC
 
    // qDebug -> verbose()
 #if QT_VERSION < 0x050000

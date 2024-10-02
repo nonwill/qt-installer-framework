@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -57,9 +44,13 @@
 #include <linux/limits.h>
 #include <pty.h>
 #else
+#ifdef Q_OS_FREEBSD
+#include <libutil.h>
+#include <signal.h>
+#else
 #include <util.h>
 #endif
-
+#endif
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -69,31 +60,20 @@
 #define SU_COMMAND "/usr/bin/sudo"
 //#define SU_COMMAND "/bin/echo"
 
-AdminAuthorization::AdminAuthorization()
-{
-}
+namespace QInstaller {
 
-bool AdminAuthorization::authorize()
+static QString getPassword(QWidget *parent)
 {
-    return true;
-}
-  
-static QString getPassword(QWidget *)
-{
-#if QT_VERSION < 0x050000
-    if (QApplication::type() == QApplication::GuiClient)
-#else
-    if (qobject_cast<QApplication*> (qApp) != 0)
-#endif
-    {
+    if (qobject_cast<QApplication*> (qApp) != 0) {
         bool ok = false;
-        const QString result = QInputDialog::getText(0, QObject::tr("Authorization required"),
+        const QString result = QInputDialog::getText(parent, QObject::tr("Authorization required"),
            QObject::tr("Enter your password to authorize for sudo:"),
            QLineEdit::Password, QString(), &ok);
         return ok ? result : QString();
     } else {
         std::cout << QObject::tr("Authorization required").toStdString() << std::endl;
-        std::cout << QObject::tr("Enter your password to authorize for sudo:").toStdString() << std::endl;
+        std::cout << QObject::tr("Enter your password to authorize for sudo:").toStdString()
+            << std::endl;
         std::string password;
         std::cin >> password;
         return QString::fromStdString(password);
@@ -102,12 +82,7 @@ static QString getPassword(QWidget *)
 
 static void printError(QWidget *parent, const QString &value)
 {
-#if QT_VERSION < 0x050000
-    if (QApplication::type() == QApplication::GuiClient)
-#else
-    if (qobject_cast<QApplication*> (qApp) != 0)
-#endif
-    {
+    if (qobject_cast<QApplication*> (qApp) != 0) {
         QMessageBox::critical(parent, QObject::tr( "Error acquiring admin rights" ), value,
             QMessageBox::Ok, QMessageBox::Ok);
     } else {
@@ -127,7 +102,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
 
     if (::openpty(&masterFD, &slaveFD, ptsn, 0, 0))
         return false;
-    
+
     masterFD = ::posix_openpt(O_RDWR | O_NOCTTY);
     if (masterFD < 0)
         return false;
@@ -138,7 +113,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::close(masterFD);
         return false;
     }
-  
+
     ::revoke(ttyName);
     ::unlockpt(masterFD);
 
@@ -252,7 +227,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         getrlimit(RLIMIT_NOFILE, &rlp);
         for (int i = 3; i < static_cast<int>(rlp.rlim_cur); ++i)
             ::close(i);
- 
+
         char **argp = (char **) ::malloc(arguments.count() + 4 * sizeof(char *));
         QList<QByteArray> args;
         args.push_back(SU_COMMAND);
@@ -280,3 +255,5 @@ bool AdminAuthorization::hasAdminRights()
 {
     return getuid() == 0;
 }
+
+} // namespace QInstaller

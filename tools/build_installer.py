@@ -1,4 +1,31 @@
 #!/usr/bin/env python
+#############################################################################
+##
+## Copyright (C) 2017 The Qt Company Ltd.
+## Contact: https://www.qt.io/licensing/
+##
+## This file is part of the Qt Installer Framework.
+##
+## $QT_BEGIN_LICENSE:GPL-EXCEPT$
+## Commercial License Usage
+## Licensees holding valid commercial Qt licenses may use this file in
+## accordance with the commercial license agreement provided with the
+## Software or, alternatively, in accordance with the terms contained in
+## a written agreement between you and The Qt Company. For licensing terms
+## and conditions see https://www.qt.io/terms-conditions. For further
+## information use the contact form at https://www.qt.io/contact-us.
+##
+## GNU General Public License Usage
+## Alternatively, this file may be used under the terms of the GNU
+## General Public License version 3 as published by the Free Software
+## Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+## included in the packaging of this file. Please review the following
+## information to ensure the GNU General Public License requirements will
+## be met: https://www.gnu.org/licenses/gpl-3.0.html.
+##
+## $QT_END_LICENSE$
+##
+#############################################################################
 
 import argparse
 import os
@@ -44,7 +71,7 @@ def init():
     basename = os.path.basename(src_dir)
     build_dir = os.path.join(root_dir, basename + '_build')
     package_dir = os.path.join(root_dir, basename + '_pkg')
-    target_path = os.path.join(args.target_dir, 'ifw')
+    target_path = os.path.join(args.target_dir, 'Qt Installer Framework')
 
     print 'source dir: ' + src_dir
     print 'build dir: ' + build_dir
@@ -84,7 +111,13 @@ def package():
     global package_dir
     print 'package ...'
     os.chdir(package_dir)
-    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest"))
+    shutil.copytree(os.path.join(build_dir, 'bin'), os.path.join(package_dir, 'bin'), ignore = shutil.ignore_patterns("*.exe.manifest","*.exp","*.lib"))
+    if sys.platform == 'linux2':
+        run(('strip',os.path.join(package_dir, 'bin/archivegen')))
+        run(('strip',os.path.join(package_dir, 'bin/binarycreator')))
+        run(('strip',os.path.join(package_dir, 'bin/devtool')))
+        run(('strip',os.path.join(package_dir, 'bin/installerbase')))
+        run(('strip',os.path.join(package_dir, 'bin/repogen')))
     shutil.copytree(os.path.join(build_dir, 'doc'), os.path.join(package_dir, 'doc'))
     shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
     shutil.copy(os.path.join(src_dir, 'README'), package_dir)

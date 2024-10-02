@@ -107,10 +107,6 @@ QString CreateDesktopEntryOperation::absoluteFileName()
     return QDir(directory).absoluteFilePath(filename);
 }
 
-/*
-TRANSLATOR QInstaller::CreateDesktopEntryOperation
-*/
-
 CreateDesktopEntryOperation::CreateDesktopEntryOperation()
 {
     setName(QLatin1String("CreateDesktopEntry"));
@@ -123,7 +119,9 @@ CreateDesktopEntryOperation::~CreateDesktopEntryOperation()
 void CreateDesktopEntryOperation::backup()
 {
     const QString filename = absoluteFileName();
-    if (!QFile::exists(filename))
+    QFile file(filename);
+
+    if (!file.exists())
         return;
 
     try {
@@ -133,8 +131,8 @@ void CreateDesktopEntryOperation::backup()
         return;
     }
 
-    if (!QFile::copy(filename, value(QLatin1String("backupOfExistingDesktopEntry")).toString()))
-        setErrorString(QObject::tr("Could not backup file %1").arg(filename));
+    if (!file.copy(value(QLatin1String("backupOfExistingDesktopEntry")).toString()))
+        setErrorString(tr("Could not backup file %1: %2").arg(filename, file.errorString()));
 }
 
 bool CreateDesktopEntryOperation::performOperation()
@@ -184,7 +182,7 @@ bool CreateDesktopEntryOperation::undoOperation()
 
     // first remove the link
     if (!deleteFileNowOrLater(filename)) {
-        setErrorString(QObject::tr("Could not delete file %1").arg(filename));
+        setErrorString(tr("Could not delete file %1").arg(filename));
         return false;
     }
 
@@ -195,7 +193,7 @@ bool CreateDesktopEntryOperation::undoOperation()
     const bool success = QFile::copy(backupOfExistingDesktopEntry, filename)
         && deleteFileNowOrLater(backupOfExistingDesktopEntry);
     if (!success)
-        setErrorString(QObject::tr("Could not restore backup file into %1").arg(filename));
+        setErrorString(tr("Could not restore backup file into %1").arg(filename));
 
     return success;
 }

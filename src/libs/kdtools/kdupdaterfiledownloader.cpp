@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -71,32 +58,116 @@ static double calcProgress(qint64 done, qint64 total)
 // -- KDUpdater::FileDownloader
 
 /*!
-    \internal
-    \ingroup kdupdater
-    \class KDUpdater::FileDownloader kdupdaterfiledownloader.h
+    \inmodule kdupdater
+    \class KDUpdater::FileDownloader
+    \brief The FileDownloader class is the base class for file downloaders used in KDUpdater.
 
-    Base class for file downloaders used in KDUpdater. File downloaders are used by
-    the KDUpdater::Update class to download update files. Each subclass of FileDownloader
-    can download file from a specific category of sources (e.g. local, ftp, http etc).
+    File downloaders are used by the KDUpdater::Update class to download update files. Each
+    subclass of FileDownloader can download files from a specific category of sources (such as
+    \c local, \c ftp, \c http).
 
-    This is an internal class, not a part of the public API. Currently we have three
-    subclasses of FileDownloader
-    \li LocalFileDownloader - downloads from the local file system
-    \li FtpDownloader - downloads from a FTP site
-    \li HttpDownloader - downloads from a HTTP site
+    This is an internal class, not a part of the public API. Currently we have the
+    following subclasses of FileDownloader:
+    \list
+        \li HttpDownloader to download files over FTP, HTTP, or HTTPS if Qt is built with SSL.
+        \li LocalFileDownloader to copy files from the local file system.
+        \li ResourceFileDownloader to download resource files.
+    \endlist
+*/
 
-    Usage
+/*!
+    \property FileDownloader::autoRemoveDownloadedFile
+    \brief Whether the downloaded file should be automatically removed after it
+    is downloaded and the class goes out of scope.
+*/
 
-    \code
-    KDUpdater::FileDownloader* downloader = new KDUpdater::(some subclass name)
+/*!
+    \property FileDownloader::url
+    \brief The URL to download files from.
+*/
 
-    downloader->setUrl(url);
-    downloader->download();
+/*!
+    \property FileDownloader::scheme
+    \brief The scheme to use for downloading files.
+    */
 
-    // wait for downloadCompleted() signal
+/*!
+    \fn FileDownloader::authenticatorChanged(const QAuthenticator &authenticator)
+    This signal is emitted when the authenticator changes to \a authenticator.
+*/
 
-    QString downloadedFile = downloader->downloadedFileName();
-    \endcode
+/*!
+    \fn FileDownloader::canDownload() const = 0
+    Returns \c true if the file exists and is readable.
+*/
+
+/*!
+    \fn FileDownloader::clone(QObject *parent=0) const = 0
+    Clones the local file downloader and assigns it the parent \a parent.
+*/
+
+/*!
+    \fn FileDownloader::downloadCanceled()
+    This signal is emitted if downloading a file is canceled.
+*/
+
+/*!
+    \fn FileDownloader::downloadedFileName() const = 0
+    Returns the file name of the downloaded file.
+*/
+
+/*!
+    \fn FileDownloader::downloadProgress(double progress)
+    This signal is emitted with the current download \a progress.
+*/
+
+/*!
+    \fn FileDownloader::downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
+    This signal is emitted with the download progress as the number of received bytes,
+    \a bytesReceived, and the total size of the file to download, \a bytesToReceive.
+*/
+
+/*!
+    \fn FileDownloader::downloadSpeed(qint64 bytesPerSecond)
+    This signal is emitted with the download speed in bytes per second as \a bytesPerSecond.
+*/
+
+/*!
+    \fn FileDownloader::downloadStarted()
+    This signal is emitted when downloading a file starts.
+*/
+
+/*!
+    \fn FileDownloader::downloadStatus(const QString &status)
+    This signal is emitted with textual representation of the current download \a status in the
+    following format: "100 MiB of 150 MiB - (DAYS) (HOURS) (MINUTES) (SECONDS) remaining".
+*/
+
+/*!
+    \fn FileDownloader::estimatedDownloadTime(int seconds)
+    This signal is emitted with the estimated download time in \a seconds.
+*/
+
+/*!
+    \fn FileDownloader::isDownloaded() const = 0
+    Returns \c true if the file is downloaded.
+*/
+
+/*!
+    \fn FileDownloader::onError() = 0
+    Closes the destination file if an error occurs during copying and stops
+    the download speed timer.
+*/
+
+/*!
+    \fn FileDownloader::onSuccess() = 0
+    Closes the destination file after it has been successfully copied and stops
+    the download speed timer.
+*/
+
+/*!
+    \fn FileDownloader::setDownloadedFileName(const QString &name) = 0
+    Sets the file name of the downloaded file to \a name.
 */
 
 struct KDUpdater::FileDownloader::Private
@@ -148,6 +219,9 @@ struct KDUpdater::FileDownloader::Private
     bool m_ignoreSslErrors;
 };
 
+/*!
+    Creates a file downloader with the scheme \a scheme and parent \a parent.
+*/
 KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent)
     : QObject(parent)
     , d(new Private)
@@ -156,6 +230,9 @@ KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent
     d->followRedirect = false;
 }
 
+/*!
+    Destroys the file downloader.
+*/
 KDUpdater::FileDownloader::~FileDownloader()
 {
     delete d;
@@ -171,26 +248,42 @@ QUrl KDUpdater::FileDownloader::url() const
     return d->url;
 }
 
+/*!
+    Returns the SHA-1 checksum of the downloaded file.
+*/
 QByteArray KDUpdater::FileDownloader::sha1Sum() const
 {
     return d->m_hash.result();
 }
 
+/*!
+    Returns the assumed SHA-1 checksum of the file to download.
+*/
 QByteArray KDUpdater::FileDownloader::assumedSha1Sum() const
 {
     return d->m_assumedSha1Sum;
 }
 
+/*!
+    Sets the assumed SHA-1 checksum of the file to download to \a sum.
+*/
 void KDUpdater::FileDownloader::setAssumedSha1Sum(const QByteArray &sum)
 {
     d->m_assumedSha1Sum = sum;
 }
 
+/*!
+    Returns an error message.
+*/
 QString FileDownloader::errorString() const
 {
     return d->errorString;
 }
 
+/*!
+    Sets the human readable description of the last error that occurred to \a error. Emits the
+    downloadStatus() and downloadAborted() signals.
+*/
 void FileDownloader::setDownloadAborted(const QString &error)
 {
     d->errorString = error;
@@ -198,6 +291,15 @@ void FileDownloader::setDownloadAborted(const QString &error)
     emit downloadAborted(error);
 }
 
+/*!
+    Sets the download status to \c completed and displays a status message.
+
+    If an assumed SHA-1 checksum is set and the actual calculated checksum does not match it, sets
+    the status to \c error. If no SHA-1 is assumed, no check is performed, and status is set to
+    \c success.
+
+    Emits the downloadCompleted() and downloadStatus() signals on success.
+*/
 void KDUpdater::FileDownloader::setDownloadCompleted()
 {
     if (d->m_assumedSha1Sum.isEmpty() || (d->m_assumedSha1Sum == sha1Sum())) {
@@ -210,6 +312,9 @@ void KDUpdater::FileDownloader::setDownloadCompleted()
     }
 }
 
+/*!
+    Emits the downloadCanceled() and downloadStatus() signals.
+*/
 void KDUpdater::FileDownloader::setDownloadCanceled()
 {
     emit downloadCanceled();
@@ -231,11 +336,17 @@ void KDUpdater::FileDownloader::setAutoRemoveDownloadedFile(bool val)
     d->autoRemove = val;
 }
 
+/*!
+    Determines that redirects should be followed if \a val is \c true.
+*/
 void KDUpdater::FileDownloader::setFollowRedirects(bool val)
 {
     d->followRedirect = val;
 }
 
+/*!
+    Returns whether redirects should be followed.
+*/
 bool KDUpdater::FileDownloader::followRedirects() const
 {
     return d->followRedirect;
@@ -246,43 +357,68 @@ bool KDUpdater::FileDownloader::isAutoRemoveDownloadedFile() const
     return d->autoRemove;
 }
 
+/*!
+    Downloads files.
+*/
 void KDUpdater::FileDownloader::download()
 {
     QMetaObject::invokeMethod(this, "doDownload", Qt::QueuedConnection);
 }
 
+/*!
+    Cancels file download.
+*/
 void KDUpdater::FileDownloader::cancelDownload()
 {
     // Do nothing
 }
 
+/*!
+    Starts the download speed timer.
+*/
 void KDUpdater::FileDownloader::runDownloadSpeedTimer()
 {
     if (!d->m_timer.isActive())
         d->m_timer.start(d->m_speedTimerInterval, this);
 }
 
+/*!
+    Stops the download speed timer.
+*/
 void KDUpdater::FileDownloader::stopDownloadSpeedTimer()
 {
     d->m_timer.stop();
 }
 
+/*!
+    Adds \a sample to the current speed bin.
+*/
 void KDUpdater::FileDownloader::addSample(qint64 sample)
 {
     d->m_currentSpeedBin += sample;
 }
 
+/*!
+    Returns the download speed timer ID.
+*/
 int KDUpdater::FileDownloader::downloadSpeedTimerId() const
 {
     return d->m_timer.timerId();
 }
 
+/*!
+    Sets the file download progress to the number of received bytes, \a bytesReceived,
+    and the number of total bytes to receive, \a bytesToReceive.
+*/
 void KDUpdater::FileDownloader::setProgress(qint64 bytesReceived, qint64 bytesToReceive)
 {
     d->m_bytesReceived = bytesReceived;
     d->m_bytesToReceive = bytesToReceive;
 }
 
+/*!
+    Calculates the download speed in bytes per second and emits the downloadSpeed() signal.
+*/
 void KDUpdater::FileDownloader::emitDownloadSpeed()
 {
     unsigned int windowSize = sizeof(d->m_samples) / sizeof(qint64);
@@ -308,6 +444,12 @@ void KDUpdater::FileDownloader::emitDownloadSpeed()
     emit downloadSpeed(d->m_downloadSpeed);
 }
 
+/*!
+    Builds a textual representation of the download status in the following format:
+    "100 MiB of 150 MiB - (DAYS) (HOURS) (MINUTES) (SECONDS) remaining".
+
+    Emits the downloadStatus() signal.
+*/
 void KDUpdater::FileDownloader::emitDownloadStatus()
 {
     QString status;
@@ -360,11 +502,17 @@ void KDUpdater::FileDownloader::emitDownloadStatus()
     emit downloadStatus(status);
 }
 
+/*!
+    Emits dowload progress.
+*/
 void KDUpdater::FileDownloader::emitDownloadProgress()
 {
     emit downloadProgress(d->m_bytesReceived, d->m_bytesToReceive);
 }
 
+/*!
+    Emits the estimated download time.
+*/
 void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
 {
     if (d->m_bytesToReceive <= 0 || d->m_downloadSpeed <= 0) {
@@ -374,16 +522,25 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
     emit estimatedDownloadTime((d->m_bytesToReceive - d->m_bytesReceived) / d->m_downloadSpeed);
 }
 
+/*!
+    \overload addCheckSumData()
+*/
 void KDUpdater::FileDownloader::addCheckSumData(const QByteArray &data)
 {
     d->m_hash.addData(data);
 }
 
+/*!
+    Adds the \a length of characters of \a data to the cryptographic hash of the downloaded file.
+*/
 void KDUpdater::FileDownloader::addCheckSumData(const char *data, int length)
 {
     d->m_hash.addData(data, length);
 }
 
+/*!
+    Resets SHA-1 checksum data of the downloaded file.
+*/
 void KDUpdater::FileDownloader::resetCheckSumData()
 {
     d->m_hash.reset();
@@ -391,8 +548,8 @@ void KDUpdater::FileDownloader::resetCheckSumData()
 
 
 /*!
-    Returns a copy of the proxy factory that this FileDownloader object is using to determine the proxies to
-    be used for requests.
+    Returns a copy of the proxy factory that this FileDownloader object is using to determine the
+    proxies to be used for requests.
 */
 FileDownloaderProxyFactory *KDUpdater::FileDownloader::proxyFactory() const
 {
@@ -402,9 +559,9 @@ FileDownloaderProxyFactory *KDUpdater::FileDownloader::proxyFactory() const
 }
 
 /*!
-    Sets the proxy factory for this class to be \a factory. A proxy factory is used to determine a more
-    specific list of proxies to be used for a given request, instead of trying to use the same proxy value
-    for all requests. This might only be of use for http or ftp requests.
+    Sets the proxy factory for this class to be \a factory. A proxy factory is used to determine a
+    more specific list of proxies to be used for a given request, instead of trying to use the same
+    proxy value for all requests. This might only be of use for HTTP or FTP requests.
 */
 void KDUpdater::FileDownloader::setProxyFactory(FileDownloaderProxyFactory *factory)
 {
@@ -413,8 +570,8 @@ void KDUpdater::FileDownloader::setProxyFactory(FileDownloaderProxyFactory *fact
 }
 
 /*!
-    Returns a copy of the authenticator that this FileDownloader object is using to set the username and
-    password for download request.
+    Returns a copy of the authenticator that this FileDownloader object is using to set the username
+    and password for a download request.
 */
 QAuthenticator KDUpdater::FileDownloader::authenticator() const
 {
@@ -422,9 +579,9 @@ QAuthenticator KDUpdater::FileDownloader::authenticator() const
 }
 
 /*!
-    Sets the authenticator object for this class to be \a authenticator. A authenticator is used to
-    pass on the required authentication information. This might only be of use for http or ftp requests.
-    Emits the authenticator changed signal with the new authenticator in use.
+    Sets the authenticator object for this class to be \a authenticator. An authenticator is used to
+    pass on the required authentication information. This might only be of use for HTTP or FTP
+    requests. Emits the authenticator changed signal with the new authenticator in use.
 */
 void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authenticator)
 {
@@ -434,11 +591,17 @@ void KDUpdater::FileDownloader::setAuthenticator(const QAuthenticator &authentic
     }
 }
 
+/*!
+    Returns \c true if SSL errors should be ignored.
+*/
 bool KDUpdater::FileDownloader::ignoreSslErrors()
 {
     return d->m_ignoreSslErrors;
 }
 
+/*!
+    Determines that SSL errors should be ignored if \a ignore is \c true.
+*/
 void KDUpdater::FileDownloader::setIgnoreSslErrors(bool ignore)
 {
     d->m_ignoreSslErrors = ignore;
@@ -446,20 +609,17 @@ void KDUpdater::FileDownloader::setIgnoreSslErrors(bool ignore)
 
 // -- KDUpdater::LocalFileDownloader
 
-/*
-      Even though QFile::copy() does the task of copying local files from one place
-      to another, I prefer to use the timer and copy one block of data per unit time.
+/*!
+    \inmodule kdupdater
+    \class KDUpdater::LocalFileDownloader
+    \brief The LocalFileDownloader class is used to copy files from the local
+    file system.
 
-      This is because, it is possible that the user of KDUpdater is simultaneously
-      downloading several files. Sometimes in tandem with other file downloaders.
-      If the local file that is being downloaded takes a long time; then that will
-      hang the other downloads.
-
-      On the other hand, local downloads need not actually download the file. It can
-      simply pass on the source file as destination file. At this moment however,
-      I think the user of LocalFileDownloader will assume that the downloaded file
-      can be fiddled around with without worrying about whether it would mess up
-      the original source or not.
+    The user of KDUpdater might be simultaneously downloading several files;
+    sometimes in parallel to other file downloaders. If copying a local file takes
+    a long time, it will make the other downloads hang. Therefore, a timer is used
+    and one block of data is copied per unit time, even though QFile::copy() does the
+    task of copying local files from one place to another.
 */
 
 struct KDUpdater::LocalFileDownloader::Private
@@ -478,12 +638,18 @@ struct KDUpdater::LocalFileDownloader::Private
     int timerId;
 };
 
+/*!
+    Creates a local file downloader with the parent \a parent.
+*/
 KDUpdater::LocalFileDownloader::LocalFileDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("file"), parent)
     , d (new Private)
 {
 }
 
+/*!
+    Destroys the local file downloader.
+*/
 KDUpdater::LocalFileDownloader::~LocalFileDownloader()
 {
     if (this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty())
@@ -492,12 +658,18 @@ KDUpdater::LocalFileDownloader::~LocalFileDownloader()
     delete d;
 }
 
+/*!
+    Returns \c true if the file exists and is readable.
+*/
 bool KDUpdater::LocalFileDownloader::canDownload() const
 {
     QFileInfo fi(url().toLocalFile());
     return fi.exists() && fi.isReadable();
 }
 
+/*!
+    Returns \c true if the file is copied.
+*/
 bool KDUpdater::LocalFileDownloader::isDownloaded() const
 {
     return d->downloaded;
@@ -547,21 +719,34 @@ void KDUpdater::LocalFileDownloader::doDownload()
     emit downloadProgress(0);
 }
 
+/*!
+    Returns the file name of the copied file.
+*/
 QString KDUpdater::LocalFileDownloader::downloadedFileName() const
 {
     return d->destFileName;
 }
 
+/*!
+    Sets the file name of the copied file to \a name.
+*/
 void KDUpdater::LocalFileDownloader::setDownloadedFileName(const QString &name)
 {
     d->destFileName = name;
 }
 
+/*!
+    Clones the local file downloader and assigns it the parent \a parent. Returns
+    the new local file downloader.
+*/
 KDUpdater::LocalFileDownloader *KDUpdater::LocalFileDownloader::clone(QObject *parent) const
 {
     return new LocalFileDownloader(parent);
 }
 
+/*!
+    Cancels copying the file.
+*/
 void KDUpdater::LocalFileDownloader::cancelDownload()
 {
     if (d->timerId < 0)
@@ -574,6 +759,9 @@ void KDUpdater::LocalFileDownloader::cancelDownload()
     setDownloadCanceled();
 }
 
+/*!
+    Called when the download timer event \a event occurs.
+*/
 void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d->timerId) {
@@ -620,6 +808,10 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
     }
 }
 
+/*!
+    Closes the destination file after it has been successfully copied and stops
+    the download speed timer.
+*/
 void LocalFileDownloader::onSuccess()
 {
     d->downloaded = true;
@@ -634,6 +826,10 @@ void LocalFileDownloader::onSuccess()
     stopDownloadSpeedTimer();
 }
 
+/*!
+    Clears the destination file if an error occurs during copying and stops
+    the download speed timer.
+*/
 void LocalFileDownloader::onError()
 {
     d->downloaded = false;
@@ -648,6 +844,11 @@ void LocalFileDownloader::onError()
 
 // -- ResourceFileDownloader
 
+/*!
+    \inmodule kdupdater
+    \class KDUpdater::ResourceFileDownloader
+    \brief The ResourceFileDownloader class can be used to download resource files.
+*/
 struct KDUpdater::ResourceFileDownloader::Private
 {
     Private()
@@ -660,31 +861,43 @@ struct KDUpdater::ResourceFileDownloader::Private
     bool downloaded;
 };
 
+/*!
+    Creates a resource file downloader with the parent \a parent.
+*/
 KDUpdater::ResourceFileDownloader::ResourceFileDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("resource"), parent)
     , d(new Private)
 {
 }
 
+/*!
+    Destroys the resource file downloader.
+*/
 KDUpdater::ResourceFileDownloader::~ResourceFileDownloader()
 {
     delete d;
 }
 
+/*!
+    Returns \c true if the file exists and is readable.
+*/
 bool KDUpdater::ResourceFileDownloader::canDownload() const
 {
-    QUrl url = this->url();
-    url.setScheme(QString::fromLatin1("file"));
-    QString localFile = QString::fromLatin1(":%1").arg(url.toLocalFile());
-    QFileInfo fi(localFile);
+    const QFileInfo fi(QInstaller::pathFromUrl(url()));
     return fi.exists() && fi.isReadable();
 }
 
+/*!
+    Returns \c true if the file is downloaded.
+*/
 bool KDUpdater::ResourceFileDownloader::isDownloaded() const
 {
     return d->downloaded;
 }
 
+/*!
+    Downloads a resource file.
+*/
 void KDUpdater::ResourceFileDownloader::doDownload()
 {
     // Already downloaded
@@ -707,21 +920,34 @@ void KDUpdater::ResourceFileDownloader::doDownload()
     d->timerId = startTimer(0); // start as fast as possible
 }
 
+/*!
+    Returns the file name of the downloaded file.
+*/
 QString KDUpdater::ResourceFileDownloader::downloadedFileName() const
 {
     return d->destFile.fileName();
 }
 
+/*!
+    Sets the file name of the downloaded file to \a name.
+*/
 void KDUpdater::ResourceFileDownloader::setDownloadedFileName(const QString &/*name*/)
 {
     // Not supported!
 }
 
+/*!
+    Clones the resource file downloader and assigns it the parent \a parent. Returns
+    the new resource file downloader.
+*/
 KDUpdater::ResourceFileDownloader *KDUpdater::ResourceFileDownloader::clone(QObject *parent) const
 {
     return new ResourceFileDownloader(parent);
 }
 
+/*!
+    Cancels downloading the file.
+*/
 void KDUpdater::ResourceFileDownloader::cancelDownload()
 {
     if (d->timerId < 0)
@@ -733,6 +959,9 @@ void KDUpdater::ResourceFileDownloader::cancelDownload()
     setDownloadCanceled();
 }
 
+/*!
+    Called when the download timer event \a event occurs.
+*/
 void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d->timerId) {
@@ -769,6 +998,10 @@ void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
     }
 }
 
+/*!
+    Closes the destination file after it has been successfully copied and stops
+    the download speed timer.
+*/
 void KDUpdater::ResourceFileDownloader::onSuccess()
 {
     d->destFile.close();
@@ -776,6 +1009,10 @@ void KDUpdater::ResourceFileDownloader::onSuccess()
     stopDownloadSpeedTimer();
 }
 
+/*!
+    Closes the destination file if an error occurs during copying and stops
+    the download speed timer.
+*/
 void KDUpdater::ResourceFileDownloader::onError()
 {
     d->destFile.close();
@@ -787,6 +1024,13 @@ void KDUpdater::ResourceFileDownloader::onError()
 
 // -- KDUpdater::HttpDownloader
 
+/*!
+    \inmodule kdupdater
+    \class KDUpdater::HttpDownloader
+    \brief The HttpDownloader class is used to download files over FTP, HTTP, or HTTPS.
+
+    HTTPS is supported if Qt is built with SSL.
+*/
 struct KDUpdater::HttpDownloader::Private
 {
     explicit Private(HttpDownloader *qq)
@@ -819,12 +1063,14 @@ struct KDUpdater::HttpDownloader::Private
     }
 };
 
+/*!
+    Creates an HTTP downloader with the parent \a parent.
+*/
 KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     : KDUpdater::FileDownloader(QLatin1String("http"), parent)
     , d(new Private(this))
 {
 #ifndef QT_NO_OPENSSL
-    // TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
     connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
         this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
 #endif
@@ -832,6 +1078,12 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
         SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
 }
 
+/*!
+    Destroys an HTTP downloader.
+
+    Removes the downloaded file if FileDownloader::isAutoRemoveDownloadedFile() returns \c true or
+    FileDownloader::setAutoRemoveDownloadedFile() was called with \c true.
+*/
 KDUpdater::HttpDownloader::~HttpDownloader()
 {
     if (this->isAutoRemoveDownloadedFile() && !d->destFileName.isEmpty())
@@ -839,12 +1091,18 @@ KDUpdater::HttpDownloader::~HttpDownloader()
     delete d;
 }
 
+/*!
+    Returns \c true if the file exists and is readable.
+*/
 bool KDUpdater::HttpDownloader::canDownload() const
 {
     // TODO: Check whether the http file actually exists or not.
     return true;
 }
 
+/*!
+    Returns \c true if the file is downloaded.
+*/
 bool KDUpdater::HttpDownloader::isDownloaded() const
 {
     return d->downloaded;
@@ -862,16 +1120,26 @@ void KDUpdater::HttpDownloader::doDownload()
     runDownloadSpeedTimer();
 }
 
+/*!
+    Returns the file name of the downloaded file.
+*/
 QString KDUpdater::HttpDownloader::downloadedFileName() const
 {
     return d->destFileName;
 }
 
+/*!
+    Sets the file name of the downloaded file to \a name.
+*/
 void KDUpdater::HttpDownloader::setDownloadedFileName(const QString &name)
 {
     d->destFileName = name;
 }
 
+/*!
+    Clones the HTTP downloader and assigns it the parent \a parent. Returns the new
+    HTTP downloader.
+*/
 KDUpdater::HttpDownloader *KDUpdater::HttpDownloader::clone(QObject *parent) const
 {
     return new HttpDownloader(parent);
@@ -906,6 +1174,9 @@ void KDUpdater::HttpDownloader::httpError(QNetworkReply::NetworkError)
         httpDone(true);
 }
 
+/*!
+    Cancels downloading the file.
+*/
 void KDUpdater::HttpDownloader::cancelDownload()
 {
     d->aborted = true;
@@ -936,6 +1207,10 @@ void KDUpdater::HttpDownloader::httpDone(bool error)
     //PENDING: what about the non-error case??
 }
 
+/*!
+    Closes the destination file if an error occurs during copying and stops
+    the download speed timer.
+*/
 void KDUpdater::HttpDownloader::onError()
 {
     d->downloaded = false;
@@ -945,6 +1220,10 @@ void KDUpdater::HttpDownloader::onError()
     stopDownloadSpeedTimer();
 }
 
+/*!
+    Closes the destination file after it has been successfully copied and stops
+    the download speed timer.
+*/
 void KDUpdater::HttpDownloader::onSuccess()
 {
     d->downloaded = true;
@@ -989,6 +1268,9 @@ void KDUpdater::HttpDownloader::httpReadProgress(qint64 done, qint64 total)
     emit downloadProgress(calcProgress(done, total));
 }
 
+/*!
+    Called when the download timer event \a event occurs.
+*/
 void KDUpdater::HttpDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == downloadSpeedTimerId()) {
@@ -1071,7 +1353,6 @@ void KDUpdater::HttpDownloader::onAuthenticationRequired(QNetworkReply *reply, Q
 
 #include "messageboxhandler.h"
 
-// TODO: once we switch to Qt5, use QT_NO_SSL instead of QT_NO_OPENSSL
 void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors)
 {
     Q_UNUSED(reply)
@@ -1085,7 +1366,6 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
 
     const QStringList arguments = QCoreApplication::arguments();
     if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))
-        || arguments.contains(QLatin1String("--silence")) || arguments.contains(QLatin1String("Silence"))
         || ignoreSslErrors()) {
             reply->ignoreSslErrors();
             return;

@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -128,20 +115,32 @@ int main(int argc, char** argv)
                 setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
-                if (!filteredPackages.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutually "
-                                                                 "exclusive. Use either one or the other."));
-                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to exclude missing"));
+                if (!filteredPackages.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: --include and --exclude are mutually exclusive. Use either one or "
+                        "the other."));
+                }
+
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-'))) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package to exclude missing"));
+                }
+
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
             } else if (args.first() == QLatin1String("--include") || args.first() == QLatin1String("-i")) {
                 args.removeFirst();
-                if (!filteredPackages.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: --include and --exclude are mutual "
-                                                                 "exclusive options. Use either one or the other."));
-                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-')))
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package to include missing"));
+                if (!filteredPackages.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: --include and --exclude are mutual exclusive options. Use either "
+                        "one or the other."));
+                }
+
+                if (args.isEmpty() || args.first().startsWith(QLatin1Char('-'))) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package to include missing"));
+                }
+
                 filteredPackages = args.first().split(QLatin1Char(','));
                 args.removeFirst();
                 filterType = QInstallerTools::Include;
@@ -154,19 +153,21 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Packages parameter missing "
-                        "argument"));
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Packages parameter missing argument"));
                 }
+
                 if (!QFileInfo(args.first()).exists()) {
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Package directory not found "
-                        "at the specified location"));
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package directory not found at the specified location"));
                 }
                 packagesDirectories.append(args.first());
                 args.removeFirst();
             } else if (args.first() == QLatin1String("-c") || args.first() == QLatin1String("--config")) {
                 args.removeFirst();
                 if (args.isEmpty())
-                    return printErrorAndUsageAndExit(QObject::tr("Error: Config parameter missing argument"));
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Config parameter missing argument"));
                 args.removeFirst();
                 std::cout << "Config file parameter is deprecated and ignored." << std::endl;
             } else if (args.first() == QLatin1String("--ignore-translations")
@@ -188,8 +189,8 @@ int main(int argc, char** argv)
 
         const bool update = updateExistingRepository || updateExistingRepositoryWithNewComponents;
         if (remove && update) {
-            throw QInstaller::Error(QObject::tr("Argument -r|--remove and --update|--update-new-components "
-                "are mutually exclusive!"));
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Argument -r|--remove and --update|--update-new-components are mutually exclusive!"));
         }
 
         const QString repositoryDir = QInstallerTools::makePathAbsolute(args.first());
@@ -199,8 +200,8 @@ int main(int argc, char** argv)
         if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
-            throw QInstaller::Error(QObject::tr("Repository target folder %1 already exists!")
-                .arg(repositoryDir));
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Repository target folder %1 already exists!").arg(repositoryDir));
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
@@ -211,8 +212,10 @@ int main(int argc, char** argv)
             QFile file(repositoryDir + QLatin1String("/Updates.xml"));
             if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
                 const QDomElement root = doc.documentElement();
-                if (root.tagName() != QLatin1String("Updates"))
-                    throw QInstaller::Error(QObject::tr("Invalid content in '%1'.").arg(file.fileName()));
+                if (root.tagName() != QLatin1String("Updates")) {
+                    throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                        "Invalid content in '%1'.").arg(file.fileName()));
+                }
                 file.close(); // close the file, we read the content already
 
                 // read the already existing updates xml content
@@ -245,7 +248,7 @@ int main(int argc, char** argv)
 
                 if (packages.isEmpty()) {
                     std::cout << QString::fromLatin1("Could not find new components to update '%1'.")
-                        .arg(repositoryDir);
+                        .arg(repositoryDir) << std::endl;
                     return EXIT_SUCCESS;
                 }
             }

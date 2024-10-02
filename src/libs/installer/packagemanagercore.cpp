@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -82,278 +69,317 @@
 #endif
 
 /*!
-    \qmltype QInstaller
-    \inqmlmodule scripting
+    \namespace QInstaller
+    \inmodule QtInstallerFramework
 
-    \brief Provides access to the installer from Qt Script.
+    \keyword qinstaller-module
 
-    Use the \c installer object in the global namespace to access functionality of the installer.
-
-    \section2 Wizard Pages
-
-    The installer has various pre-defined pages that can be used to for example insert pages
-    in a certain place:
-    \list
-    \li QInstaller.Introduction
-    \li QInstaller.TargetDirectory
-    \li QInstaller.ComponentSelection
-    \li QInstaller.LicenseCheck
-    \li QInstaller.StartMenuSelection
-    \li QInstaller.ReadyForInstallation
-    \li QInstaller.PerformInstallation
-    \li QInstaller.InstallationFinished
-    \li QInstaller.End
-    \endlist
+    \brief Contains classes to implement the core functionality of the Qt
+    Installer Framework and the installer UI.
 */
 
 
 /*!
-   \qmlproperty enumeration QInstaller::status
-
-   Status of the installer.
-
-   Possible values are:
-   \list
-   \li QInstaller.Success (deprecated: QInstaller.InstallerSucceeded)
-   \li QInstaller.Failure (deprecated: QInstaller.InstallerFailed)
-   \li QInstaller.Running (deprecated: QInstaller.InstallerFailed)
-   \li QInstaller.Canceled (deprecated: QInstaller.CanceledByUser)
-   \li deprecated: QInstaller.InstallerUnfinished
-   \endlist
+    \class QInstaller::PackageManagerCore
+    \inmodule QtInstallerFramework
+    \brief The PackageManagerCore class provides the core functionality of the Qt Installer
+        Framework.
 */
 
 /*!
-    \qmlsignal QInstaller::aboutCalculateComponentsToInstall()
+    \enum PackageManagerCore::WizardPage
 
-    Emitted before the ordered list of components to install is calculated.
+    This enum type holds the pre-defined package manager pages:
+
+    \value  Introduction
+            \l{Introduction Page}
+    \value  TargetDirectory
+            \l{Target Directory Page}
+    \value  ComponentSelection
+            \l{Component Selection Page}
+    \value  LicenseCheck
+            \l{License Agreement Page}
+    \value  StartMenuSelection
+            \l{Start Menu Directory Page}
+    \value  ReadyForInstallation
+            \l{Ready for Installation Page}
+    \value  PerformInstallation
+            \l{Perform Installation Page}
+    \value  InstallationFinished
+            \l{Finished Page}
+
+    \omitvalue End
 */
 
 /*!
-    \qmlsignal QInstaller::finishedCalculateComponentsToInstall()
+    \enum PackageManagerCore::Status
 
-    Emitted after the ordered list of components to install was calculated.
+    This enum type holds the package manager status:
+
+    \value  Success
+            Installation was successful.
+    \value  Failure
+            Installation failed.
+    \value  Running
+            Installation is in progress.
+    \value  Canceled
+            Installation was canceled.
+    \value  Unfinished
+            Installation was not completed.
+    \value  ForceUpdate
 */
 
 /*!
-    \qmlsignal QInstaller::aboutCalculateComponentsToUninstall()
-
-    Emitted before the ordered list of components to uninstall is calculated.
+    \property PackageManagerCore::status
+    \brief Installation status.
 */
 
 /*!
-    \qmlsignal QInstaller::finishedCalculateComponentsToUninstall()
+    \fn PackageManagerCore::aboutCalculateComponentsToInstall() const
 
-    Emitted after the ordered list of components to uninstall was calculated.
+    \sa {installer::aboutCalculateComponentsToInstall}{installer.aboutCalculateComponentsToInstall}
 */
 
 /*!
-    \qmlsignal QInstaller::componentAdded(Component component)
+    \fn PackageManagerCore::finishedCalculateComponentsToInstall() const
 
-    Emitted when a new root component has been added.
-
-    \sa rootComponentsAdded, updaterComponentsAdded
+    \sa {installer::finishedCalculateComponentsToInstall}{installer.finishedCalculateComponentsToInstall}
 */
 
 /*!
-    \qmlsignal QInstaller::rootComponentsAdded(list<Component> components)
+    \fn PackageManagerCore::aboutCalculateComponentsToUninstall() const
 
-    Emitted when a new list of root components has been added.
-
-    \sa componentAdded, updaterComponentsAdded
+    \sa {installer::aboutCalculateComponentsToUninstall}{installer.aboutCalculateComponentsToUninstall}
 */
 
 /*!
-    \qmlsignal QInstaller::updaterComponentsAdded(list<Component> components)
+    \fn PackageManagerCore::finishedCalculateComponentsToUninstall() const
 
-    Emitted when a new list of updater components has been added.
-    \sa componentAdded, rootComponentsAdded
+    \sa {installer::finishedCalculateComponentsToUninstall}{installer.finishedCalculateComponentsToUninstall}
 */
 
 /*!
-    \qmlsignal QInstaller::componentsAboutToBeCleared()
+    \fn PackageManagerCore::componentAdded(QInstaller::Component *comp)
 
-    Deprecated, and not emitted any more.
+    Emitted when the new root component \a comp is added.
+
+    \sa {installer::componentAdded}{installer.componentAdded}
+    \sa rootComponentsAdded(), updaterComponentsAdded()
 */
 
 /*!
-    \qmlsignal QInstaller::valueChanged(string key, string value)
+    \fn PackageManagerCore::rootComponentsAdded(QList<QInstaller::Component*> components)
 
-    Emitted whenever a value changes.
+    Emitted when the list of root components specified by \a components is added.
 
-    \sa setValue
+    \sa {installer::rootComponentsAdded}{installer.rootComponentsAdded}
+    \sa componentAdded(), updaterComponentsAdded()
 */
 
 /*!
-    \qmlsignal QInstaller::statusChanged(Status status)
+    \fn PackageManagerCore::updaterComponentsAdded(QList<QInstaller::Component*> components)
 
-    Emitted whenever the installer status changes.
+    Emitted when a new list of updater components specified by \a components is added.
+
+    \sa {installer::updaterComponentsAdded}{installer.updaterComponentsAdded}
+    \sa componentAdded(), rootComponentsAdded()
 */
 
 /*!
-    \qmlsignal QInstaller::currentPageChanged(int page)
+    \fn PackageManagerCore::valueChanged(const QString &key, const QString &value)
 
-    Emitted whenever the current page changes.
+    Emitted when the value \a value of the key \a key changes.
+
+    \sa {installer::valueChanged}{installer.valueChanged}, setValue()
 */
 
 /*!
-    \qmlsignal QInstaller::finishButtonClicked()
+    \fn PackageManagerCore::currentPageChanged(int page)
 
-    Emitted when the user clicks the \uicontrol Finish button of the installer.
+    Emitted when the current page \a page changes.
+
+    \sa {installer::currentPageChanged}{installer.currentPageChanged}
 */
 
 /*!
-    \qmlsignal QInstaller::metaJobProgress(int progress)
+    \fn PackageManagerCore::finishButtonClicked()
 
-    Triggered with progress updates of the while communicating with a remote repository. Progress
-    ranges from 0 to 100.
+    \sa {installer::finishButtonClicked}{installer.finishButtonClicked}
 */
 
 /*!
-    \qmlsignal QInstaller::metaJobInfoMessage(string message)
+    \fn PackageManagerCore::metaJobProgress(int progress)
 
-    Triggered with informative updates of the communication with a remote repository.
+    Triggered with progress updates of the communication with a remote
+    repository. Values of \a progress range from 0 to 100.
+
+    \sa {installer::metaJobProgress}{installer.metaJobProgress}
 */
 
 /*!
-    \qmlsignal QInstaller::startAllComponentsReset()
+    \fn PackageManagerCore::metaJobInfoMessage(const QString &message)
 
-    Triggered when the list of components starts to get updated.
+    Triggered with informative updates, \a message, of the communication with a remote repository.
 
-    \sa finishAllComponentsReset
+    \sa {installer::metaJobInfoMessage}{installer.metaJobInfoMessage}
 */
 
 /*!
-    \qmlsignal QInstaller::finishAllComponentsReset(list<Component> rootComponents)
+    \fn PackageManagerCore::startAllComponentsReset()
 
-    Triggered when the list of new root components has been updated.
-
-    \sa startAllComponentsReset
+    \sa {installer::startAllComponentsReset}{installer.startAllComponentsReset}
+    \sa finishAllComponentsReset()
 */
 
 /*!
-    \qmlsignal QInstaller::startUpdaterComponentsReset()
+    \fn PackageManagerCore::finishAllComponentsReset(const QList<QInstaller::Component*> &rootComponents)
 
-    Triggered when components start to get updated during a remote update.
+    Triggered when the list of new root components, \a rootComponents, has been updated.
+
+    \sa {installer::finishAllComponentsReset}{installer.finishAllComponentsReset}
+    \sa startAllComponentsReset()
 */
 
 /*!
-    \qmlsignal QInstaller::finishUpdaterComponentsReset(list<Component> componentsWithUpdates)
+    \fn PackageManagerCore::startUpdaterComponentsReset()
 
-    Triggered when the list of available remote updates has been updated.
+    \sa {installer::startUpdaterComponentsReset}{installer.startUpdaterComponentsReset}
 */
 
 /*!
-    \qmlsignal QInstaller::installationStarted()
+    \fn PackageManagerCore::finishUpdaterComponentsReset(const QList<QInstaller::Component*> &componentsWithUpdates)
 
-    Triggered when installation has started.
+    Triggered when the list of available remote updates, \a componentsWithUpdates,
+    has been updated.
 
-    \sa installationFinished installationInterrupted
+    \sa {installer::finishUpdaterComponentsReset}{installer.finishUpdaterComponentsReset}
 */
 
 /*!
-    \qmlsignal QInstaller::installationInterrupted()
+    \fn PackageManagerCore::installationStarted()
 
-    Triggered when installation has been interrupted (cancelled).
-
-    \sa interrupt installationStarted installationFinished
+    \sa {installer::installationStarted}{installer.installationStarted}
+    \sa installationFinished() installationInterrupted()
 */
 
 /*!
-    \qmlsignal QInstaller::installationFinished()
+    \fn PackageManagerCore::installationInterrupted()
 
-    Triggered when installation has been finished.
-
-    \sa installationStarted installationInterrupted
+    \sa {installer::installationInterrupted}{installer.installationInterrupted}
+    \sa interrupt() installationStarted() installationFinished()
 */
 
 /*!
-    \qmlsignal QInstaller::updateFinished()
+    \fn PackageManagerCore::installationFinished()
 
-    Triggered when an update has been finished.
+    \sa {installer::installationFinished}{installer.installationFinished}
+    \sa installationStarted() installationInterrupted()
 */
 
 /*!
-    \qmlsignal QInstaller::uninstallationStarted()
+    \fn PackageManagerCore::updateFinished()
 
-    Triggered when uninstallation has started.
-
-    \sa uninstallationFinished
+    \sa {installer::installationFinished}{installer.installationFinished}
 */
 
 /*!
-    \qmlsignal QInstaller::uninstallationFinished()
+    \fn PackageManagerCore::uninstallationStarted()
 
-    Triggered when uninstallation has been finished.
-
-    \sa uninstallationStarted
+    \sa {installer::uninstallationStarted}{installer.uninstallationStarted}
+    \sa uninstallationFinished()
 */
 
 /*!
-    \qmlsignal QInstaller::titleMessageChanged(string title)
+    \fn PackageManagerCore::uninstallationFinished()
+
+    \sa {installer::uninstallationFinished}{installer.uninstallationFinished}
+    \sa uninstallationStarted()
+*/
+
+/*!
+    \fn PackageManagerCore::titleMessageChanged(const QString &title)
 
     Emitted when the text of the installer status (on the PerformInstallation page) changes to
     \a title.
+
+    \sa {installer::titleMessageChanged}{installer.titleMessageChanged}
 */
 
 /*!
-    \qmlsignal QInstaller::wizardPageInsertionRequested(Widget widget, WizardPage page)
+    \fn PackageManagerCore::wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page)
 
-    Emitted when a custom \a widget is about to be inserted into \a page by addWizardPage.
+    Emitted when a custom \a widget is about to be inserted into \a page by
+    addWizardPage().
+
+    \sa {installer::wizardPageInsertionRequested}{installer.wizardPageInsertionRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::wizardPageRemovalRequested(Widget widget)
+    \fn PackageManagerCore::wizardPageRemovalRequested(QWidget *widget)
 
-    Emitted when a \a widget is removed by removeWizardPage.
+    Emitted when a \a widget is removed by removeWizardPage().
+
+    \sa {installer::wizardPageRemovalRequested}{installer.wizardPageRemovalRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::wizardWidgetInsertionRequested(Widget widget, WizardPage page)
+    \fn PackageManagerCore::wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page)
 
-    Emitted when a \a widget is inserted into \a page by addWizardPageItem.
+    Emitted when a \a widget is inserted into \a page by addWizardPageItem().
+
+    \sa {installer::wizardWidgetInsertionRequested}{installer.wizardWidgetInsertionRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::wizardWidgetRemovalRequested(Widget widget)
+    \fn PackageManagerCore::wizardWidgetRemovalRequested(QWidget *widget)
 
-    Emitted when a \a widget is removed by removeWizardPageItem.
+    Emitted when a \a widget is removed by removeWizardPageItem().
+
+    \sa {installer::wizardWidgetRemovalRequested}{installer.wizardWidgetRemovalRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::wizardPageVisibilityChangeRequested(bool visible, int page)
+    \fn PackageManagerCore::wizardPageVisibilityChangeRequested(bool visible, int page)
 
-    Emitted when the visibility of the page with id \a page changes to \a visible.
+    Emitted when the visibility of the page with the ID \a page changes to \a visible.
 
-    \sa setDefaultPageVisible
+    \sa setDefaultPageVisible()
+    \sa {installer::wizardPageVisibilityChangeRequested}{installer.wizardPageVisibilityChangeRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::setValidatorForCustomPageRequested(Componentcomponent, string name,
-                                        string callbackName)
+    \fn PackageManagerCore::setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
+                                                               const QString &callbackName)
 
-    Triggered when setValidatorForCustomPage is called.
+    Requests that a validator be set for the custom page specified by \a name and
+    \a callbackName for the component \a component. Triggered when
+    setValidatorForCustomPage() is called.
+
+    \sa {installer::setValidatorForCustomPageRequested}{installer.setValidatorForCustomPageRequested}
 */
 
 /*!
-    \qmlsignal QInstaller::setAutomatedPageSwitchEnabled(bool request)
+    \fn PackageManagerCore::setAutomatedPageSwitchEnabled(bool request)
 
-    Triggered when the automatic switching from PerformInstallation to InstallationFinished page
-    is enabled (\a request = \c true) or disabled (\a request = \c false).
+    Triggered when the automatic switching from the perform installation to the installation
+    finished page is enabled (\a request is \c true) or disabled (\a request is \c false).
 
     The automatic switching is disabled automatically when for example the user expands or unexpands
-    the \gui Details section of the PerformInstallation page.
+    the \uicontrol Details section of the PerformInstallation page.
+
+    \sa {installer::setAutomatedPageSwitchEnabled}{installer.setAutomatedPageSwitchEnabled}
 */
 
 /*!
-    \qmlsignal QInstaller::coreNetworkSettingsChanged()
+    \fn PackageManagerCore::coreNetworkSettingsChanged()
 
-    Emitted when the network settings are changed.
+    \sa {installer::coreNetworkSettingsChanged}{installer.coreNetworkSettingsChanged}
 */
 
 /*!
-    \qmlmethod list<Component> QInstaller::components()
+    \fn PackageManagerCore::guiObjectChanged(QObject *gui)
 
-    Returns the list of all components.
+    Emitted when the GUI object is set to \a gui.
 */
 
 using namespace QInstaller;
@@ -393,7 +419,7 @@ Component *PackageManagerCore::subComponentByName(const QInstaller::PackageManag
         if (check == 0)
             rootComponents = installer->rootComponents();
         else
-            rootComponents = check->childComponents(Component::DirectChildrenOnly);
+            rootComponents = check->allChildComponents();
 
         foreach (QInstaller::Component *component, rootComponents) {
             Component *const result = subComponentByName(installer, name, version, component);
@@ -436,11 +462,18 @@ void PackageManagerCore::writeUninstaller()
     }
 }
 
+/*!
+    Creates the maintenance tool configuration files.
+*/
 void PackageManagerCore::writeMaintenanceConfigFiles()
 {
     d->writeMaintenanceConfigFiles();
 }
 
+/*!
+    Resets the class to its initial state and applies the values of the
+    parameters specified by \a params.
+*/
 void PackageManagerCore::reset(const QHash<QString, QString> &params)
 {
     d->m_completeUninstall = false;
@@ -451,6 +484,9 @@ void PackageManagerCore::reset(const QHash<QString, QString> &params)
     d->initialize(params);
 }
 
+/*!
+    Sets the maintenance tool UI to \a gui.
+*/
 void PackageManagerCore::setGuiObject(QObject *gui)
 {
     if (gui == d->m_guiObject)
@@ -459,16 +495,19 @@ void PackageManagerCore::setGuiObject(QObject *gui)
     emit guiObjectChanged(gui);
 }
 
+/*!
+    Returns the GUI object.
+*/
 QObject *PackageManagerCore::guiObject() const
 {
     return d->m_guiObject;
 }
 
 /*!
-    \qmlmethod void QInstaller::setCompleteUninstallation(bool complete)
-
     Sets the uninstallation to be \a complete. If \a complete is false, only components deselected
     by the user will be uninstalled. This option applies only on uninstallation.
+
+    \sa {installer::setCompleteUninstallation}{installer.setCompleteUninstallation}
  */
 void PackageManagerCore::setCompleteUninstallation(bool complete)
 {
@@ -476,9 +515,7 @@ void PackageManagerCore::setCompleteUninstallation(bool complete)
 }
 
 /*!
-    \qmlmethod void QInstaller::cancelMetaInfoJob()
-
-    Cancels the retrieval of meta information from a remote repository.
+    \sa {installer::cancelMetaInfoJob}{installer.cancelMetaInfoJob}
  */
 void PackageManagerCore::cancelMetaInfoJob()
 {
@@ -486,9 +523,7 @@ void PackageManagerCore::cancelMetaInfoJob()
 }
 
 /*!
-    \qmlmethod void QInstaller::componentsToInstallNeedsRecalculation()
-
-    Ensures that component dependencies are re-calculated.
+    \sa {installer::componentsToInstallNeedsRecalculation}{installer.componentsToInstallNeedsRecalculation}
  */
 void PackageManagerCore::componentsToInstallNeedsRecalculation()
 {
@@ -496,11 +531,8 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 }
 
 /*!
-   \qmlmethod void QInstaller::autoAcceptMessageBoxes()
-
-   Automatically accept all user message boxes.
-
-   \sa autoRejectMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa {installer::autoAcceptMessageBoxes}{installer.autoAcceptMessageBoxes}
+   \sa autoRejectMessageBoxes(), setMessageBoxAutomaticAnswer()
  */
 void PackageManagerCore::autoAcceptMessageBoxes()
 {
@@ -508,11 +540,8 @@ void PackageManagerCore::autoAcceptMessageBoxes()
 }
 
 /*!
-   \qmlmethod void QInstaller::autoRejectMessageBoxes()
-
-   Automatically reject all user message boxes.
-
-   \sa autoAcceptMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa {installer::autoRejectMessageBoxes}{installer.autoRejectMessageBoxes}
+   \sa autoAcceptMessageBoxes(), setMessageBoxAutomaticAnswer()
  */
 void PackageManagerCore::autoRejectMessageBoxes()
 {
@@ -520,13 +549,13 @@ void PackageManagerCore::autoRejectMessageBoxes()
 }
 
 /*!
-   \qmlmethod void QInstaller::setMessageBoxAutomaticAnswer(string identifier, int button)
-
-   Automatically close the message box with ID \a identifier as if the user had pressed \a button.
+   Automatically closes the message box with the ID \a identifier as if the user had pressed
+   \a button.
 
    This can be used for unattended (automatic) installations.
 
-   \sa QMessageBox, autoAcceptMessageBoxes, autoRejectMessageBoxes
+   \sa {installer::setMessageBoxAutomaticAnswer}{installer.setMessageBoxAutomaticAnswer}
+   \sa QMessageBox, autoAcceptMessageBoxes(), autoRejectMessageBoxes()
  */
 void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier, int button)
 {
@@ -534,6 +563,9 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
         static_cast<QMessageBox::Button>(button));
 }
 
+/*!
+    Returns the size of the component \a component as \a value.
+*/
 quint64 size(QInstaller::Component *component, const QString &value)
 {
     if (!component->isSelected() || component->isInstalled())
@@ -542,11 +574,8 @@ quint64 size(QInstaller::Component *component, const QString &value)
 }
 
 /*!
-   \qmlmethod float QInstaller::requiredDiskSpace()
-
-   Returns the estimated amount of disk space in bytes required after installation.
-
-   \sa requiredTemporaryDiskSpace
+   \sa {installer::requiredDiskSpace}{installer.requiredDiskSpace}
+   \sa requiredTemporaryDiskSpace()
  */
 quint64 PackageManagerCore::requiredDiskSpace() const
 {
@@ -559,11 +588,8 @@ quint64 PackageManagerCore::requiredDiskSpace() const
 }
 
 /*!
-   \qmlmethod float QInstaller::requiredTemporaryDiskSpace()
-
-   Returns the estimated required disk space during installation in bytes.
-
-   \sa requiredDiskSpace
+   \sa {installer::requiredTemporaryDiskSpace}{installer.requiredTemporaryDiskSpace}
+   \sa requiredDiskSpace()
  */
 quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
@@ -577,7 +603,9 @@ quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 }
 
 /*!
-    Returns the count of archives that will be downloaded.
+    Returns the number of archives that will be downloaded.
+
+    \a partProgressSize is reserved for the download progress.
 */
 int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 {
@@ -629,30 +657,36 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 }
 
 /*!
-    If a component marked as important was installed during update
-    process true is returned.
+    Returns \c true if a hard restart of the application is requested.
 */
 bool PackageManagerCore::needsHardRestart() const
 {
     return d->m_needsHardRestart;
 }
 
+/*!
+    Enables a component to request a hard restart of the application if
+    \a needsHardRestart is set to \c true.
+*/
 void PackageManagerCore::setNeedsHardRestart(bool needsHardRestart)
 {
     d->m_needsHardRestart = needsHardRestart;
 }
 
-
+/*!
+    Cancels the installation and performs the UNDO step of all already executed
+    operations.
+*/
 void PackageManagerCore::rollBackInstallation()
 {
     emit titleMessageChanged(tr("Cancelling the Installer"));
 
-    //this unregisters all operation progressChanged connects
+    // this unregisters all operation progressChanged connected
     ProgressCoordinator::instance()->setUndoMode();
     const int progressOperationCount = d->countProgressOperations(d->m_performedOperationsCurrentSession);
     const double progressOperationSize = double(1) / progressOperationCount;
 
-    //re register all the undo operations with the new size to the ProgressCoordninator
+    // reregister all the undo operations with the new size to the ProgressCoordinator
     foreach (Operation *const operation, d->m_performedOperationsCurrentSession) {
         QObject *const operationObject = dynamic_cast<QObject*> (operation);
         if (operationObject != 0) {
@@ -714,10 +748,10 @@ void PackageManagerCore::rollBackInstallation()
 }
 
 /*!
-    \qmlmethod boolean Installer::isFileExtensionRegistered(string extension)
+    Returns whether the file extension \a extension is already registered in the
+    Windows registry. Returns \c false on all other platforms.
 
-    Returns whether a file extension is already registered in the Windows registry. Returns \c false
-    on all other platforms.
+    \sa {installer::isFileExtensionRegistered}{installer.isFileExtensionRegistered}
  */
 bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) const
 {
@@ -726,12 +760,13 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) con
 }
 
 /*!
-    \qmlmethod boolean QInstaller::fileExists(string filePath)
-
     Returns \c true if the \a filePath exists; otherwise returns \c false.
 
     \note If the file is a symlink that points to a non existing
      file, \c false is returned.
+
+    \sa {installer::fileExists}{installer.fileExists}
+
  */
 bool PackageManagerCore::fileExists(const QString &filePath) const
 {
@@ -741,8 +776,7 @@ bool PackageManagerCore::fileExists(const QString &filePath) const
 // -- QInstaller
 
 /*!
-    Used by operation runner to get a fake installer, can be removed if installerbase can do what operation
-    runner does.
+    Used by operation runner to get a fake installer.
 */
 PackageManagerCore::PackageManagerCore()
     : d(new PackageManagerCorePrivate(this))
@@ -751,6 +785,17 @@ PackageManagerCore::PackageManagerCore()
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 }
 
+/*!
+    Creates an installer or uninstaller and performs sanity checks on the operations specified
+    by \a operations.
+
+    The magic marker \a magicmaker is a \c quint64 that identifies the type of the binary:
+    \c installer or \c uninstaller.
+
+    Creates and initializes a remote client. Requests administrator's rights for
+    QFile, QSettings, and QProcess operations. Calls \c init() with \a socketName, \a key,
+    and \a mode to set the server side authorization key.
+*/
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &performedOperations)
     : d(new PackageManagerCorePrivate(this, magicmaker, performedOperations))
 {
@@ -760,6 +805,9 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const OperationList &p
     d->initialize(QHash<QString, QString>());
 }
 
+/*!
+    Destroys the instance.
+*/
 PackageManagerCore::~PackageManagerCore()
 {
     if (!isUninstaller() && !(isInstaller() && status() == PackageManagerCore::Canceled)) {
@@ -776,6 +824,9 @@ PackageManagerCore::~PackageManagerCore()
 }
 
 /* static */
+/*!
+    Returns the virtual components' font.
+*/
 QFont PackageManagerCore::virtualComponentsFont()
 {
     QMutexLocker _(globalVirtualComponentsFontMutex());
@@ -785,6 +836,9 @@ QFont PackageManagerCore::virtualComponentsFont()
 }
 
 /* static */
+/*!
+    Sets the virtual components' font to \a font.
+*/
 void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
 {
     QMutexLocker _(globalVirtualComponentsFontMutex());
@@ -794,41 +848,68 @@ void PackageManagerCore::setVirtualComponentsFont(const QFont &font)
 }
 
 /* static */
+/*!
+    Returns \c true if virtual components are visible.
+*/
 bool PackageManagerCore::virtualComponentsVisible()
 {
     return sVirtualComponentsVisible;
 }
 
 /* static */
+/*!
+    Shows virtual components if \a visible is \c true.
+*/
 void PackageManagerCore::setVirtualComponentsVisible(bool visible)
 {
     sVirtualComponentsVisible = visible;
 }
 
 /* static */
+/*!
+    Returns \c true if forced installation is not set for all components for
+    which the <ForcedInstallation> element is set in the package information
+    file.
+*/
 bool PackageManagerCore::noForceInstallation()
 {
     return sNoForceInstallation;
 }
 
 /* static */
+/*!
+    Overwrites the value specified for the component in the \c <ForcedInstallation>
+    element in the package information file with \a value. This enables end users
+    to select or deselect the component in the installer.
+*/
 void PackageManagerCore::setNoForceInstallation(bool value)
 {
     sNoForceInstallation = value;
 }
 
 /* static */
+/*!
+    Returns \c true if a local repository should be created from binary content.
+*/
 bool PackageManagerCore::createLocalRepositoryFromBinary()
 {
     return sCreateLocalRepositoryFromBinary;
 }
 
 /* static */
+/*!
+    Determines that a local repository should be created from binary content if
+    \a create is \c true.
+*/
 void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
 {
     sCreateLocalRepositoryFromBinary = create;
 }
 
+/*!
+    Returns \c true if the package manager is running and installed packages are
+    found. Otherwise, returns \c false.
+*/
 bool PackageManagerCore::fetchLocalPackagesTree()
 {
     d->setStatus(Running);
@@ -874,11 +955,17 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     return true;
 }
 
+/*!
+    Returns a list of local installed packages. The list can be empty.
+*/
 LocalPackagesHash PackageManagerCore::localInstalledPackages()
 {
     return d->localInstalledPackages();
 }
 
+/*!
+    Emits the coreNetworkSettingsChanged() signal when network settings change.
+*/
 void PackageManagerCore::networkSettingsChanged()
 {
     cancelMetaInfoJob();
@@ -894,25 +981,43 @@ void PackageManagerCore::networkSettingsChanged()
     emit coreNetworkSettingsChanged();
 }
 
-KDUpdater::FileDownloaderProxyFactory *PackageManagerCore::proxyFactory() const
+/*!
+    Returns a copy of the proxy factory that the package manager uses to determine
+    the proxies to be used for requests.
+*/
+PackageManagerProxyFactory *PackageManagerCore::proxyFactory() const
 {
     if (d->m_proxyFactory)
         return d->m_proxyFactory->clone();
     return new PackageManagerProxyFactory(this);
 }
 
-void PackageManagerCore::setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory)
+/*!
+    Sets the proxy factory for the package manager to be \a factory. A proxy factory
+    is used to determine a more specific list of proxies to be used for a given
+    request, instead of trying to use the same proxy value for all requests. This
+    might only be of use for HTTP or FTP requests.
+*/
+void PackageManagerCore::setProxyFactory(PackageManagerProxyFactory *factory)
 {
     delete d->m_proxyFactory;
     d->m_proxyFactory = factory;
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
 }
 
+/*!
+    Returns a list of packages available in all the repositories that were
+    looked at.
+*/
 PackagesList PackageManagerCore::remotePackages()
 {
     return d->remotePackages();
 }
 
+/*!
+    Checks for packages to install. Returns \c true if newer versions exist
+    and they can be installed and sets the status of the update to \c Success.
+*/
 bool PackageManagerCore::fetchRemotePackagesTree()
 {
     d->setStatus(Running);
@@ -986,16 +1091,16 @@ bool PackageManagerCore::fetchRemotePackagesTree()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::addWizardPage(Component component, string name, int page)
+    \fn PackageManagerCore::addWizardPage(QInstaller::Component * component, const QString & name, int page)
 
-    Adds the widget with objectName() \a name registered by \a component as a new page
+    Adds the widget with object name \a name registered by \a component as a new page
     into the installer's GUI wizard. The widget is added before \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
     Returns \c true if the operation succeeded.
 
-    \sa removeWizardPage, setDefaultPageVisible
+    \sa {installer::addWizardPage}{installer.addWizardPage}
 */
 bool PackageManagerCore::addWizardPage(Component *component, const QString &name, int page)
 {
@@ -1007,14 +1112,15 @@ bool PackageManagerCore::addWizardPage(Component *component, const QString &name
 }
 
 /*!
-    \qmlmethod boolean QInstaller::removeWizardPage(Component component, string name)
+    \fn PackageManagerCore::removeWizardPage(QInstaller::Component * component, const QString & name)
 
-    Removes the widget with objectName() \a name previously added to the installer's wizard
+    Removes the widget with the object name \a name previously added to the installer's wizard
     by \a component.
 
     Returns \c true if the operation succeeded.
 
-    \sa addWizardPage, setDefaultPageVisible, wizardPageRemovalRequested
+    \sa {installer::removeWizardPage}{installer.removeWizardPage}
+    \sa addWizardPage(), setDefaultPageVisible(), wizardPageRemovalRequested()
 */
 bool PackageManagerCore::removeWizardPage(Component *component, const QString &name)
 {
@@ -1026,15 +1132,14 @@ bool PackageManagerCore::removeWizardPage(Component *component, const QString &n
 }
 
 /*!
-    \qmlmethod boolean QInstaller::setDefaultPageVisible(int page, boolean visible)
-
-    Sets the visibility of the default page with id \a page to \a visible, i.e.
-    removes or adds it from/to the wizard. This works only for pages which have been
+    Sets the visibility of the default page with the ID \a page to \a visible. That is,
+    removes it from or adds it to the wizard. This works only for pages that were
     in the installer when it was started.
 
     Returns \c true.
 
-    \sa addWizardPage, removeWizardPage
+    \sa {installer::setDefaultPageVisible}{installer.setDefaultPageVisible}
+    \sa addWizardPage(), removeWizardPage()
  */
 bool PackageManagerCore::setDefaultPageVisible(int page, bool visible)
 {
@@ -1043,10 +1148,13 @@ bool PackageManagerCore::setDefaultPageVisible(int page, bool visible)
 }
 
 /*!
-    \qmlmethod void QInstaller::setValidatorForCustomPage(Component component, string name,
-                                                         string callbackName)
+    \fn PackageManagerCore::setValidatorForCustomPage(QInstaller::Component * component, const QString & name, const QString & callbackName)
 
-    \sa setValidatorForCustomPageRequested
+    Sets a validator for the custom page specified by \a name and \a callbackName
+    for the component \a component.
+
+    \sa {installer::setValidatorForCustomPage}{installer.setValidatorForCustomPage}
+    \sa setValidatorForCustomPageRequested()
  */
 void PackageManagerCore::setValidatorForCustomPage(Component *component, const QString &name,
                                                    const QString &callbackName)
@@ -1055,14 +1163,18 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
 }
 
 /*!
-    \qmlmethod boolean QInstaller::addWizardPageItem(Component component, string name, int page)
+    \fn PackageManagerCore::addWizardPageItem(QInstaller::Component * component, const QString & name, int page)
 
-    Adds the widget with objectName() \a name registered by \a component as an GUI element
+    Adds the widget with the object name \a name registered by \a component as a GUI element
     into the installer's GUI wizard. The widget is added on \a page.
 
-    See \l{Wizard Pages} for the possible values of \a page.
+    See \l{Controller Scripting} for the possible values of \a page.
 
-    \sa removeWizardPageItem, wizardWidgetInsertionRequested
+    If the widget can be found in an UI file for the component, returns \c true and emits the
+    wizardWidgetInsertionRequested() signal.
+
+    \sa {installer::addWizardPageItem}{installer.addWizardPageItem}
+    \sa removeWizardPageItem(), wizardWidgetInsertionRequested()
 */
 bool PackageManagerCore::addWizardPageItem(Component *component, const QString &name, int page)
 {
@@ -1074,12 +1186,16 @@ bool PackageManagerCore::addWizardPageItem(Component *component, const QString &
 }
 
 /*!
-    \qmlmethod boolean QInstaller::removeWizardPageItem(Component component, string name)
+    \fn PackageManagerCore::removeWizardPageItem(QInstaller::Component * component, const QString & name)
 
-    Removes the widget with objectName() \a name previously added to the installer's wizard
+    Removes the widget with the object name \a name previously added to the installer's wizard
     by \a component.
 
-    \sa addWizardPageItem
+    If the widget can be found in an UI file for the component, returns \c true and emits the
+    wizardWidgetRemovalRequested() signal.
+
+    \sa {installer::removeWizardPageItem}{installer.removeWizardPageItem}
+    \sa addWizardPageItem()
 */
 bool PackageManagerCore::removeWizardPageItem(Component *component, const QString &name)
 {
@@ -1091,11 +1207,10 @@ bool PackageManagerCore::removeWizardPageItem(Component *component, const QStrin
 }
 
 /*!
-    \qmlmethod void QInstaller::addUserRepositories(stringlist repositories)
-
     Registers additional \a repositories.
 
-    \sa setTemporaryRepositories
+    \sa {installer::addUserRepositories}{installer.addUserRepositories}
+    \sa setTemporaryRepositories()
  */
 void PackageManagerCore::addUserRepositories(const QStringList &repositories)
 {
@@ -1107,12 +1222,11 @@ void PackageManagerCore::addUserRepositories(const QStringList &repositories)
 }
 
 /*!
-    \qmlmethod void QInstaller::setTemporaryRepositories(stringlist repositories, boolean replace)
+    Sets additional \a repositories for this instance of the installer or updater
+    if \a replace is \c false. Will be removed after invoking it again.
 
-    Sets additional \a repositories for this instance of the installer or updater.
-    Will be removed after invoking it again.
-
-    \sa addUserRepositories
+    \sa {installer::setTemporaryRepositories}{installer.setTemporaryRepositories}
+    \sa addUserRepositories()
 */
 void PackageManagerCore::setTemporaryRepositories(const QStringList &repositories, bool replace)
 {
@@ -1124,7 +1238,8 @@ void PackageManagerCore::setTemporaryRepositories(const QStringList &repositorie
 }
 
 /*!
-    Checks if the downloader should try to download sha1 checksums for archives.
+    Checks whether the downloader should try to download SHA-1 checksums for
+    archives and returns the checksums.
 */
 bool PackageManagerCore::testChecksum() const
 {
@@ -1132,18 +1247,29 @@ bool PackageManagerCore::testChecksum() const
 }
 
 /*!
-    Defines if the downloader should try to download sha1 checksums for archives.
+    The \a test argument determines whether the downloader should try to
+    download SHA-1 checksums for archives.
 */
 void PackageManagerCore::setTestChecksum(bool test)
 {
     d->m_testChecksum = test;
 }
 
+/*!
+    Returns the script engine that prepares and runs the component scripts.
+
+    \sa {Component Scripting}
+*/
 ScriptEngine *PackageManagerCore::componentScriptEngine() const
 {
     return d->componentScriptEngine();
 }
 
+/*!
+    Returns the script engine that prepares and runs the control script.
+
+    \sa {Controller Scripting}
+*/
 ScriptEngine *PackageManagerCore::controlScriptEngine() const
 {
     return d->controlScriptEngine();
@@ -1177,8 +1303,9 @@ QList<Component*> PackageManagerCore::rootComponents() const
 }
 
 /*!
-    Appends a component as root component to the internal storage for installer or package manager components.
-    To append a component as a child to an already existing component, use Component::appendComponent(). Emits
+    Appends \a component as the root component to the internal storage for
+    installer or package manager components. To append a component as a child to
+    an already existing component, use Component::appendComponent(). Emits
     the componentAdded() signal.
 */
 void PackageManagerCore::appendRootComponent(Component *component)
@@ -1217,7 +1344,8 @@ QList<Component*> PackageManagerCore::updaterComponents() const
 }
 
 /*!
-    Appends a component to the internal storage for updater components. Emits the componentAdded() signal.
+    Appends \a component to the internal storage for updater components. Emits
+    the componentAdded() signal.
 */
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
@@ -1238,17 +1366,16 @@ QList<Component*> PackageManagerCore::availableComponents() const
 
     QList<Component*> result = d->m_rootComponents;
     foreach (QInstaller::Component *component, d->m_rootComponents)
-        result += component->childComponents(Component::Descendants);
+        result += component->descendantComponents();
     return result + d->m_rootDependencyReplacements;
 }
 
 /*!
-    \qmlmethod Component QInstaller::componentByName(string name)
-
-    Returns a component matching \a name. \a name can also contains a version requirement.
-    E.g. "org.qt-project.sdk.qt" returns any component with that name, "org.qt-project.sdk.qt->=4.5" requires
-    the returned component to have at least version 4.5.
-    If no component matches the requirement, 0 is returned.
+    Searches \a components for a component matching \a name and returns it.
+    \a name can also contain a version requirement. For example, \c org.qt-project.sdk.qt
+    returns any component with that name, whereas \c{org.qt-project.sdk.qt->=4.5} requires
+    the returned component to have at least version 4.5. If no component matches the
+    requirement, \c 0 is returned.
 */
 Component *PackageManagerCore::componentByName(const QString &name) const
 {
@@ -1265,12 +1392,14 @@ Component *PackageManagerCore::componentByName(const QString &name) const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::calculateComponentsToInstall()
+    Determines which components to install based on the current run mode and returns an
+    ordered list of components to install. Also auto installed dependencies are resolved.
+    The aboutCalculateComponentsToInstall() signal is emitted
+    before the calculation starts, the finishedCalculateComponentsToInstall()
+    signal once all calculations are done.
 
-    Calculates an ordered list of components to install based on the current run mode. Also auto
-    installed dependencies are resolved. The aboutCalculateComponentsToInstall() signal is emitted
-    before the calculation starts, the finishedCalculateComponentsToInstall() signal once all
-    calculations are done.
+    \sa {installer::calculateComponentsToInstall}{installer.calculateComponentsToInstall}
+
 */
 bool PackageManagerCore::calculateComponentsToInstall() const
 {
@@ -1287,7 +1416,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
             // relevant means all components which are not replaced
             QList<Component*> relevantComponents = rootComponents();
             foreach (QInstaller::Component *component, rootComponents())
-                relevantComponents += component->childComponents(Component::Descendants);
+                relevantComponents += component->descendantComponents();
             foreach (Component *component, relevantComponents) {
                 // ask for all components which will be installed to get all dependencies
                 // even dependencies which are changed without an increased version
@@ -1305,7 +1434,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 }
 
 /*!
-    Returns a list of ordered components to install. The list can be empty.
+    Returns an ordered list of components to install. The list can be empty.
 */
 QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
@@ -1313,12 +1442,12 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::calculateComponentsToUninstall()
-
-    Calculates a list of components to uninstall based on the current run mode. Auto installed
-    dependencies are not yet resolved.  The aboutCalculateComponentsToUninstall() signal is emitted
+    Calculates a list of components to uninstall based on the current run mode.
+    The aboutCalculateComponentsToUninstall() signal is emitted
     before the calculation starts, the finishedCalculateComponentsToUninstall() signal once all
-    calculations are done.
+    calculations are done. Always returns \c true.
+
+    \sa {installer::calculateComponentsToUninstall}{installer.calculateComponentsToUninstall}
 */
 bool PackageManagerCore::calculateComponentsToUninstall() const
 {
@@ -1342,22 +1471,33 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 }
 
 /*!
-    Returns a list of components to uninstall. The list can be empty.
+    Returns a human-readable description of the error that occurred when
+    evaluating the components to install. The error message is empty if no error
+    occurred.
+
+    \sa calculateComponentsToInstall
 */
 QList<Component *> PackageManagerCore::componentsToUninstall() const
 {
     return d->m_componentsToUninstall.toList();
 }
 
+/*!
+    Returns errors found in the components that are marked for installation.
+*/
 QString PackageManagerCore::componentsToInstallError() const
 {
     return d->m_componentsToInstallError;
 }
 
 /*!
-    Returns the reason why the component needs to be installed. Reasons can be: The component was scheduled
-    for installation, the component was added as a dependency for an other component or added as an automatic
-    dependency.
+    Returns the reason why \a component needs to be installed:
+
+    \list
+        \li The component was scheduled for installation.
+        \li The component was added as a dependency for another component.
+        \li The component was added as an automatic dependency.
+    \endlist
 */
 QString PackageManagerCore::installReason(Component *component) const
 {
@@ -1365,8 +1505,10 @@ QString PackageManagerCore::installReason(Component *component) const
 }
 
 /*!
-    Returns a list of components that depend on \a component. The list can be empty. Note: Auto
-    installed dependencies are not resolved.
+    Returns a list of components that depend on \a _component. The list can be
+    empty.
+
+    \note Automatic dependencies are not resolved.
 */
 QList<Component*> PackageManagerCore::dependees(const Component *_component) const
 {
@@ -1419,6 +1561,9 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
     return d->m_defaultModel;
 }
 
+/*!
+    Returns the updater component model.
+*/
 ComponentModel *PackageManagerCore::updaterComponentModel() const
 {
     QMutexLocker _(globalModelMutex());
@@ -1431,17 +1576,19 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     return d->m_updaterModel;
 }
 
+/*!
+    Returns the settings for the package manager.
+*/
 Settings &PackageManagerCore::settings() const
 {
     return d->m_data.settings();
 }
 
 /*!
-    \qmlmethod boolean QInstaller::gainAdminRights()
-
     Tries to gain admin rights. On success, it returns \c true.
 
-    \sa dropAdminRights
+    \sa {installer::gainAdminRights}{installer.gainAdminRights}
+    \sa dropAdminRights()
 */
 bool PackageManagerCore::gainAdminRights()
 {
@@ -1455,11 +1602,8 @@ bool PackageManagerCore::gainAdminRights()
 }
 
 /*!
-    \qmlmethod void QInstaller::dropAdminRights()
-
-    Drops admin rights gained by gainAdminRights.
-
-    \sa gainAdminRights
+    \sa {installer::dropAdminRights}{installer.dropAdminRights}
+    \sa gainAdminRights()
 */
 void PackageManagerCore::dropAdminRights()
 {
@@ -1467,10 +1611,10 @@ void PackageManagerCore::dropAdminRights()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::isProcessRunning(string name)
-
-    Returns true, if a process with \a name is running. On Windows, the comparison
+    Returns \c true if a process with \a name is running. On Windows, the comparison
     is case-insensitive.
+
+    \sa {installer::isProcessRunning}{installer.isProcessRunning}
 */
 bool PackageManagerCore::isProcessRunning(const QString &name) const
 {
@@ -1478,11 +1622,12 @@ bool PackageManagerCore::isProcessRunning(const QString &name) const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::killProcess(string absoluteFilePath)
-
-    Returns true, if a process with \a absoluteFilePath could be killed or isn't running
+    Returns \c true if a process with \a absoluteFilePath could be killed or is
+    not running.
 
     \note This is implemented in a semi blocking way (to keep the main thread to paint the UI).
+
+    \sa {installer::killProcess}{installer.killProcess}
 */
 bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
 {
@@ -1517,14 +1662,13 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
 
 
 /*!
-    \qmlmethod void QInstaller::setDependsOnLocalInstallerBinary()
-
     Makes sure the installer runs from a local drive. Otherwise the user will get an
     appropriate error message.
 
     \note This only works on Windows.
 
-    \sa localInstallerBinaryUsed
+    \sa {installer::setDependsOnLocalInstallerBinary}{installer.setDependsOnLocalInstallerBinary}
+    \sa localInstallerBinaryUsed()
 */
 
 void PackageManagerCore::setDependsOnLocalInstallerBinary()
@@ -1533,12 +1677,11 @@ void PackageManagerCore::setDependsOnLocalInstallerBinary()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::localInstallerBinaryUsed()
-
     Returns \c false if the installer is run on Windows, and the installer has been started from
     a remote file system drive. Otherwise returns \c true.
 
-    \sa setDependsOnLocalInstallerBinary
+    \sa {installer::localInstallerBinaryUsed}{installer.localInstallerBinaryUsed}
+    \sa setDependsOnLocalInstallerBinary()
 */
 bool PackageManagerCore::localInstallerBinaryUsed()
 {
@@ -1549,20 +1692,18 @@ bool PackageManagerCore::localInstallerBinaryUsed()
 }
 
 /*!
-    \qmlmethod array QInstaller::execute(string program, stringlist arguments = undefined,
-                                        string stdin = "")
-
     Starts the program \a program with the arguments \a arguments in a
     new process and waits for it to finish.
 
-    \a stdin is sent as standard input to the application.
+    \a stdIn is sent as standard input to the application.
 
     Returns an empty array if the program could not be executed, otherwise
     the output of command as the first item, and the return code as the second.
 
     \note On Unix, the output is just the output to stdout, not to stderr.
 
-    \sa executeDetached
+    \sa {installer::execute}{installer.execute}
+    \sa executeDetached()
 */
 QList<QVariant> PackageManagerCore::execute(const QString &program, const QStringList &arguments,
     const QString &stdIn) const
@@ -1592,9 +1733,6 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
 }
 
 /*!
-    \qmlmethod boolean QInstaller::executeDetached(string program, stringlist arguments = undefined,
-                                                  string workingDirectory = "")
-
     Starts the program \a program with the arguments \a arguments in a
     new process, and detaches from it. Returns \c true on success;
     otherwise returns \c false. If the installer exits, the
@@ -1610,6 +1748,8 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
     The started process will run as a regular standalone process.
 
     The process will be started in the directory \a workingDirectory.
+
+    \sa {installer::executeDetached}{installer.executeDetached}
 */
 
 bool PackageManagerCore::executeDetached(const QString &program, const QStringList &arguments,
@@ -1629,10 +1769,10 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
 
 
 /*!
-    \qmlmethod string QInstaller::environmentVariable(string name)
-
-    Returns content of an environment variable \a name. An empty string is returned if the
+    Returns the content of the environment variable \a name. An empty string is returned if the
     environment variable is not set.
+
+    \sa {installer::environmentVariable}{installer.environmentVariable}
 */
 QString PackageManagerCore::environmentVariable(const QString &name) const
 {
@@ -1659,6 +1799,9 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
 #endif
 }
 
+/*!
+    Returns \c true if the operation specified by \a name exists.
+*/
 bool PackageManagerCore::operationExists(const QString &name)
 {
     static QSet<QString> existingOperations;
@@ -1672,9 +1815,11 @@ bool PackageManagerCore::operationExists(const QString &name)
 }
 
 /*!
-    \qmlmethod boolean QInstaller::performOperation(string name, stringlist arguments)
+    Instantly performs the operation \a name with \a arguments.
 
-    Instantly performs an operation \a name with \a arguments.
+    Returns \c false if the operation cannot be created or executed.
+
+    \sa {installer::performOperation}{installer.performOperation}
 */
 bool PackageManagerCore::performOperation(const QString &name, const QStringList &arguments)
 {
@@ -1692,11 +1837,11 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
 }
 
 /*!
-    \qmlmethod boolean QInstaller::versionMatches(string version, string requirement)
-
     Returns \c true when \a version matches the \a requirement.
-    \a requirement can be a fixed version number or it can be prefix by the comparators '>', '>=',
+    \a requirement can be a fixed version number or it can be prefixed by the comparators '>', '>=',
     '<', '<=' and '='.
+
+    \sa {installer::versionMatches}{installer.versionMatches}
 */
 bool PackageManagerCore::versionMatches(const QString &version, const QString &requirement)
 {
@@ -1721,15 +1866,14 @@ bool PackageManagerCore::versionMatches(const QString &version, const QString &r
 }
 
 /*!
-    \qmlmethod string QInstaller::findLibrary(string name, stringlist paths = [])
-
     Finds a library named \a name in \a paths.
     If \a paths is empty, it gets filled with platform dependent default paths.
     The resulting path is returned.
 
     This method can be used by scripts to check external dependencies.
 
-    \sa findPath
+    \sa {installer::findLibrary}{installer.findLibrary}
+    \sa findPath()
 */
 QString PackageManagerCore::findLibrary(const QString &name, const QStringList &paths)
 {
@@ -1763,14 +1907,13 @@ QString PackageManagerCore::findLibrary(const QString &name, const QStringList &
 }
 
 /*!
-    \qmlmethod string QInstaller::findPath(string name, stringlist paths = [])
-
-    Tries to find a file name \a name in one of \a paths.
+    Tries to find the file name \a name in one of the paths specified by \a paths.
     The resulting path is returned.
 
     This method can be used by scripts to check external dependencies.
 
-    \sa findLibrary
+    \sa {installer::findPath}{installer.findPath}
+    \sa findLibrary()
 */
 QString PackageManagerCore::findPath(const QString &name, const QStringList &paths)
 {
@@ -1786,12 +1929,13 @@ QString PackageManagerCore::findPath(const QString &name, const QStringList &pat
 }
 
 /*!
-    \qmlmethod void QInstaller::setInstallerBaseBinary(string path)
+    Sets the \c installerbase binary located at \a path to use when writing the
+    maintenance tool. Set the path if an update to the binary is available.
 
-    Sets the "installerbase" binary to use when writing the package manager/uninstaller.
-    Set this if an update to installerbase is available.
+    If the path is not set, the executable segment of the running installer or uninstaller
+    will be used.
 
-    If not set, the executable segment of the running un/installer will be used.
+    \sa {installer::setInstallerBaseBinary}{installer.setInstallerBaseBinary}
 */
 void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 {
@@ -1799,12 +1943,11 @@ void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 }
 
 /*!
-    \qmlmethod string QInstaller::value(string key, string defaultValue = "")
-
     Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
     returned. Additionally, on Windows, \a key can be a registry key.
 
-    \sa setValue, containsValue, valueChanged
+    \sa {installer::value}{installer.value}
+    \sa setValue(), containsValue(), valueChanged()
 */
 QString PackageManagerCore::value(const QString &key, const QString &defaultValue) const
 {
@@ -1826,11 +1969,10 @@ void PackageManagerCore::setValue(const QString &key, const QString &value)
 }
 
 /*!
-    \qmlmethod boolean QInstaller::containsValue(string key)
-
     Returns \c true if the installer contains a value for \a key.
 
-    \sa value, setValue, valueChanged
+    \sa {installer::containsValue}{installer.containsValue}
+    \sa value(), setValue(), valueChanged()
 */
 bool PackageManagerCore::containsValue(const QString &key) const
 {
@@ -1838,12 +1980,13 @@ bool PackageManagerCore::containsValue(const QString &key) const
 }
 
 /*!
-    \qmlmethod void QInstaller::setSharedFlag(string key, boolean value)
-
-    Sets a shared flag with name \a key to \a value. This is one option
+    \obsolete
+    Sets a shared flag with the name \a key to \a value. This is one option
     to share information between scripts.
 
-    \sa sharedFlag
+    Deprecated since 2.0.0. Use setValue() instead.
+
+    \sa setValue()
 */
 void PackageManagerCore::setSharedFlag(const QString &key, bool value)
 {
@@ -1851,23 +1994,31 @@ void PackageManagerCore::setSharedFlag(const QString &key, bool value)
 }
 
 /*!
-    \qmlmethod boolean QInstaller::sharedFlag(string key)
-
-    Returns shared flag with name \a key. This is one option
+    \obsolete
+    Returns the shared flag with the name \a key. This is one option
     to share information between scripts.
 
-    \sa setSharedFlag
+    Deprecated since 2.0.0. Use value() or values() instead.
+
+    \sa value(), values()
 */
 bool PackageManagerCore::sharedFlag(const QString &key) const
 {
     return d->m_sharedFlags.value(key, false);
 }
 
+/*!
+    Returns \c true if the package manager displays detailed information.
+*/
 bool PackageManagerCore::isVerbose() const
 {
     return QInstaller::isVerbose();
 }
 
+/*!
+    Determines that the package manager displays detailed information if
+    \a on is \c true.
+*/
 void PackageManagerCore::setVerbose(bool on)
 {
     QInstaller::setVerbose(on);
@@ -1878,14 +2029,17 @@ PackageManagerCore::Status PackageManagerCore::status() const
     return PackageManagerCore::Status(d->m_status);
 }
 
+/*!
+    Returns a human-readable description of the last error that occurred.
+*/
 QString PackageManagerCore::error() const
 {
     return d->m_error;
 }
 
 /*!
-    Returns \c true if at least one complete installation/update was successful, even if the user cancelled the
-    newest installation process.
+    Returns \c true if at least one complete installation or update was
+    successful, even if the user cancelled the latest installation process.
 */
 bool PackageManagerCore::finishedWithSuccess() const
 {
@@ -1893,11 +2047,8 @@ bool PackageManagerCore::finishedWithSuccess() const
 }
 
 /*!
-    \qmlmethod void QInstaller::interrupt()
-
-   Cancels an ongoing installation.
-
-    \sa installationInterrupted
+    \sa {installer::interrupt}{installer.interrupt}
+    \sa installationInterrupted()
  */
 void PackageManagerCore::interrupt()
 {
@@ -1906,9 +2057,7 @@ void PackageManagerCore::interrupt()
 }
 
 /*!
-    \qmlmethod void QInstaller::setCanceled()
-
-    Cancels the installation.
+    \sa {installer::setCanceled}{installer.setCanceled}
  */
 void PackageManagerCore::setCanceled()
 {
@@ -1927,7 +2076,8 @@ QString PackageManagerCore::replaceVariables(const QString &str) const
 
 /*!
     \overload
-    Replaces all variables in any of \a str by their respective values and returns the results.
+    Replaces all variables in any instance of \a str by their respective values
+    and returns the results.
 */
 QStringList PackageManagerCore::replaceVariables(const QStringList &str) const
 {
@@ -1956,11 +2106,10 @@ QString PackageManagerCore::installerBinaryPath() const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::isInstaller()
+    Returns \c true if running as installer.
 
-    Returns \c true if executed in an install step.
-
-    \sa isUninstaller, isUpdater, isPackageManager
+    \sa {installer::isInstaller}{installer.isInstaller}
+    \sa isUninstaller(), isUpdater(), isPackageManager()
 */
 bool PackageManagerCore::isInstaller() const
 {
@@ -1968,9 +2117,9 @@ bool PackageManagerCore::isInstaller() const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::isOfflineOnly()
-
     Returns \c true if this is an offline-only installer.
+
+    \sa {installer::isOfflineOnly}{installer.isOfflineOnly}
 */
 bool PackageManagerCore::isOfflineOnly() const
 {
@@ -1978,11 +2127,8 @@ bool PackageManagerCore::isOfflineOnly() const
 }
 
 /*!
-    \qmlmethod void QInstaller::setUninstaller()
-
-    Forces an uninstaller context.
-
-    \sa isUninstaller, setUpdater, setPackageManager
+    \sa {installer::setUninstaller}{installer.setUninstaller}
+    \sa isUninstaller(), setUpdater(), setPackageManager()
 */
 void PackageManagerCore::setUninstaller()
 {
@@ -1990,11 +2136,10 @@ void PackageManagerCore::setUninstaller()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::isUninstaller()
+    Returns \c true if running as uninstaller.
 
-    Returns \c true if the script is executed in an uninstall context.
-
-    \sa setUninstaller, isInstaller, isUpdater, isPackageManager
+    \sa {installer::isUninstaller}{installer.isUninstaller}
+    \sa setUninstaller(), isInstaller(), isUpdater(), isPackageManager()
 */
 bool PackageManagerCore::isUninstaller() const
 {
@@ -2002,11 +2147,8 @@ bool PackageManagerCore::isUninstaller() const
 }
 
 /*!
-    \qmlmethod void QInstaller::setUpdater()
-
-    Forces an updater context.
-
-    \sa isUpdater, setUninstaller, setPackageManager
+    \sa {installer::setUpdater}{installer.setUpdater}
+    \sa isUpdater(), setUninstaller(), setPackageManager()
 */
 void PackageManagerCore::setUpdater()
 {
@@ -2014,11 +2156,10 @@ void PackageManagerCore::setUpdater()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::isUpdater()
+    Returns \c true if running as updater.
 
-    Returns \c true if the script is executed in an updater context.
-
-    \sa setUpdater, isInstaller, isUninstaller, isPackageManager
+    \sa {installer::isUpdater}{installer.isUpdater}
+    \sa setUpdater(), isInstaller(), isUninstaller(), isPackageManager()
 */
 bool PackageManagerCore::isUpdater() const
 {
@@ -2026,9 +2167,7 @@ bool PackageManagerCore::isUpdater() const
 }
 
 /*!
-    \qmlmethod void QInstaller::setPackageManager()
-
-    Forces a package manager context.
+    \sa {installer::setPackageManager}{installer.setPackageManager}
 */
 void PackageManagerCore::setPackageManager()
 {
@@ -2037,10 +2176,10 @@ void PackageManagerCore::setPackageManager()
 
 
 /*!
-    \qmlmethod boolean QInstaller::isPackageManager()
+    Returns \c true if running as the package manager.
 
-    Returns \c true if the script is executed in a package manager context.
-    \sa setPackageManager, isInstaller, isUninstaller, isUpdater
+    \sa {installer::isPackageManager}{installer.isPackageManager}
+    \sa setPackageManager(), isInstaller(), isUninstaller(), isUpdater()
 */
 bool PackageManagerCore::isPackageManager() const
 {
@@ -2048,9 +2187,9 @@ bool PackageManagerCore::isPackageManager() const
 }
 
 /*!
-    \qmlmethod boolean QInstaller::runInstaller()
-
     Runs the installer. Returns \c true on success, \c false otherwise.
+
+    \sa {installer::runInstaller}{installer.runInstaller}
 */
 bool PackageManagerCore::runInstaller()
 {
@@ -2058,8 +2197,6 @@ bool PackageManagerCore::runInstaller()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::runUninstaller()
-
     Runs the uninstaller. Returns \c true on success, \c false otherwise.
 */
 bool PackageManagerCore::runUninstaller()
@@ -2068,9 +2205,9 @@ bool PackageManagerCore::runUninstaller()
 }
 
 /*!
-    \qmlmethod boolean QInstaller::runPackageUpdater()
+    Runs the updater. Returns \c true on success, \c false otherwise.
 
-    Runs the package updater. Returns \c true on success, \c false otherwise.
+    \sa {installer::runPackageUpdater}{installer.runPackageUpdater}
 */
 bool PackageManagerCore::runPackageUpdater()
 {
@@ -2078,9 +2215,7 @@ bool PackageManagerCore::runPackageUpdater()
 }
 
 /*!
-    \qmlmethod void QInstaller::languageChanged()
-
-    Calls languangeChanged on all components.
+    \sa {installer::languageChanged}{installer.languageChanged}
 */
 void PackageManagerCore::languageChanged()
 {
@@ -2089,7 +2224,8 @@ void PackageManagerCore::languageChanged()
 }
 
 /*!
-    Runs the installer, un-installer, updater or package manager, depending on the type of this binary.
+    Runs the installer, uninstaller, updater, or package manager, depending on
+    the type of this binary. Returns \c true on success, otherwise \c false.
 */
 bool PackageManagerCore::run()
 {
@@ -2232,6 +2368,9 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         if (d->statusCanceledOrFailed())
             return false;
 
+        if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
+            continue;
+
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = package;
         component->loadDataFromPackage(*package);
@@ -2277,6 +2416,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     foreach (Package *const update, remotes) {
         if (d->statusCanceledOrFailed())
             return false;
+
+        if (!ProductKeyCheck::instance()->isValidPackage(update->data(scName).toString()))
+            continue;
 
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         data.package = update;

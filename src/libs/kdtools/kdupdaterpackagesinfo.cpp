@@ -1,39 +1,26 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt-project.org/legal
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -50,47 +37,39 @@
 using namespace KDUpdater;
 
 /*!
-   \ingroup kdupdater
-   \class KDUpdater::PackagesInfo kdupdaterpackagesinfo.h KDUpdaterPackagesInfo
-   \brief Provides access to information about packages installed on the application side.
+    \inmodule kdupdater
+    \class KDUpdater::PackagesInfo
+    \brief The PackagesInfo class provides access to information about packages installed on the
+        application side.
 
-   This class parses the XML package file specified via the setFileName() method and
-   provides access to the information defined within the package file through an
-   easy to use API. You can:
-   \li get application name via the \ref applicationName() method
-   \li get application version via the \ref applicationVersion() method
-   \li get information about the number of packages installed and their meta-data via the
-   \ref packageInfoCount() and \ref packageInfo() methods.
+    This class parses the \e {installation information} XML file specified via the setFileName()
+    method and provides access to the information defined within the file through an API. You can:
+    \list
+        \li Get the application name via the applicationName() method.
+        \li Get the application version via the applicationVersion() method.
+        \li Get information about the number of packages installed and their meta-data via the
+            packageInfoCount() and packageInfo() methods.
+    \endlist
 
-   Instances of this class cannot be created. Each instance of \ref KDUpdater::Application
-   has one instance of this class associated with it. You can fetch a pointer to an instance
-   of this class for an application via the \ref KDUpdater::Application::packagesInfo()
-   method.
+    Instances of this class cannot be created. Each instance of KDUpdater::Application has one
+    instance of this class associated with it. You can fetch a pointer to an instance of this class
+    for an application via the KDUpdater::Application::packagesInfo() method.
 */
 
-/*! \enum UpdatePackagesInfo::Error
- * Error codes related to retrieving update sources
- */
+/*!
+    \enum PackagesInfo::Error
+    Error codes related to retrieving information about installed packages:
 
-/*! \var UpdatePackagesInfo::Error UpdatePackagesInfo::NoError
- * No error occurred
- */
-
-/*! \var UpdatePackagesInfo::Error UpdatePackagesInfo::NotYetReadError
- * The package information was not parsed yet from the XML file
- */
-
-/*! \var UpdatePackagesInfo::Error UpdatePackagesInfo::CouldNotReadPackageFileError
- * the specified update source file could not be read (does not exist or not readable)
- */
-
-/*! \var UpdatePackagesInfo::Error UpdatePackagesInfo::InvalidXmlError
- * The source file contains invalid XML.
- */
-
-/*! \var UpdatePackagesInfo::Error UpdatePackagesInfo::InvalidContentError
- * The source file contains valid XML, but does not match the expected format for package descriptions
- */
+    \value NoError                          No error occurred.
+    \value NotYetReadError                  The installation information was not parsed yet from the
+                                            XML file.
+    \value CouldNotReadPackageFileError     The specified installation information file could not be
+                                            read (does not exist or is not readable).
+    \value InvalidXmlError                  The installation information file contains invalid XML.
+    \value InvalidContentError              The installation information file contains valid XML, but
+                                            does not match the expected format for package
+                                            descriptions.
+*/
 
 struct PackagesInfo::PackagesInfoData
 {
@@ -136,8 +115,8 @@ PackagesInfo::~PackagesInfo()
 }
 
 /*!
-   Returns true if the PackagesInfo are valid else false is returned in which case
-   the \a errorString() method can be used to receive a describing error message.
+    Returns \c true if PackagesInfo is valid; otherwise returns \c false. You
+    can use the errorString() method to receive a descriptive error message.
 */
 bool PackagesInfo::isValid() const
 {
@@ -147,23 +126,27 @@ bool PackagesInfo::isValid() const
 }
 
 /*!
-   Returns a human-readable error message.
+    Returns a human-readable description of the last error that occurred.
 */
 QString PackagesInfo::errorString() const
 {
     return d->errorMessage;
 }
 
+/*!
+    Returns the error that was found during the processing of the installation information XML file.
+    If no error was found, returns NoError.
+*/
 PackagesInfo::Error PackagesInfo::error() const
 {
     return d->error;
 }
 
 /*!
-   Sets the complete file name of the Packages.xml file. The function also issues a call to
-   \ref refresh() to reload package information from the XML file.
+    Sets the complete file name of the installation information XML file to \a fileName. The function
+    also issues a call to refresh() to reload installation information from the XML file.
 
-   \sa KDUpdater::Application::setPackagesXMLFileName()
+    \sa KDUpdater::Application::setPackagesXMLFileName()
 */
 void PackagesInfo::setFileName(const QString &fileName)
 {
@@ -175,7 +158,7 @@ void PackagesInfo::setFileName(const QString &fileName)
 }
 
 /*!
-   Returns the name of the Packages.xml file that this class referred to.
+    Returns the name of the installation information XML file that this class refers to.
 */
 QString PackagesInfo::fileName() const
 {
@@ -183,17 +166,16 @@ QString PackagesInfo::fileName() const
 }
 
 /*!
-   Sets the application name. By default this is the name specified in
-   the ApplicationName XML element of the Packages.xml file.
+    Sets the application name to \a name. By default, this is the name specified in the
+    \c <ApplicationName> element of the installation information XML file.
 */
 void PackagesInfo::setApplicationName(const QString &name)
 {
     d->applicationName = name;
-    d->modified = true;
 }
 
 /*!
-   Returns the application name.
+    Returns the application name.
 */
 QString PackagesInfo::applicationName() const
 {
@@ -201,17 +183,16 @@ QString PackagesInfo::applicationName() const
 }
 
 /*!
-   Sets the application version. By default this is the version specified
-   in the ApplicationVersion XML element of Packages.xml.
+    Sets the application version to \a version. By default, this is the version specified in the
+    \c <ApplicationVersion> element of the installation information XML file.
 */
 void PackagesInfo::setApplicationVersion(const QString &version)
 {
     d->applicationVersion = version;
-    d->modified = true;
 }
 
 /*!
-   Returns the application version.
+    Returns the application version.
 */
 QString PackagesInfo::applicationVersion() const
 {
@@ -219,7 +200,7 @@ QString PackagesInfo::applicationVersion() const
 }
 
 /*!
-   Returns the number of \ref KDUpdater::PackageInfo objects contained in this class.
+    Returns the number of KDUpdater::PackageInfo objects contained in this class.
 */
 int PackagesInfo::packageInfoCount() const
 {
@@ -227,8 +208,8 @@ int PackagesInfo::packageInfoCount() const
 }
 
 /*!
-   Returns the package info structure (\ref KDUpdater::PackageInfo) at index. If index is
-   out of range then an empty package info structure is returned.
+    Returns the package info structure at \a index. If an invalid index is passed, the
+    function returns a \l{default-constructed value}.
 */
 PackageInfo PackagesInfo::packageInfo(int index) const
 {
@@ -239,8 +220,8 @@ PackageInfo PackagesInfo::packageInfo(int index) const
 }
 
 /*!
-   This function returns the index of the package whose name is \c pkgName. If no such
-   package was found, this function returns -1.
+    Returns the index of the package whose name is \a pkgName. If no such package was found, this
+    function returns -1.
 */
 int PackagesInfo::findPackageInfo(const QString &pkgName) const
 {
@@ -253,7 +234,7 @@ int PackagesInfo::findPackageInfo(const QString &pkgName) const
 }
 
 /*!
-   Returns all package info structures.
+    Returns all package info structures.
 */
 QVector<PackageInfo> PackagesInfo::packageInfos() const
 {
@@ -261,9 +242,9 @@ QVector<PackageInfo> PackagesInfo::packageInfos() const
 }
 
 /*!
-   This function re-reads the Packages.xml file and updates itself. Changes to \ref applicationName()
-   and \ref applicationVersion() are lost after this function returns. The function emits a reset()
-   signal after completion.
+    Re-reads the installation information XML file and updates itself. Changes to applicationName()
+    and applicationVersion() are lost after this function returns. The function emits a reset()
+    signal after completion.
 */
 void PackagesInfo::refresh()
 {
@@ -337,8 +318,14 @@ void PackagesInfo::refresh()
 }
 
 /*!
- Marks the package with \a name as installed in \a version.
- */
+    Marks the package specified by \a name as installed. Sets the values of
+    \a version, \a title, \a description, \a dependencies, \a forcedInstallation,
+    \a virtualComp, \a uncompressedSize, and \a inheritVersionFrom for the
+    package.
+
+    Returns \c true if the installation information was modified.
+
+*/
 bool PackagesInfo::installPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
                                   const QStringList &dependencies, bool forcedInstallation,
@@ -365,11 +352,12 @@ bool PackagesInfo::installPackage(const QString &name, const QString &version,
 }
 
 /*!
-   Update the package.
+    Updates the package specified by \a name and sets its version to \a version
+    and the last update date to \a date.
+
+    Returns \c false if the package is not found.
 */
-bool PackagesInfo::updatePackage(const QString &name,
-                                 const QString &version,
-                                 const QDate &date)
+bool PackagesInfo::updatePackage(const QString &name, const QString &version, const QDate &date)
 {
     int index = findPackageInfo(name);
 
@@ -383,8 +371,10 @@ bool PackagesInfo::updatePackage(const QString &name,
 }
 
 /*!
- Remove the package with \a name.
- */
+    Removes the package specified by \a name.
+
+    Returns \c false if the package is not found.
+*/
 bool PackagesInfo::removePackage(const QString &name)
 {
     const int index = findPackageInfo(name);
@@ -411,6 +401,9 @@ static void addTextChildHelper(QDomNode *node,
     node->appendChild(domElement);
 }
 
+/*!
+    Writes the installation information file to disk.
+*/
 void PackagesInfo::writeToDisk()
 {
     if (d->modified && (!d->packageInfoList.isEmpty() || QFile::exists(d->fileName))) {
@@ -521,46 +514,47 @@ void PackagesInfo::clearPackageInfoList()
 }
 
 /*!
-   \fn void KDUpdater::PackagesInfo::reset()
+    \fn void KDUpdater::PackagesInfo::reset()
 
-   This signal is emitted whenever the contents of this class is refreshed, usually from within
-   the \ref refresh() slot.
+    This signal is emitted whenever the contents of this class are refreshed, usually from within
+    the refresh() slot.
 */
 
 /*!
-   \ingroup kdupdater
-   \struct KDUpdater::PackageInfo kdupdaterpackagesinfo.h KDUpdaterPackageInfo
-   \brief Describes a single installed package in the application.
+    \inmodule kdupdater
+    \class KDUpdater::PackageInfo
+    \brief The PackageInfo class describes a single installed package in the application.
 
-   This structure contains information about a single installed package in the application.
-   The information contained in this structure corresponds to the information described
-   by the Package XML element in Packages.xml
+    This class contains information about a single installed package in the application. The
+    information contained in this class corresponds to the information described by the <Package>
+    XML element in the installation information XML file.
 */
 
 /*!
-   \var QString KDUpdater::PackageInfo::name
+    \variable PackageInfo::name
+    \brief The name of the package.
 */
 
 /*!
-   \var QString KDUpdater::PackageInfo::pixmap
+    \variable PackageInfo::pixmap
 */
 
 /*!
-   \var QString KDUpdater::PackageInfo::title
+    \variable PackageInfo::title
 */
 
 /*!
-   \var QString KDUpdater::PackageInfo::description
+    \variable PackageInfo::description
 */
 
 /*!
-   \var QString KDUpdater::PackageInfo::version
+    \variable PackageInfo::version
 */
 
 /*!
-   \var QDate KDUpdater::PackageInfo::lastUpdateDate
+    \variable PackageInfo::lastUpdateDate
 */
 
 /*!
-   \var QDate KDUpdater::PackageInfo::installDate
+    \variable PackageInfo::installDate
 */

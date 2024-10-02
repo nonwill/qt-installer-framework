@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -75,14 +62,15 @@ QString FileTaskObserver::progressText() const
         if (bytesReceived.endsWith(tmp))
             bytesReceived.chop(tmp.length());
 
-        progressText = bytesReceived + tr(" of ") + bytesToReceive;
+        progressText = tr("%1 of %2").arg(bytesReceived).arg(bytesToReceive);
     } else {
         if (m_bytesTransfered > 0)
-            progressText = QInstaller::humanReadableSize(m_bytesTransfered) + tr(" received.");
+            progressText = tr("%1 received.").arg(QInstaller::humanReadableSize(m_bytesTransfered));
     }
 
-    progressText += QLatin1String(" (") + QInstaller::humanReadableSize(m_bytesPerSecond) + tr("/sec")
-        + QLatin1Char(')');
+    if (!progressText.isEmpty())
+        progressText += QLatin1Char(' ');
+    progressText += tr("(%1/sec)").arg(QInstaller::humanReadableSize(m_bytesPerSecond));
     if (m_bytesToTransfer > 0 && m_bytesPerSecond > 0) {
         const qint64 time = (m_bytesToTransfer - m_bytesTransfered) / m_bytesPerSecond;
 
@@ -93,22 +81,22 @@ QString FileTaskObserver::progressText() const
 
         QString days;
         if (d > 0)
-            days = QString::number(d) + (d < 2 ? tr(" day") : tr(" days")) + QLatin1String(", ");
+            days = tr("%n day(s), ", "", d);
 
         QString hours;
         if (h > 0)
-            hours = QString::number(h) + (h < 2 ? tr(" hour") : tr(" hours")) + QLatin1String(", ");
+            hours = tr("%n hour(s), ", "", h);
 
         QString minutes;
         if (m > 0)
-            minutes = QString::number(m) + (m < 2 ? tr(" minute") : tr(" minutes"));
+            minutes = tr("%n minute(s)", "", m);
 
         QString seconds;
         if (s >= 0 && minutes.isEmpty()) {
             s = (s <= 0 ? 1 : s);
-            seconds = QString::number(s) + (s < 2 ? tr(" second") : tr(" seconds"));
+            seconds = tr("%n second(s)", "", s);
         }
-        progressText += tr(" - ") + days + hours + minutes + seconds + tr(" remaining.");
+        progressText += tr(" - %1%2%3%4 remaining.").arg(days).arg(hours).arg(minutes).arg(seconds);
     } else {
         progressText += tr(" - unknown time remaining.");
     }

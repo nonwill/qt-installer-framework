@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -43,11 +30,21 @@
 #include "messageboxhandler.h"
 #include "metadatajob_p.h"
 #include "packagemanagercore.h"
+#include "packagemanagerproxyfactory.h"
 #include "productkeycheck.h"
-#include "qinstallerglobal.h"
+#include "proxycredentialsdialog.h"
+#include "serverauthenticationdialog.h"
 #include "settings.h"
 
 namespace QInstaller {
+
+static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
+{
+    QUrl u(url);
+    if (u.isRelative())
+        return QUrl(result.taskItem().source()).resolved(u);
+    return u;
+}
 
 MetadataJob::MetadataJob(QObject *parent)
     : KDJob(parent)
@@ -91,9 +88,12 @@ void MetadataJob::doStart()
                 authenticator.setUser(repo.username());
                 authenticator.setPassword(repo.password());
 
-                // append a random string to avoid proxy caches
-                FileTaskItem item(repo.url().toString() + QString::fromLatin1("/Updates.xml?")
-                    .append(QString::number(qrand() * qrand())));
+                QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
+                if (!m_core->value(QLatin1String("UrlQueryString")).isEmpty())
+                    url += m_core->value(QLatin1String("UrlQueryString")) + QLatin1Char('&');
+
+                // also append a random string to avoid proxy caches
+                FileTaskItem item(url.append(QString::number(qrand() * qrand())));
                 item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                 item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                 items.append(item);
@@ -119,7 +119,57 @@ void MetadataJob::xmlTaskFinished()
     try {
         m_xmlTask.waitForFinished();
         status = parseUpdatesXml(m_xmlTask.future().results());
-    } catch (const FileTaskException &e) {
+    } catch (const AuthenticationRequiredException &e) {
+        if (e.type() == AuthenticationRequiredException::Type::Proxy) {
+            const QNetworkProxy proxy = e.proxy();
+            ProxyCredentialsDialog proxyCredentials(proxy);
+            qDebug() << e.message();
+
+            if (proxyCredentials.exec() == QDialog::Accepted) {
+                qDebug() << "Retrying with new credentials ...";
+                PackageManagerProxyFactory *factory = m_core->proxyFactory();
+
+                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+                                             proxyCredentials.password());
+                m_core->setProxyFactory(factory);
+                status = XmlDownloadRetry;
+            } else {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
+            }
+        } else if (e.type() == AuthenticationRequiredException::Type::Server) {
+            qDebug() << e.message();
+            ServerAuthenticationDialog dlg(e.message(), e.taskItem());
+            if (dlg.exec() == QDialog::Accepted) {
+                Repository original = e.taskItem().value(TaskRole::UserRole)
+                    .value<Repository>();
+                Repository replacement = original;
+                replacement.setUsername(dlg.user());
+                replacement.setPassword(dlg.password());
+
+                Settings &s = m_core->settings();
+                QSet<Repository> temporaries = s.temporaryRepositories();
+                if (temporaries.contains(original)) {
+                    temporaries.remove(original);
+                    temporaries.insert(replacement);
+                    s.addTemporaryRepositories(temporaries, true);
+                } else {
+                    QHash<QString, QPair<Repository, Repository> > update;
+                    update.insert(QLatin1String("replace"), qMakePair(original, replacement));
+
+                    if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
+                        || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
+                            if (m_core->isUpdater() || m_core->isPackageManager())
+                                m_core->writeMaintenanceConfigFiles();
+                    }
+                }
+                status = XmlDownloadRetry;
+            } else {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));
+            }
+        }
+    } catch (const TaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());
     } catch (const QUnhandledException &e) {
@@ -162,12 +212,14 @@ void MetadataJob::unzipTaskFinished()
         reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
+
+    if (error() != KDJob::NoError)
+        return;
+
     delete m_unzipTasks.value(watcher);
     m_unzipTasks.remove(watcher);
     delete watcher;
 
-    if (error() != KDJob::NoError)
-        return;
     if (m_unzipTasks.isEmpty()) {
         setProcessedAmount(100);
         emitFinished();
@@ -199,7 +251,7 @@ void MetadataJob::metadataTaskFinished()
         } else {
             emitFinished();
         }
-    } catch (const FileTaskException &e) {
+    } catch (const TaskException &e) {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, e.message());
     } catch (const QUnhandledException &e) {
@@ -226,10 +278,13 @@ void MetadataJob::reset()
     try {
         m_xmlTask.cancel();
         m_metadataTask.cancel();
-        foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys())
+        foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
+            watcher->deleteLater();
+        }
         foreach (QObject *const object, m_unzipTasks)
             object->deleteLater();
+        m_unzipTasks.clear();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
 }
@@ -289,13 +344,15 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     if (c2.at(j).toElement().tagName() == scName)
                         packageName = c2.at(j).toElement().text();
                     else if (c2.at(j).toElement().tagName() == scRemoteVersion)
-                        packageVersion = c2.at(j).toElement().text();
+                        packageVersion = (online ? c2.at(j).toElement().text() : QString());
                     else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
                         packageHash = c2.at(j).toElement().text();
                 }
+
                 const QString repoUrl = metadata.repository.url().toString();
-                FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl,
-                    packageName, (online ? packageVersion : QString())));
+                FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
+                    packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
+                    .arg(packageName, packageVersion));
 
                 QAuthenticator authenticator;
                 authenticator.setUser(metadata.repository.username());
@@ -322,7 +379,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 const QString action = el.attribute(QLatin1String("action"));
                 if (action == QLatin1String("add")) {
                     // add a new repository to the defaults list
-                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
@@ -332,14 +389,15 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
-                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
+                    repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
                     qDebug() << "Repository to remove:" << repository.displayname();
                 } else if (action == QLatin1String("replace")) {
                     // replace possible default repositories using the given server url
-                    Repository oldRepository(el.attribute(QLatin1String("oldUrl")), true);
-                    Repository newRepository(el.attribute(QLatin1String("newUrl")), true);
+                    Repository oldRepository(resolveUrl(result, el.attribute(QLatin1String("oldUrl"))), true);
+                    Repository newRepository(resolveUrl(result, el.attribute(QLatin1String("newUrl"))), true);
                     newRepository.setUsername(el.attribute(QLatin1String("username")));
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
                     newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));

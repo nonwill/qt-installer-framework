@@ -51,12 +51,9 @@ HEADERS += packagemanagercore.h \
     componentmodel.h \
     qinstallerglobal.h \
     qtpatch.h \
-    qtpatchoperation.h \
     consumeoutputoperation.h \
     replaceoperation.h \
     linereplaceoperation.h \
-    setqtcreatorvalueoperation.h \
-    addqtcreatorarrayvalueoperation.h \
     copydirectoryoperation.h \
     simplemovefileoperation.h \
     extractarchiveoperation.h \
@@ -96,7 +93,7 @@ HEADERS += packagemanagercore.h \
     link.h \
     createlinkoperation.h \
     packagemanagercoredata.h \
-    applyproductkeyoperation.h \
+#    applyproductkeyoperation.h \
     globals.h \
     graph.h \
     settingsoperation.h \
@@ -111,9 +108,11 @@ HEADERS += packagemanagercore.h \
     observer.h \
     runextensions.h \
     metadatajob.h \
-    metadatajob_p.h
+    metadatajob_p.h \
+    proxycredentialsdialog.h \
+    serverauthenticationdialog.h
 
-    SOURCES += packagemanagercore.cpp \
+SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -126,12 +125,9 @@ HEADERS += packagemanagercore.h \
     scriptengine.cpp \
     componentmodel.cpp \
     qtpatch.cpp \
-    qtpatchoperation.cpp  \
     consumeoutputoperation.cpp \
     replaceoperation.cpp \
     linereplaceoperation.cpp \
-    setqtcreatorvalueoperation.cpp \
-    addqtcreatorarrayvalueoperation.cpp \
     copydirectoryoperation.cpp \
     simplemovefileoperation.cpp \
     extractarchiveoperation.cpp \
@@ -147,7 +143,6 @@ HEADERS += packagemanagercore.h \
     updater.cpp \
     operationrunner.cpp \
     updatesettings.cpp \
-    adminauthorization.cpp \
     fsengineclient.cpp \
     fsengineserver.cpp \
     elevatedexecuteoperation.cpp \
@@ -169,7 +164,7 @@ HEADERS += packagemanagercore.h \
     link.cpp \
     createlinkoperation.cpp \
     packagemanagercoredata.cpp \
-    applyproductkeyoperation.cpp \
+#    applyproductkeyoperation.cpp \
     globals.cpp \
     settingsoperation.cpp \
     testrepository.cpp \
@@ -179,19 +174,19 @@ HEADERS += packagemanagercore.h \
     downloadfiletask.cpp \
     unziptask.cpp \
     observer.cpp \
-    metadatajob.cpp
+    metadatajob.cpp \
+    proxycredentialsdialog.cpp \
+    serverauthenticationdialog.cpp
 
-RESOURCES += resources/patch_file_lists.qrc \
-             resources/installer.qrc
+FORMS += proxycredentialsdialog.ui \
+    serverauthenticationdialog.ui 
 
-macx {
-    HEADERS += \
-               macreplaceinstallnamesoperation.h
-    SOURCES += adminauthorization_mac.cpp \
-               macreplaceinstallnamesoperation.cpp
+RESOURCES += resources/installer.qrc
+
+unix {
+    osx: SOURCES += adminauthorization_mac.cpp
+    else: SOURCES += adminauthorization_x11.cpp
 }
-
-unix:!macx:SOURCES += adminauthorization_x11.cpp
 
 LIBS += -l7z
 win32 {

@@ -45,11 +45,11 @@
 #include "metadatajob.h"
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
+#include "packagemanagerproxyfactory.h"
 #include "qinstallerglobal.h"
 
 #include "kdsysinfo.h"
 #include "kdupdaterapplication.h"
-#include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatefinder.h"
 
 #include <QObject>
@@ -177,7 +177,7 @@ public:
     Operation *takeOwnedOperation(Operation *operation);
 
     Operation *createPathOperation(const QFileInfo &fileInfo, const QString &componentName);
-    void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathesForUninstallation,
+    void registerPathesForUninstallation(const QList<QPair<QString, bool> > &pathsForUninstallation,
         const QString &componentName);
 
     void addPerformed(Operation *op) {
@@ -288,7 +288,7 @@ private:
 
     QSet<Component*> m_componentsToUninstall;
     QString m_componentsToInstallError;
-    FileDownloaderProxyFactory *m_proxyFactory;
+    PackageManagerProxyFactory *m_proxyFactory;
 
     ComponentModel *m_defaultModel;
     ComponentModel *m_updaterModel;

@@ -1,39 +1,26 @@
 /**************************************************************************
 **
-** Copyright (C) 2012-2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2017 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -45,8 +32,9 @@
 
 const int INTERVAL = 20;
 
-LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent) :
-    QPlainTextEdit(parent), m_timerId(0)
+LazyPlainTextEdit::LazyPlainTextEdit(QWidget *parent)
+    : QPlainTextEdit(parent)
+    , m_timerId(0)
 {
 }
 
@@ -55,17 +43,18 @@ void LazyPlainTextEdit::timerEvent(QTimerEvent *event)
     if (event->timerId() == m_timerId) {
         killTimer(m_timerId);
         m_timerId = 0;
-        m_chachedOutput.chop(1); //removes the last \n
-        if (!m_chachedOutput.isEmpty())
-            appendPlainText(m_chachedOutput);
-        horizontalScrollBar()->setValue( 0 );
-        m_chachedOutput.clear();
+        m_cachedOutput.chop(1); //removes the last \n
+        if (!m_cachedOutput.isEmpty()) {
+            appendPlainText(m_cachedOutput);
+            horizontalScrollBar()->setValue(0);
+            m_cachedOutput.clear();
+        }
     }
 }
 
 void LazyPlainTextEdit::append(const QString &text)
 {
-    m_chachedOutput.append(text + QLatin1String("\n"));
+    m_cachedOutput.append(text + QLatin1String("\n"));
     if (isVisible() && m_timerId == 0)
         m_timerId = startTimer(INTERVAL);
 }
@@ -75,11 +64,10 @@ void LazyPlainTextEdit::clear()
     if (m_timerId) {
         killTimer(m_timerId);
         m_timerId = 0;
-        m_chachedOutput.clear();
+        m_cachedOutput.clear();
     }
     QPlainTextEdit::clear();
 }
-
 
 void LazyPlainTextEdit::setVisible(bool visible)
 {
@@ -87,8 +75,9 @@ void LazyPlainTextEdit::setVisible(bool visible)
         killTimer(m_timerId);
         m_timerId = 0;
     }
-    if (visible) {
+
+    if (visible)
         m_timerId = startTimer(INTERVAL);
-    }
+
     QPlainTextEdit::setVisible(visible);
 }
