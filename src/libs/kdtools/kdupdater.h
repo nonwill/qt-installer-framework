@@ -46,6 +46,9 @@ namespace KDUpdater
     KDTOOLS_EXPORT int compareVersion(const QString &v1, const QString &v2);
 
     KDTOOLS_EXPORT QStringList localeCandidates(const QString &locale_);
+#ifdef Q_OS_WIN
+    QString windowsErrorString(int errorCode);
+#endif
 
 }
 

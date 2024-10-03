@@ -28,6 +28,7 @@
 #include "adminauthorization.h"
 
 #include "utils.h"
+#include <kdupdater.h>
 
 #include <QDebug>
 #include <QDir>
@@ -113,7 +114,7 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
         return true;
     } else {
         qWarning() << QString::fromLatin1("Error while starting elevated process: %1, "
-            "Error: %2").arg(program).arg(GetLastError());
+            "Error: %2").arg(program, KDUpdater::windowsErrorString(GetLastError()));
     }
     return false;
 }

@@ -29,7 +29,7 @@
 #ifndef KDTOOLS_KDTOOLSGLOBAL_H
 #define KDTOOLS_KDTOOLSGLOBAL_H
 
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
 
 #ifndef QT_STATIC
 #  ifdef BUILD_SHARED_KDTOOLS

@@ -33,7 +33,6 @@
 #include <QPair>
 #include <QVector>
 #include <QUrl>
-#include <QStringList>
 
 using namespace KDUpdater;
 

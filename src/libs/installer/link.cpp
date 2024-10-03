@@ -27,6 +27,7 @@
 **************************************************************************/
 
 #include "link.h"
+#include <kdupdater.h>
 
 #include <QFileInfo>
 #include <QDir>
@@ -87,7 +88,8 @@ public:
             OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
 
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
-            qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(path).arg(GetLastError());
+            qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(path)
+                .arg(KDUpdater::windowsErrorString(GetLastError()));
         }
     }
 
@@ -142,8 +144,8 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     }
     FileHandleWrapper dirHandle(linkPath);
     if (dirHandle.handle() == INVALID_HANDLE_VALUE) {
-        qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(linkPath).arg(
-            GetLastError());
+        qWarning() << QString::fromLatin1("Could not open: '%1'; error: %2\n").arg(linkPath)
+            .arg(KDUpdater::windowsErrorString(GetLastError()));
         return Link(linkPath);
     }
 
@@ -174,7 +176,7 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
         reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, 0, 0,
         &bytesReturned, 0)) {
             qWarning() << QString::fromLatin1("Could not set the reparse point: for '%1' to %2; error: %3"
-                ).arg(linkPath, targetPath).arg(GetLastError());
+                ).arg(linkPath, targetPath).arg(KDUpdater::windowsErrorString(GetLastError()));
     }
     return Link(linkPath);
 }
@@ -196,7 +198,7 @@ bool removeJunction(const QString &path)
             &bytesReturned, 0)) {
 
             qWarning() << QString::fromLatin1("Could not remove the reparse point: '%1'; error: %3"
-                ).arg(path).arg(GetLastError());
+                ).arg(path).arg(KDUpdater::windowsErrorString(GetLastError()));
             return false;
         }
     }
